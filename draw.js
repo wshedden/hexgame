@@ -1,4 +1,4 @@
-function drawHex(x, y, size, type, textValue) {
+function drawHex(x, y, size, type, textValue, claimedBy) {
   push();
   translate(x, y);
   stroke(getOutlineColor()); // Use the purple outline color
@@ -11,6 +11,21 @@ function drawHex(x, y, size, type, textValue) {
     vertex(vx, vy);
   }
   endShape(CLOSE);
+
+  // Draw thick outline if claimed
+  if (claimedBy) {
+    strokeWeight(4);
+    stroke(claimedBy.color);
+    noFill();
+    beginShape();
+    for (let i = 0; i < 6; i++) {
+      let angle = TWO_PI / 6 * i;
+      let vx = size * cos(angle);
+      let vy = size * sin(angle);
+      vertex(vx, vy);
+    }
+    endShape(CLOSE);
+  }
   pop();
 }
 
@@ -109,35 +124,22 @@ function drawPlayerHexesPopup(player, x, y) {
   fill(0, 0, 0, 150); // Semi-transparent black background
 
   // Calculate the height of the popup based on the number of lines
-  let occupiedHexesLines = Math.ceil(player.occupiedHexes.length / 3);
-  let adjacentHexesLines = Math.ceil(player.adjacentHexes.size / 3);
-  let totalLines = 4 + occupiedHexesLines + adjacentHexesLines; // 4 lines for titles and battles left
+  let totalLines = 4; // 4 lines for titles and battles left
   let popupHeight = totalLines * 20 + 40; // 20 pixels per line + some padding
 
   rect(x, y, 190, popupHeight, 10); // Adjusted height to accommodate new info
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
-  text(`Player ${player.id} Hexes:`, x + 10, y + 20);
+  text(`Player ${player.id} Info:`, x + 10, y + 20);
 
-  // Display occupied hexes
-  player.occupiedHexes.forEach((hex, index) => {
-    let line = Math.floor(index / 3);
-    let column = index % 3;
-    text(`(${hex.q},${hex.r})`, x + 10 + column * 60, y + 40 + line * 20);
-  });
+  // Display the number of claimed hexes
+  text(`Claimed Hexes: ${player.occupiedHexes.length}`, x + 10, y + 40);
 
-  text(`Adjacent Hexes:`, x + 10, y + 40 + occupiedHexesLines * 20 + 20);
-
-  // Display adjacent hexes
-  Array.from(player.adjacentHexes).forEach((key, index) => {
-    let line = Math.floor(index / 3);
-    let column = index % 3;
-    text(`${key}`, x + 10 + column * 60, y + 40 + occupiedHexesLines * 20 + 40 + line * 20);
-  });
+  text(`Adjacent Hexes: ${player.adjacentHexes.size}`, x + 10, y + 60);
 
   // Add battles left info
-  text(`Battles Left: ${player.battlesLeft}`, x + 10, y + 40 + occupiedHexesLines * 20 + 60 + adjacentHexesLines * 20);
+  text(`Battles Left: ${player.battlesLeft}`, x + 10, y + 80);
 }
 
 function getAttackableTiles(hex) {

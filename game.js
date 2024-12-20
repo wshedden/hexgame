@@ -145,6 +145,9 @@ function keyPressed() {
     selectedUnitType = 'settler';
   } else if (key === '2') {
     selectedUnitType = 'soldier';
+  } else if (key === 't' || key === 'T') {
+    // Toggle players[0].isHuman
+    players[0].isHuman = !players[0].isHuman;
   }
 }
 

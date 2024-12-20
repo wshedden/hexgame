@@ -69,6 +69,7 @@ function placeUnit(q, r, unit) {
   if (turnNumber === 1) {
     hex.unit = unit;
     hex.occupiedBy = unit.id;
+    hex.claimedBy = unit.id; // Set claimedBy attribute
     let player = players.find(p => p.id === unit.id);
     if (player) {
       player.occupiedHexes.push(hex);
@@ -91,6 +92,7 @@ function placeUnit(q, r, unit) {
   if (isAdjacentToOccupiedHex && !hex.unit) {
     hex.unit = unit;
     hex.occupiedBy = unit.id;
+    hex.claimedBy = unit.id; // Set claimedBy attribute
     let player = players.find(p => p.id === unit.id);
     if (player) {
       player.occupiedHexes.push(hex);
