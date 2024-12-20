@@ -24,10 +24,10 @@ function drawUnits() {
   });
 }
 
-function drawUnit(x, y, unit) {
-  push();
-  translate(x, y);
-  fill(unit.color);
-  ellipse(0, 0, 20, 20);
-  pop();
-}
+// function drawUnit(x, y, unit) {
+//   push();
+//   translate(x, y);
+//   fill(unit.color);
+//   ellipse(0, 0, 20, 20);
+//   pop();
+// }

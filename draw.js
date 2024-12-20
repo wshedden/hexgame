@@ -12,19 +12,9 @@ function drawHex(x, y, size, type, textValue, unit) {
   }
   endShape(CLOSE);
 
-  // Display the text inside the hex
-  // fill(255);
-  // stroke(0);
-  // strokeWeight(1);
-  // textSize(10);
-  // textAlign(CENTER, CENTER);
-  // text(textValue, 0, 0);
-
-  // Draw a dot if there's a unit
+  // Draw the unit using drawUnit function
   if (unit) {
-    fill(unit.color); // Use the unit's color
-    noStroke();
-    ellipse(0, 0, 10, 10); // Draw a dot
+    drawUnit(0, 0, unit);
   }
 
   pop();
