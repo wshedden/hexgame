@@ -93,3 +93,18 @@ function drawHexHighlight(x, y) {
   endShape(CLOSE);
   pop();
 }
+
+function drawPlayerHexesPopup(player) {
+  if (!player) return;
+
+  rectMode(CORNER); // Ensure rectMode is set to CORNER
+  fill(0, 0, 0, 150); // Semi-transparent black background
+  rect(10, 270, 190, 180, 10); // Rounded rectangle below the hex info popup
+  fill(255);
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  text(`Player ${player.id} Hexes:`, 20, 290);
+  player.occupiedHexes.forEach((hex, index) => {
+    text(`(${hex.q}, ${hex.r})`, 20, 310 + index * 20);
+  });
+}

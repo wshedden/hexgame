@@ -7,13 +7,13 @@ class Unit {
   }
 }
 
-function placeUnit(q, r, unit) {
-  let hex = getHex(q, r);
-  hex.occupiedBy = unit.id;
-  if (hex && !hex.unit) {
-    hex.unit = unit;
-  }
-}
+// function placeUnit(q, r, unit) {
+//   let hex = getHex(q, r);
+//   hex.occupiedBy = unit.id;
+//   if (hex && !hex.unit) {
+//     hex.unit = unit;
+//   }
+// }
 
 function drawUnits() {
   push();

@@ -2,6 +2,7 @@ class Player {
   constructor(id, color) {
     this.id = id;
     this.color = color;
+    this.occupiedHexes = [];
   }
 
   addRandomUnit() {
@@ -18,8 +19,21 @@ class Player {
 
 function placeUnit(q, r, unit) {
   let hex = getHex(q, r);
-  if (hex && !hex.unit) {
+  if (!hex) return;
+
+  // Check if the hex is adjacent to an occupied hex
+  let neighbors = getHexNeighbors(hex);
+  let isAdjacentToOccupiedHex = neighbors.some(neighbor => neighbor.occupiedBy === unit.id);
+
+  if (isAdjacentToOccupiedHex && !hex.unit) {
     hex.unit = unit;
+    hex.occupiedBy = unit.id;
+    let player = players.find(p => p.id === unit.id);
+    if (player) {
+      player.occupiedHexes.push(hex);
+    }
+  } else {
+    console.log(`Cannot place unit at (${q}, ${r}). It must be adjacent to an occupied hex.`);
   }
 }
 
