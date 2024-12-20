@@ -5,7 +5,7 @@ class Unit {
     this.health = health;
     this.attack = attack;
     this.defense = defense;
-    this.color = color;
+    this.color = type === 'settler' ? [0, 255, 0] : color; // Green color for settlers
   }
 }
 
@@ -33,7 +33,8 @@ function drawUnit(x, y, unit) {
   push();
   translate(x, y);
   fill(unit.color);
-  ellipse(0, 0, 20, 20);
+  let size = unit.type === 'settler' ? 30 : 20; // Bigger size for settlers
+  ellipse(0, 0, size, size);
   pop();
 }
 

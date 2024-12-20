@@ -43,7 +43,8 @@ function mousePressed() {
 
     if (currentPlayerIndex === 0 && currentState === GameState.PLAYING_HUMAN) {
       let player = players[currentPlayerIndex];
-      let newUnit = new Unit(player.id, 'soldier', 100, 20, 10, player.color); // Example values for attack and defense
+      let unitType = 'settler'; // Change to 'settler' for placing a settler unit
+      let newUnit = new Unit(player.id, unitType, unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, player.color); // Example values for attack and defense
 
       if (placeUnit(clickedHex.q, clickedHex.r, newUnit)) {
         switchPlayer(); // Switch to the next player if unit placement is successful

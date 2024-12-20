@@ -12,12 +12,22 @@ class Player {
     let isFirstTurn = (turnNumber === 1);
     let hexesToConsider = isFirstTurn ? Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit) : Array.from(this.adjacentHexes).map(key => hexGrid.get(key)).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
 
+    // If first turn, place a settler in a random place
+    if (isFirstTurn) {
+      let randomHex = random(hexesToConsider);
+      let newUnit = new Unit(this.id, 'settler', 100, 0, 0, this.color); // Example values for attack and defense
+      placeUnit(randomHex.q, randomHex.r, newUnit);
+      print(`Player ${this.id} added settler unit to Hex: (${randomHex.q}, ${randomHex.r})`);
+      return;
+    }
+
     if (hexesToConsider.length > 0) {
       let randomHex = random(hexesToConsider);
-      let newUnit = new Unit(this.id, 'soldier', 100, 20, 10, this.color); // Example values for attack and defense
+      // let newUnit = new Unit(this.id, "soldier", unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, this.color); // Example values for attack and defense
+      let newUnit = new Unit(this.id, "soldier", 50, 5, 5, this.color); // Example values for attack and defense  
       placeUnit(randomHex.q, randomHex.r, newUnit);
 
-      console.log(`Player ${this.id} added unit to Hex: (${randomHex.q}, ${randomHex.r})`);
+      console.log(`Player ${this.id} added ${newUnit.type} unit to Hex: (${randomHex.q}, ${randomHex.r})`);
     } else {
       console.log(`Player ${this.id} has no adjacent hexes available for unit placement.`);
     }
