@@ -6,6 +6,7 @@ class Unit {
     this.attack = attack;
     this.defense = defense;
     this.color = type === 'settler' ? lerpColor(color(0, 255, 0), color(playerColor[0], playerColor[1], playerColor[2]), 0.5) : color(playerColor[0], playerColor[1], playerColor[2]); // Interpolated color for settlers
+    this.size = 20; // Default size
   }
 }
 
@@ -21,19 +22,30 @@ function drawUnits() {
   push();
   translate(width / 2, height / 2); // Translate the origin to the center of the canvas
   hexGrid.forEach((hex) => {
-    if (hex.unit) {
+    if (hex.units.length > 0) {
       let { x, y } = hexToPixel(hex);
-      drawUnit(x, y, hex.unit);
+      drawHexUnits(x, y, hex.units);
     }
   });
   pop();
 }
 
-function drawUnit(x, y, unit) {
+function drawHexUnits(x, y, units) {
+  let maxUnits = 5; // Maximum number of units to fit in one hex
+  let unitSize = 20 / Math.sqrt(units.length); // Adjust size based on the number of units
+
+  units.forEach((unit, index) => {
+    let angle = TWO_PI / maxUnits * index;
+    let offsetX = unitSize * cos(angle);
+    let offsetY = unitSize * sin(angle);
+    drawUnit(x + offsetX, y + offsetY, unit, unitSize);
+  });
+}
+
+function drawUnit(x, y, unit, size) {
   push();
   translate(x, y);
   fill(unit.color);
-  let size = unit.type === 'settler' ? 30 : 20; // Bigger size for settlers
   ellipse(0, 0, size, size);
   pop();
 }

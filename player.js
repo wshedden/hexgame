@@ -67,7 +67,7 @@ function placeUnit(q, r, unit) {
 
   // Allow placement anywhere on the first turn
   if (turnNumber === 1) {
-    hex.unit = unit;
+    hex.addUnit(unit);
     hex.occupiedBy = unit.id;
     hex.claimedBy = unit.id; // Set claimedBy attribute
     let player = players.find(p => p.id === unit.id);
@@ -89,8 +89,8 @@ function placeUnit(q, r, unit) {
   let neighbors = getHexNeighbors(hex);
   let isAdjacentToOccupiedHex = neighbors.some(neighbor => neighbor.occupiedBy === unit.id);
 
-  if (isAdjacentToOccupiedHex && !hex.unit) {
-    hex.unit = unit;
+  if (isAdjacentToOccupiedHex) {
+    hex.addUnit(unit);
     hex.occupiedBy = unit.id;
     hex.claimedBy = unit.id; // Set claimedBy attribute
     let player = players.find(p => p.id === unit.id);
@@ -112,12 +112,35 @@ function placeUnit(q, r, unit) {
 }
 
 function drawUnits() {
+  push();
+  translate(width / 2, height / 2); // Translate the origin to the center of the canvas
   hexGrid.forEach((hex) => {
-    if (hex.unit) {
+    if (hex.units.length > 0) {
       let { x, y } = hexToPixel(hex);
-      drawUnit(x, y, hex.unit);
+      drawHexUnits(x, y, hex.units);
     }
   });
+  pop();
+}
+
+function drawHexUnits(x, y, units) {
+  let maxUnits = 5; // Maximum number of units to fit in one hex
+  let unitSize = 20 / Math.sqrt(units.length); // Adjust size based on the number of units
+
+  units.forEach((unit, index) => {
+    let angle = TWO_PI / maxUnits * index;
+    let offsetX = unitSize * cos(angle);
+    let offsetY = unitSize * sin(angle);
+    drawUnit(x + offsetX, y + offsetY, unit, unitSize);
+  });
+}
+
+function drawUnit(x, y, unit, size) {
+  push();
+  translate(x, y);
+  fill(unit.color);
+  ellipse(0, 0, size, size);
+  pop();
 }
 
 function battle(attackerHex, defenderHex) {

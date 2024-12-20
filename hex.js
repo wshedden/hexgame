@@ -1,10 +1,10 @@
 class Hex {
-  constructor(occupiedBy, q, r, type = 'grass', unit = null, text = '', noiseValue = 0, claimedBy = null) {
+  constructor(occupiedBy, q, r, type = 'grass', units = [], text = '', noiseValue = 0, claimedBy = null) {
     this.q = q;
     this.r = r;
     this.s = -q - r; // Cube coordinate
     this.type = type;
-    this.unit = unit;
+    this.units = units; // Store multiple units
     this.text = text;
     this.noiseValue = noiseValue;
     this.occupiedBy = occupiedBy;
@@ -13,5 +13,9 @@ class Hex {
 
   getKey() {
     return `${this.q},${this.r}`;
+  }
+
+  addUnit(unit) {
+    this.units.push(unit);
   }
 }
