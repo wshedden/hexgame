@@ -13,8 +13,8 @@ function setup() {
 
 function draw() {
   background(20); // Set the background to a dark color
-  drawGrid();
-  drawUnits();
+  drawGameState();
+  drawGameStatePopup(); // Draw the game state popup in the top left corner
 }
 
 function drawHex(x, y, size, type) {
@@ -40,4 +40,8 @@ function initializeTerrainColors() {
   registerTerrainType('desert', color(237, 201, 175));
   registerTerrainType('forest', color(34, 139, 34));
   registerTerrainType('snow', color(255, 250, 250));
+}
+
+function keyPressed() {
+  handleKeyPress();
 }
