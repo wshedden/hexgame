@@ -6,6 +6,7 @@ function generateTerrain() {
     if (noiseValue < 0.2) hex.type = 'water';
     else if (noiseValue < 0.4) hex.type = 'grass';
     else if (noiseValue < 0.6) hex.type = 'desert';
+    else if (noiseValue < 0.7) hex.type = 'mountain'; // Mountain tiles
     else if (noiseValue < 0.8) hex.type = 'forest';
     else hex.type = 'snow';
   });

@@ -99,7 +99,10 @@ function battle(attackerHex, defenderHex) {
   let attackMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
   let defenseMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
 
-  let damageToDefender = Math.max(0, Math.floor(attacker.attack * attackMultiplier - defender.defense * defenseMultiplier));
+  // Apply defensive bonus if defender is on a mountain tile
+  let defenseBonus = defenderHex.type === 'mountain' ? 1.5 : 1.0;
+
+  let damageToDefender = Math.max(0, Math.floor(attacker.attack * attackMultiplier - defender.defense * defenseMultiplier * defenseBonus));
   let damageToAttacker = Math.max(0, Math.floor(defender.attack * defenseMultiplier - attacker.defense * attackMultiplier));
 
   // Apply damage
@@ -112,10 +115,7 @@ function battle(attackerHex, defenderHex) {
   // Check for unit deaths
   if (defender.health <= 0) {
     console.log(`Player ${attacker.id} wins the battle!`);
-    defenderHex.unit = attacker; // Move the attacker to the defender's hex
-    defenderHex.occupiedBy = attacker.id;
-    attackerHex.unit = null; // Remove the attacker from the original hex
-    attackerHex.occupiedBy = null;
+    animateUnitMovement(attackerHex, defenderHex); // Animate the unit movement
   }
 
   if (attacker.health <= 0) {

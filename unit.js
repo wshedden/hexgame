@@ -36,3 +36,44 @@ function drawUnit(x, y, unit) {
   ellipse(0, 0, 20, 20);
   pop();
 }
+
+function animateUnitMovement(attackerHex, defenderHex, duration = 1000) {
+  let startTime = millis();
+  let startPos = hexToPixel(attackerHex);
+  let endPos = hexToPixel(defenderHex);
+
+  function updateAnimation() {
+    let currentTime = millis();
+    let elapsedTime = currentTime - startTime;
+    let progress = min(elapsedTime / duration, 1);
+
+    let currentX = lerp(startPos.x, endPos.x, progress);
+    let currentY = lerp(startPos.y, endPos.y, progress);
+
+    // Clear the previous frame
+    background(20);
+
+    // Draw the grid and units
+    drawGrid();
+    drawUnits();
+
+    // Draw the moving unit
+    push();
+    translate(currentX, currentY);
+    fill(attackerHex.unit.color);
+    ellipse(0, 0, 20, 20);
+    pop();
+
+    if (progress < 1) {
+      requestAnimationFrame(updateAnimation);
+    } else {
+      // Move the unit to the defender's hex
+      defenderHex.unit = attackerHex.unit;
+      defenderHex.occupiedBy = attackerHex.unit.id;
+      attackerHex.unit = null;
+      attackerHex.occupiedBy = null;
+    }
+  }
+
+  updateAnimation();
+}
