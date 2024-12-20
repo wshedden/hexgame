@@ -61,30 +61,6 @@ const basePanelHeight = 150;
 const padding = 10;
 const panels = [];
 
-function setup() {
-  createCanvas(1800, 900);
-  initializeGrid(9);
-  initializeTerrainColors();
-  generateTerrain();
-
-  setState(GameState.INIT);
-
-  // Add panels to the array
-  panels.push(drawGameStatePopup);
-  panels.push(() => drawHexInfoPopup(selectedHex));
-  panels.push(() => drawPlayerHexesPopup(players[0], 0, 0));
-  panels.push(() => drawPlayerHexesPopup(players[1], 0, 0));
-  panels.push(drawSelectedUnitTypePanel);
-}
-
-function draw() {
-  background(20); // Set the background to a dark color
-  drawGameState();
-
-  // Draw all panels
-  drawPanels();
-}
-
 function drawPanels() {
   const leftPanels = [panels[0], panels[1], panels[4]]; // Panels on the left side
   const rightPanels = [panels[2], panels[3]]; // Panels on the right side

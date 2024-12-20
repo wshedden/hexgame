@@ -6,7 +6,6 @@ function setup() {
   initializeGrid(9);
   initializeTerrainColors();
   generateTerrain();
-
   setState(GameState.INIT);
 }
 
