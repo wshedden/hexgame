@@ -1,13 +1,14 @@
 const GameState = {
   INIT: 'init',
   PLAYING: 'playing',
+  PLAYING_HUMAN: 'playing_human',
   PAUSED: 'paused',
   GAME_OVER: 'game_over',
 };
 
 let currentState = GameState.INIT;
 let currentPlayerIndex = 0;
-let turnDuration = 200;
+let turnDuration = 500;
 let turnStartTime;
 let turnNumber = 1; // Initialize turn number
 let speedMultiplier = 1.0;
@@ -37,6 +38,9 @@ function drawGameState() {
     case GameState.PLAYING:
       drawPlayingState();
       break;
+    case GameState.PLAYING_HUMAN:
+      drawPlayingState_human();
+      break;
     case GameState.PAUSED:
       drawPausedState();
       break;
@@ -59,8 +63,25 @@ function drawPlayingState() {
   drawGrid();
   drawUnits();
 
+  // Adjust the turn duration based on the speed multiplier
+  let adjustedTurnDuration = turnDuration * (1 / speedMultiplier);
+
   // Check if the turn duration has elapsed
-  if (millis() - turnStartTime > turnDuration / speedMultiplier) {
+  if (millis() - turnStartTime > adjustedTurnDuration) {
+    switchPlayer();
+    turnStartTime = millis();
+  }
+}
+
+function drawPlayingState_human() {
+  // Draw the playing state with human input
+  // Switch player only once human input is received
+  drawGrid();
+  drawUnits();
+
+  
+  // Don't care about time, wait for human input exept for player 2
+  if (currentPlayerIndex === 1) {
     switchPlayer();
     turnStartTime = millis();
   }
@@ -92,7 +113,8 @@ function drawGameStatePopup() {
   text(`Turn: ${turnNumber}`, 20, 70); // Display the current turn number
 
   // Calculate the remaining time for the current turn
-  let remainingTime = Math.max(0, turnDuration - (millis() - turnStartTime));
+  let adjustedTurnDuration = turnDuration * (1 / speedMultiplier);
+  let remainingTime = Math.max(0, adjustedTurnDuration - (millis() - turnStartTime));
   text(`Time Left: ${(remainingTime / 1000).toFixed(1)}s`, 20, 90);
 
   // Display the speed multiplier
@@ -114,23 +136,32 @@ function keyPressed() {
     speedMultiplier = max(0.1, speedMultiplier / 1.1); // Decrease speed, minimum 0.1x
   } else if (keyCode === RIGHT_ARROW) {
     speedMultiplier = min(1000, speedMultiplier * 1.1); // Increase speed, maximum 1000x
+  } else if (key === 't' || key === 'T') { // Toggle human control mode
+    players[0].isHuman = !players[0].isHuman;
+    console.log(`Player 1 human control: ${players[0].isHuman}`);
+    if(players[0].isHuman) {
+      setState(GameState.PLAYING_HUMAN);
+    } else {
+      setState(GameState.PLAYING);
+    }
   }
 }
 
 function switchPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
   players[currentPlayerIndex].resetBattles(); // Reset battles at the start of the turn
-  players[currentPlayerIndex].addRandomUnit();
 
+  
+
+  // Skip AI decision-making for Player 1 if human-controlled
+  if (currentPlayerIndex === 0 && players[0].isHuman) {
+    console.log("Player 1 is human-controlled. Waiting for human input.");
+    return;
+  }
+
+  // AI decision-making for non-human players
+  players[currentPlayerIndex].addRandomUnit();
   if (currentPlayerIndex === 0) {
     turnNumber++; // Increment turn number when all players have taken their turn
-  }
-}
-
-function adjustSpeed() {
-  if (keyIsDown(LEFT_ARROW)) {
-    speedMultiplier = max(0.2, speedMultiplier / 1.02); // Decrease speed, minimum 0.1x
-  } else if (keyIsDown(RIGHT_ARROW)) {
-    speedMultiplier = min(1000, speedMultiplier * 1.01); // Increase speed, maximum 1000x
   }
 }

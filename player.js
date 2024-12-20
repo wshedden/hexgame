@@ -5,6 +5,7 @@ class Player {
     this.occupiedHexes = [];
     this.adjacentHexes = new Set();
     this.battlesLeft = 3; // Example: Allow 3 battles per turn
+    this.humanControlled = false;
   }
 
   addRandomUnit() {
@@ -51,7 +52,7 @@ function placeUnit(q, r, unit) {
   let hex = getHex(q, r);
   if (!hex || !claimableTiles.has(hex.getKey())) {
     console.log(`Cannot place unit at (${q}, ${r}). Tile is not claimable.`);
-    return;
+    return false;
   }
 
   // Check if it's the first turn
@@ -75,8 +76,10 @@ function placeUnit(q, r, unit) {
       // Remove the current hex from adjacentHexes if it was there
       player.adjacentHexes.delete(hex.getKey());
     }
+    return true;
   } else {
     console.log(`Cannot place unit at (${q}, ${r}). It must be adjacent to an occupied hex.`);
+    return false;
   }
 }
 

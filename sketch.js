@@ -21,7 +21,6 @@ function draw() {
     drawPausedState();
   }
 
-  adjustSpeed(); // Adjust speed based on key presses
 }
 
 function initializeTerrainColors() {
@@ -41,14 +40,16 @@ function mousePressed() {
   let clickedHex = pixelToHex(mouseX - width / 2, mouseY - height / 2);
   if (clickedHex) {
     selectedHex = clickedHex;
-    // print(selectedHex);
-    // console.log(`Clicked Hex: (${clickedHex.q}, ${clickedHex.r})`);
-    // console.log(`Type: ${clickedHex.type}`);
-    // console.log(`Noise Value: ${clickedHex.noiseValue}`);
-    // console.log(`Text: ${clickedHex.text}`);
-    if (clickedHex.unit) {
-      // console.log(`Unit Type: ${clickedHex.unit.type}`);
-      // console.log(`Unit Health: ${clickedHex.unit.health}`);
+
+    if (currentPlayerIndex === 0 && currentState === GameState.PLAYING_HUMAN) {
+      let player = players[currentPlayerIndex];
+      let newUnit = new Unit(player.id, 'soldier', 100, 20, 10, player.color); // Example values for attack and defense
+
+      if (placeUnit(clickedHex.q, clickedHex.r, newUnit)) {
+        switchPlayer(); // Switch to the next player if unit placement is successful
+      } else {
+        print(`Cannot place unit at (${clickedHex.q}, ${clickedHex.r}).`);
+      }
     }
   }
 }
