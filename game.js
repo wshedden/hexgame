@@ -10,6 +10,7 @@ let currentPlayerIndex = 0;
 let turnDuration = 200;
 let turnStartTime;
 let turnNumber = 1; // Initialize turn number
+let speedMultiplier = 1.0;
 
 const players = [
   new Player(1, [139, 0, 0]), // Dark red for player 1
@@ -59,7 +60,7 @@ function drawPlayingState() {
   drawUnits();
 
   // Check if the turn duration has elapsed
-  if (millis() - turnStartTime > turnDuration) {
+  if (millis() - turnStartTime > turnDuration / speedMultiplier) {
     switchPlayer();
     turnStartTime = millis();
   }
@@ -82,7 +83,7 @@ function drawGameOverState() {
 function drawGameStatePopup() {
   rectMode(CORNER); // Ensure rectMode is set to CORNER
   fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(10, 10, 190, 100, 10); // Adjusted height to accommodate the turn number
+  rect(10, 10, 190, 120, 10); // Adjusted height to accommodate the speed multiplier
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
@@ -93,6 +94,9 @@ function drawGameStatePopup() {
   // Calculate the remaining time for the current turn
   let remainingTime = Math.max(0, turnDuration - (millis() - turnStartTime));
   text(`Time Left: ${(remainingTime / 1000).toFixed(1)}s`, 20, 90);
+
+  // Display the speed multiplier
+  text(`Speed: ${speedMultiplier.toFixed(3)}x`, 20, 110);
 }
 
 function keyPressed() {
@@ -106,6 +110,10 @@ function keyPressed() {
     }
   } else if (key === 'p' || key === 'P') { // Check if the 'P' key is pressed
     switchPlayer();
+  } else if (keyCode === LEFT_ARROW) {
+    speedMultiplier = max(0.1, speedMultiplier / 1.1); // Decrease speed, minimum 0.1x
+  } else if (keyCode === RIGHT_ARROW) {
+    speedMultiplier = min(1000, speedMultiplier * 1.1); // Increase speed, maximum 1000x
   }
 }
 
