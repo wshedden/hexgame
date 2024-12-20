@@ -22,6 +22,14 @@ class Player {
     }
 
     if (hexesToConsider.length > 0) {
+      if(random(1) < 0.5) {
+        // Add farmer to a claimed hex
+        let randomHex = random(this.occupiedHexes);
+        let newUnit = new Unit(this.id, "farmer", 5, 5, 5, this.color); // Example values for attack and defense
+        placeUnit(randomHex.q, randomHex.r, newUnit);
+        console.log(`Player ${this.id} added ${newUnit.type} unit to Hex: (${randomHex.q}, ${randomHex.r})`);
+        return;
+      }
       let randomHex = random(hexesToConsider);
       // let newUnit = new Unit(this.id, "soldier", unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, this.color); // Example values for attack and defense
       let newUnit = new Unit(this.id, "soldier", 50, 5, 5, this.color); // Example values for attack and defense  
