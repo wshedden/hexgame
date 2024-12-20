@@ -55,14 +55,30 @@ function placeUnit(q, r, unit) {
     return false;
   }
 
-  // Check if it's the first turn
-  let isFirstTurn = (turnNumber === 1);
+  // Allow placement anywhere on the first turn
+  if (turnNumber === 1) {
+    hex.unit = unit;
+    hex.occupiedBy = unit.id;
+    let player = players.find(p => p.id === unit.id);
+    if (player) {
+      player.occupiedHexes.push(hex);
+      let neighbors = getHexNeighbors(hex);
+      neighbors.forEach(neighbor => {
+        if (!neighbor.occupiedBy && claimableTiles.has(neighbor.getKey())) {
+          player.adjacentHexes.add(neighbor.getKey());
+        }
+      });
+      // Remove the current hex from adjacentHexes if it was there
+      player.adjacentHexes.delete(hex.getKey());
+    }
+    return true;
+  }
 
   // Check if the hex is adjacent to an occupied hex
   let neighbors = getHexNeighbors(hex);
   let isAdjacentToOccupiedHex = neighbors.some(neighbor => neighbor.occupiedBy === unit.id);
 
-  if ((isFirstTurn || isAdjacentToOccupiedHex) && !hex.unit) {
+  if (isAdjacentToOccupiedHex && !hex.unit) {
     hex.unit = unit;
     hex.occupiedBy = unit.id;
     let player = players.find(p => p.id === unit.id);
