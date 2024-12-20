@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Hex Grid Project</title>
+    <link rel="icon" href="data:," />
+    <!-- Prevents favicon error -->
+
+    <!-- p5.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+    <!-- Optional: p5.js DOM Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.dom.min.js"></script>
+
+    <!-- Stylesheet -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #141414; /* Dark background */
+        font-family: Arial, sans-serif;
+        height: 100vh;
+      }
+      canvas {
+        display: block;
+        width: 80vw;
+        height: 80vh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Project Canvas -->
+    <main>
+      <!-- <h1>Hex Grid Simulation</h1> -->
+    </main>
+
+    <!-- Your JavaScript Files -->
+    <script src="sketch.js"></script>
+    <script src="hex.js"></script>
+    <script src="utils.js"></script> <!-- Load utils.js before terrain.js -->
+    <script src="terrain.js"></script>
+    <script src="draw.js"></script>
+    <script src="unit.js"></script>
+  </body>
+</html>
