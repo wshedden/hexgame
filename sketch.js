@@ -16,22 +16,6 @@ function draw() {
   drawHexInfoPopup(selectedHex); // Draw the hex info popup below the game state popup
 }
 
-function drawHex(x, y, size, type) {
-  push();
-  translate(x, y);
-  stroke(getOutlineColor()); // Use the purple outline color
-  fill(getTerrainColor(type));
-  beginShape();
-  for (let i = 0; i < 6; i++) {
-    let angle = TWO_PI / 6 * i;
-    let vx = size * cos(angle);
-    let vy = size * sin(angle);
-    vertex(vx, vy);
-  }
-  endShape(CLOSE);
-  pop();
-}
-
 function initializeTerrainColors() {
   registerTerrainType('grass', color(100, 200, 100));
   registerTerrainType('water', color(50, 100, 200));

@@ -16,18 +16,21 @@ function placeUnit(q, r, unit) {
 }
 
 function drawUnits() {
+  push();
+  translate(width / 2, height / 2); // Translate the origin to the center of the canvas
   hexGrid.forEach((hex) => {
     if (hex.unit) {
       let { x, y } = hexToPixel(hex);
       drawUnit(x, y, hex.unit);
     }
   });
+  pop();
 }
 
-// function drawUnit(x, y, unit) {
-//   push();
-//   translate(x, y);
-//   fill(unit.color);
-//   ellipse(0, 0, 20, 20);
-//   pop();
-// }
+function drawUnit(x, y, unit) {
+  push();
+  translate(x, y);
+  fill(unit.color);
+  ellipse(0, 0, 20, 20);
+  pop();
+}

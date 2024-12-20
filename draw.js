@@ -1,4 +1,4 @@
-function drawHex(x, y, size, type, textValue, unit) {
+function drawHex(x, y, size, type, textValue) {
   push();
   translate(x, y);
   stroke(getOutlineColor()); // Use the purple outline color
@@ -11,12 +11,6 @@ function drawHex(x, y, size, type, textValue, unit) {
     vertex(vx, vy);
   }
   endShape(CLOSE);
-
-  // Draw the unit using drawUnit function
-  if (unit) {
-    drawUnit(0, 0, unit);
-  }
-
   pop();
 }
 
@@ -41,7 +35,6 @@ function drawGrid() {
   });
   pop();
 }
-
 
 function drawHexInfoPopup(hex) {
   if (!hex) return;
