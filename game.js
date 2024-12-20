@@ -113,6 +113,7 @@ function keyPressed() {
 
 function switchPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+  players[currentPlayerIndex].resetBattles(); // Reset battles at the start of the turn
   players[currentPlayerIndex].addRandomUnit();
 
   if (currentPlayerIndex === 0) {

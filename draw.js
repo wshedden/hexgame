@@ -40,34 +40,33 @@ function drawGrid() {
   }
   pop();
 }
-
 function drawHexInfoPopup(hex) {
   if (!hex) return;
 
   rectMode(CORNER); // Ensure rectMode is set to CORNER
   fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(10, 80, 190, 300, 10); // Adjusted height to accommodate new info
+  rect(width - 200, 10, 190, 300, 10); // Adjusted position to top right
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
-  text(`Hex: (${hex.q}, ${hex.r})`, 20, 100);
-  text(`Type: ${hex.type}`, 20, 120);
-  text(`Noise: ${hex.noiseValue.toFixed(2)}`, 20, 140);
+  text(`Hex: (${hex.q}, ${hex.r})`, width - 190, 30);
+  text(`Type: ${hex.type}`, width - 190, 50);
+  text(`Noise: ${hex.noiseValue.toFixed(2)}`, width - 190, 70);
   if (hex.unit) {
-    text(`Unit: ${hex.unit.type}`, 20, 160);
-    text(`Health: ${hex.unit.health}`, 20, 180);
-    text(`Attack: ${hex.unit.attack}`, 20, 200);
-    text(`Defense: ${hex.unit.defense}`, 20, 220);
+    text(`Unit: ${hex.unit.type}`, width - 190, 90);
+    text(`Health: ${hex.unit.health}`, width - 190, 110);
+    text(`Attack: ${hex.unit.attack}`, width - 190, 130);
+    text(`Defense: ${hex.unit.defense}`, width - 190, 150);
   }
   if (hex.occupiedBy) {
-    text(`Occupied by: ${hex.occupiedBy}`, 20, 240);
+    text(`Occupied by: ${hex.occupiedBy}`, width - 190, 170);
   }
 
   // Add info about possible attackable tiles
   let attackableTiles = getAttackableTiles(hex);
-  text(`Attackable Tiles:`, 20, 260);
+  text(`Attackable Tiles:`, width - 190, 190);
   attackableTiles.forEach((tile, index) => {
-    text(`(${tile.q}, ${tile.r})`, 20, 280 + index * 20);
+    text(`(${tile.q}, ${tile.r})`, width - 190, 210 + index * 20);
   });
 }
 
@@ -103,24 +102,27 @@ function drawHexHighlight(x, y) {
   pop();
 }
 
-function drawPlayerHexesPopup(player) {
+function drawPlayerHexesPopup(player, x, y) {
   if (!player) return;
 
   rectMode(CORNER); // Ensure rectMode is set to CORNER
   fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(10, 270, 190, 180, 10); // Rounded rectangle below the hex info popup
+  rect(x, y, 190, 200, 10); // Adjusted height to accommodate new info
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
-  text(`Player ${player.id} Hexes:`, 20, 290);
+  text(`Player ${player.id} Hexes:`, x + 10, y + 20);
   player.occupiedHexes.forEach((hex, index) => {
-    text(`(${hex.q}, ${hex.r})`, 20, 310 + index * 20);
+    text(`(${hex.q}, ${hex.r})`, x + 10, y + 40 + index * 20);
   });
 
-  text(`Adjacent Hexes:`, 20, 310 + player.occupiedHexes.length * 20 + 20);
+  text(`Adjacent Hexes:`, x + 10, y + 40 + player.occupiedHexes.length * 20 + 20);
   Array.from(player.adjacentHexes).forEach((key, index) => {
-    text(`${key}`, 20, 310 + player.occupiedHexes.length * 20 + 40 + index * 20);
+    text(`${key}`, x + 10, y + 40 + player.occupiedHexes.length * 20 + 40 + index * 20);
   });
+
+  // Add battles left info
+  text(`Battles Left: ${player.battlesLeft}`, x + 10, y + 40 + player.occupiedHexes.length * 20 + 60 + player.adjacentHexes.size * 20);
 }
 
 function getAttackableTiles(hex) {

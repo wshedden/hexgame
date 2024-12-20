@@ -4,6 +4,7 @@ class Player {
     this.color = color;
     this.occupiedHexes = [];
     this.adjacentHexes = new Set();
+    this.battlesLeft = 3; // Example: Allow 3 battles per turn
   }
 
   addRandomUnit() {
@@ -21,7 +22,12 @@ class Player {
     }
   }
 
+  resetBattles() {
+    this.battlesLeft = 3; // Reset the battle counter at the start of each turn
+  }
+
   canInitiateBattle() {
+    if (this.battlesLeft <= 0) return false;
     for (let hex of this.occupiedHexes) {
       let neighbors = getHexNeighbors(hex);
       if (neighbors.some(neighbor => neighbor.unit && neighbor.unit.id !== this.id)) {
@@ -32,7 +38,12 @@ class Player {
   }
 
   initiateBattle(attackerHex, defenderHex) {
-    battle(attackerHex, defenderHex);
+    if (this.battlesLeft > 0) {
+      battle(attackerHex, defenderHex);
+      this.battlesLeft--;
+    } else {
+      console.log(`Player ${this.id} has no battles left this turn.`);
+    }
   }
 }
 
