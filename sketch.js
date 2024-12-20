@@ -34,14 +34,14 @@ function mousePressed() {
   let clickedHex = pixelToHex(mouseX - width / 2, mouseY - height / 2);
   if (clickedHex) {
     selectedHex = clickedHex;
-    print(selectedHex);
-    console.log(`Clicked Hex: (${clickedHex.q}, ${clickedHex.r})`);
-    console.log(`Type: ${clickedHex.type}`);
-    console.log(`Noise Value: ${clickedHex.noiseValue}`);
-    console.log(`Text: ${clickedHex.text}`);
+    // print(selectedHex);
+    // console.log(`Clicked Hex: (${clickedHex.q}, ${clickedHex.r})`);
+    // console.log(`Type: ${clickedHex.type}`);
+    // console.log(`Noise Value: ${clickedHex.noiseValue}`);
+    // console.log(`Text: ${clickedHex.text}`);
     if (clickedHex.unit) {
-      console.log(`Unit Type: ${clickedHex.unit.type}`);
-      console.log(`Unit Health: ${clickedHex.unit.health}`);
+      // console.log(`Unit Type: ${clickedHex.unit.type}`);
+      // console.log(`Unit Health: ${clickedHex.unit.health}`);
     }
   }
 }

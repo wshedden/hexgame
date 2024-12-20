@@ -7,7 +7,7 @@ const GameState = {
 
 let currentState = GameState.INIT;
 let currentPlayerIndex = 0;
-let turnDuration = 2000;
+let turnDuration = 20;
 let turnStartTime;
 let turnNumber = 1; // Initialize turn number
 
@@ -113,7 +113,7 @@ function keyPressed() {
 
 function switchPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-  console.log(`Switched to Player ${players[currentPlayerIndex].id}`);
+  // console.log(`Switched to Player ${players[currentPlayerIndex].id}`);
   players[currentPlayerIndex].addRandomUnit();
 
   if (currentPlayerIndex === 0) {
