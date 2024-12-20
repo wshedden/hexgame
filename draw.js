@@ -107,22 +107,37 @@ function drawPlayerHexesPopup(player, x, y) {
 
   rectMode(CORNER); // Ensure rectMode is set to CORNER
   fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(x, y, 190, 200, 10); // Adjusted height to accommodate new info
+
+  // Calculate the height of the popup based on the number of lines
+  let occupiedHexesLines = Math.ceil(player.occupiedHexes.length / 3);
+  let adjacentHexesLines = Math.ceil(player.adjacentHexes.size / 3);
+  let totalLines = 4 + occupiedHexesLines + adjacentHexesLines; // 4 lines for titles and battles left
+  let popupHeight = totalLines * 20 + 40; // 20 pixels per line + some padding
+
+  rect(x, y, 190, popupHeight, 10); // Adjusted height to accommodate new info
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
   text(`Player ${player.id} Hexes:`, x + 10, y + 20);
+
+  // Display occupied hexes
   player.occupiedHexes.forEach((hex, index) => {
-    text(`(${hex.q}, ${hex.r})`, x + 10, y + 40 + index * 20);
+    let line = Math.floor(index / 3);
+    let column = index % 3;
+    text(`(${hex.q},${hex.r})`, x + 10 + column * 60, y + 40 + line * 20);
   });
 
-  text(`Adjacent Hexes:`, x + 10, y + 40 + player.occupiedHexes.length * 20 + 20);
+  text(`Adjacent Hexes:`, x + 10, y + 40 + occupiedHexesLines * 20 + 20);
+
+  // Display adjacent hexes
   Array.from(player.adjacentHexes).forEach((key, index) => {
-    text(`${key}`, x + 10, y + 40 + player.occupiedHexes.length * 20 + 40 + index * 20);
+    let line = Math.floor(index / 3);
+    let column = index % 3;
+    text(`${key}`, x + 10 + column * 60, y + 40 + occupiedHexesLines * 20 + 40 + line * 20);
   });
 
   // Add battles left info
-  text(`Battles Left: ${player.battlesLeft}`, x + 10, y + 40 + player.occupiedHexes.length * 20 + 60 + player.adjacentHexes.size * 20);
+  text(`Battles Left: ${player.battlesLeft}`, x + 10, y + 40 + occupiedHexesLines * 20 + 60 + adjacentHexesLines * 20);
 }
 
 function getAttackableTiles(hex) {
