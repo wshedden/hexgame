@@ -66,11 +66,9 @@ function drawPlayingState() {
 }
 
 function drawPausedState() {
-  // Draw the paused state
-  fill(255);
-  textSize(32);
-  textAlign(CENTER, CENTER);
-  text('Game Paused', width / 2, height / 2);
+  // Draw the playing state behind the pause overlay
+  drawGrid();
+  drawUnits();
 }
 
 function drawGameOverState() {
