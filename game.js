@@ -126,3 +126,11 @@ function switchPlayer() {
     turnNumber++; // Increment turn number when all players have taken their turn
   }
 }
+
+function adjustSpeed() {
+  if (keyIsDown(LEFT_ARROW)) {
+    speedMultiplier = max(0.2, speedMultiplier / 1.02); // Decrease speed, minimum 0.1x
+  } else if (keyIsDown(RIGHT_ARROW)) {
+    speedMultiplier = min(1000, speedMultiplier * 1.01); // Increase speed, maximum 1000x
+  }
+}

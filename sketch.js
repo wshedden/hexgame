@@ -20,6 +20,8 @@ function draw() {
   if (currentState === GameState.PAUSED) {
     drawPausedState();
   }
+
+  adjustSpeed(); // Adjust speed based on key presses
 }
 
 function initializeTerrainColors() {
