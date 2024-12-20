@@ -7,7 +7,7 @@ const GameState = {
 
 let currentState = GameState.INIT;
 let currentPlayerIndex = 0;
-let turnDuration = 5000; // 5 seconds
+let turnDuration = 2000;
 let turnStartTime;
 
 const players = [
@@ -83,12 +83,16 @@ function drawGameOverState() {
 function drawGameStatePopup() {
   rectMode(CORNER); // Ensure rectMode is set to CORNER
   fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(10, 10, 190, 60, 10); // Rounded rectangle in the top left corner
+  rect(10, 10, 190, 80, 10); // Adjusted height to accommodate the turn timer
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
   text(`State: ${currentState}`, 20, 30);
   text(`Player: ${players[currentPlayerIndex].id}`, 20, 50);
+
+  // Calculate the remaining time for the current turn
+  let remainingTime = Math.max(0, turnDuration - (millis() - turnStartTime));
+  text(`Time Left: ${(remainingTime / 1000).toFixed(1)}s`, 20, 70);
 }
 
 function keyPressed() {

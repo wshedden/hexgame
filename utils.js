@@ -50,6 +50,15 @@ function roundHex(q, r) {
   return getHex(qRounded, rRounded);
 }
 
+function getHexNeighbors(hex) {
+  const directions = [
+    { q: 1, r: 0 }, { q: 1, r: -1 }, { q: 0, r: -1 },
+    { q: -1, r: 0 }, { q: -1, r: 1 }, { q: 0, r: 1 }
+  ];
+
+  return directions.map(dir => getHex(hex.q + dir.q, hex.r + dir.r)).filter(neighbor => neighbor);
+}
+
 function registerTerrainType(type, colorValue) {
   terrainColors[type] = colorValue;
 }

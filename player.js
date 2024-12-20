@@ -34,6 +34,7 @@ function drawUnits() {
 
 function drawUnit(x, y, unit) {
   push();
+  translate(width / 2, height / 2); // Translate to the center of the canvas
   translate(x, y);
   fill(unit.color);
   ellipse(0, 0, 20, 20);
