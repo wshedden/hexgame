@@ -1,4 +1,5 @@
 let selectedHex = null;
+let selectedUnitType = 'settler'; // Default to 'settler'
 
 function setup() {
   createCanvas(1800, 900);
@@ -33,7 +34,30 @@ function initializeTerrainColors() {
 }
 
 function keyPressed() {
-  handleKeyPress();
+  if (currentState === GameState.INIT) {
+    if (key === 't' || key === 'T') {
+      players[0].isHuman = true;
+      setState(GameState.PLAYING_HUMAN);
+    } else {
+      setState(GameState.PLAYING);
+    }
+  } else if (key === ' ') { // Check if the space key is pressed
+    if (currentState === GameState.PLAYING) {
+      setState(GameState.PAUSED);
+    } else if (currentState === GameState.PAUSED) {
+      setState(GameState.PLAYING);
+    }
+  } else if (key === 'p' || key === 'P') { // Check if the 'P' key is pressed
+    switchPlayer();
+  } else if (keyCode === LEFT_ARROW) {
+    speedMultiplier = max(0.1, speedMultiplier / 1.1); // Decrease speed, minimum 0.1x
+  } else if (keyCode === RIGHT_ARROW) {
+    speedMultiplier = min(1000, speedMultiplier * 1.1); // Increase speed, maximum 1000x
+  } else if (key === '1') {
+    selectedUnitType = 'settler';
+  } else if (key === '2') {
+    selectedUnitType = 'soldier';
+  }
 }
 
 function mousePressed() {
@@ -43,11 +67,14 @@ function mousePressed() {
 
     if (currentPlayerIndex === 0 && currentState === GameState.PLAYING_HUMAN) {
       let player = players[currentPlayerIndex];
-      let unitType = 'settler'; // Change to 'settler' for placing a settler unit
+      let unitType = selectedUnitType; // Use the selected unit type
       let newUnit = new Unit(player.id, unitType, unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, player.color); // Example values for attack and defense
 
       if (placeUnit(clickedHex.q, clickedHex.r, newUnit)) {
         switchPlayer(); // Switch to the next player if unit placement is successful
+        turnStartTime = millis();
+        // Update turn number
+        turnNumber++;
       } else {
         print(`Cannot place unit at (${clickedHex.q}, ${clickedHex.r}).`);
       }
