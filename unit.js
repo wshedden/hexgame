@@ -1,11 +1,11 @@
 class Unit {
-  constructor(id, type, health, attack, defense, color = [255, 0, 0]) {
+  constructor(id, type, health, attack, defense, playerColor) {
     this.id = id;
     this.type = type;
     this.health = health;
     this.attack = attack;
     this.defense = defense;
-    this.color = type === 'settler' ? [0, 255, 0] : color; // Green color for settlers
+    this.color = type === 'settler' ? lerpColor(color(0, 255, 0), color(playerColor[0], playerColor[1], playerColor[2]), 0.5) : color(playerColor[0], playerColor[1], playerColor[2]); // Interpolated color for settlers
   }
 }
 
