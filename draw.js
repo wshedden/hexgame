@@ -33,6 +33,11 @@ function drawGrid() {
     let { x, y } = hexToPixel(hex);
     drawHex(x, y, 30, hex.type, hex.text, hex.unit);
   });
+
+  // Highlight the selected hex and its neighbors
+  if (selectedHex) {
+    highlightHexAndNeighbors(selectedHex);
+  }
   pop();
 }
 
@@ -55,4 +60,36 @@ function drawHexInfoPopup(hex) {
   if (hex.occupiedBy) {
     text(`Occupied by: ${hex.occupiedBy}`, 20, 200);
   }
+}
+
+function highlightHexAndNeighbors(hex) {
+  if (!hex) return;
+
+  // Highlight the selected hex
+  let { x, y } = hexToPixel(hex);
+  drawHexHighlight(x, y);
+
+  // Highlight the neighbors
+  let neighbors = getHexNeighbors(hex);
+  neighbors.forEach(neighbor => {
+    let { x, y } = hexToPixel(neighbor);
+    drawHexHighlight(x, y);
+  });
+}
+
+function drawHexHighlight(x, y) {
+  push();
+  translate(x, y);
+  stroke(255, 255, 0); // Yellow outline for highlighting
+  strokeWeight(3);
+  noFill();
+  beginShape();
+  for (let i = 0; i < 6; i++) {
+    let angle = TWO_PI / 6 * i;
+    let vx = 30 * cos(angle); // Assuming hex size is 30
+    let vy = 30 * sin(angle);
+    vertex(vx, vy);
+  }
+  endShape(CLOSE);
+  pop();
 }
