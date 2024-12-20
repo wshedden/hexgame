@@ -17,11 +17,11 @@ function draw() {
   drawHexInfoPopup(selectedHex); // Draw the hex info popup in the top right corner
   drawPlayerHexesPopup(players[0], 10, 270); // Draw the player 1 hexes popup
   drawPlayerHexesPopup(players[1], 210, 270); // Draw the player 2 hexes popup next to player 1
+  drawSelectedUnitTypePanel(); // Draw the selected unit type panel
 
   if (currentState === GameState.PAUSED) {
     drawPausedState();
   }
-
 }
 
 function initializeTerrainColors() {
@@ -80,4 +80,14 @@ function mousePressed() {
       }
     }
   }
+}
+
+function drawSelectedUnitTypePanel() {
+  rectMode(CORNER); // Ensure rectMode is set to CORNER
+  fill(0, 0, 0, 150); // Semi-transparent black background
+  rect(10, height - 60, 190, 50, 10); // Position the panel at the bottom left
+  fill(255);
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  text(`Selected Unit: ${selectedUnitType}`, 20, height - 35);
 }
