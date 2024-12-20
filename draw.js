@@ -46,7 +46,7 @@ function drawHexInfoPopup(hex) {
 
   rectMode(CORNER); // Ensure rectMode is set to CORNER
   fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(10, 80, 190, 200, 10); // Adjusted height to accommodate new info
+  rect(10, 80, 190, 300, 10); // Adjusted height to accommodate new info
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
@@ -62,6 +62,13 @@ function drawHexInfoPopup(hex) {
   if (hex.occupiedBy) {
     text(`Occupied by: ${hex.occupiedBy}`, 20, 240);
   }
+
+  // Add info about possible attackable tiles
+  let attackableTiles = getAttackableTiles(hex);
+  text(`Attackable Tiles:`, 20, 260);
+  attackableTiles.forEach((tile, index) => {
+    text(`(${tile.q}, ${tile.r})`, 20, 280 + index * 20);
+  });
 }
 
 function highlightHexAndNeighbors(hex) {
@@ -114,4 +121,10 @@ function drawPlayerHexesPopup(player) {
   Array.from(player.adjacentHexes).forEach((key, index) => {
     text(`${key}`, 20, 310 + player.occupiedHexes.length * 20 + 40 + index * 20);
   });
+}
+
+function getAttackableTiles(hex) {
+  if (!hex.unit) return [];
+  let neighbors = getHexNeighbors(hex);
+  return neighbors.filter(neighbor => neighbor.unit && neighbor.unit.id !== hex.unit.id);
 }

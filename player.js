@@ -31,22 +31,8 @@ class Player {
     return false;
   }
 
-  initiateBattle() {
-    let possibleBattles = [];
-
-    for (let hex of this.occupiedHexes) {
-      let neighbors = getHexNeighbors(hex);
-      for (let neighbor of neighbors) {
-        if (neighbor.unit && neighbor.unit.id !== this.id) {
-          possibleBattles.push({ attackerHex: hex, defenderHex: neighbor });
-        }
-      }
-    }
-
-    if (possibleBattles.length > 0) {
-      let randomBattle = random(possibleBattles);
-      battle(randomBattle.attackerHex, randomBattle.defenderHex);
-    }
+  initiateBattle(attackerHex, defenderHex) {
+    battle(attackerHex, defenderHex);
   }
 }
 

@@ -113,12 +113,7 @@ function keyPressed() {
 
 function switchPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-  // console.log(`Switched to Player ${players[currentPlayerIndex].id}`);
   players[currentPlayerIndex].addRandomUnit();
-
-  if (players[currentPlayerIndex].canInitiateBattle()) {
-    players[currentPlayerIndex].initiateBattle();
-  }
 
   if (currentPlayerIndex === 0) {
     turnNumber++; // Increment turn number when all players have taken their turn
