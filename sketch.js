@@ -14,7 +14,7 @@ function draw() {
   drawGameState();
   drawGameStatePopup(); // Draw the game state popup in the top left corner
   drawHexInfoPopup(selectedHex); // Draw the hex info popup below the game state popup
-  drawPlayerHexesPopup(players[currentPlayerIndex]); // Draw the player hexes popup below the hex info popup
+  // drawPlayerHexesPopup(players[currentPlayerIndex]); // Draw the player hexes popup below the hex info popup
 }
 
 function initializeTerrainColors() {

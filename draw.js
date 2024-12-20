@@ -107,4 +107,9 @@ function drawPlayerHexesPopup(player) {
   player.occupiedHexes.forEach((hex, index) => {
     text(`(${hex.q}, ${hex.r})`, 20, 310 + index * 20);
   });
+
+  text(`Adjacent Hexes:`, 20, 310 + player.occupiedHexes.length * 20 + 20);
+  Array.from(player.adjacentHexes).forEach((key, index) => {
+    text(`${key}`, 20, 310 + player.occupiedHexes.length * 20 + 40 + index * 20);
+  });
 }
