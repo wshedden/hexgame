@@ -9,7 +9,7 @@ class Player {
 
   addRandomUnit() {
     let isFirstTurn = (turnNumber === 1);
-    let hexesToConsider = isFirstTurn ? Array.from(hexGrid.values()).filter(hex => !hex.unit) : Array.from(this.adjacentHexes).map(key => hexGrid.get(key)).filter(hex => !hex.unit);
+    let hexesToConsider = isFirstTurn ? Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit) : Array.from(this.adjacentHexes).map(key => hexGrid.get(key)).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
 
     if (hexesToConsider.length > 0) {
       let randomHex = random(hexesToConsider);
@@ -49,7 +49,10 @@ class Player {
 
 function placeUnit(q, r, unit) {
   let hex = getHex(q, r);
-  if (!hex) return;
+  if (!hex || !claimableTiles.has(hex.getKey())) {
+    console.log(`Cannot place unit at (${q}, ${r}). Tile is not claimable.`);
+    return;
+  }
 
   // Check if it's the first turn
   let isFirstTurn = (turnNumber === 1);
@@ -65,7 +68,7 @@ function placeUnit(q, r, unit) {
     if (player) {
       player.occupiedHexes.push(hex);
       neighbors.forEach(neighbor => {
-        if (!neighbor.occupiedBy) {
+        if (!neighbor.occupiedBy && claimableTiles.has(neighbor.getKey())) {
           player.adjacentHexes.add(neighbor.getKey());
         }
       });

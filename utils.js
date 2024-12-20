@@ -2,12 +2,17 @@ let hexGrid = new Map();
 
 let terrainColors = {};
 
+let claimableTiles = new Set();
+
 function initializeGrid(radius) {
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {
       if (Math.abs(q + r) <= radius) {
         let hex = new Hex(null, q, r);
         hexGrid.set(hex.getKey(), hex);
+        if (hex.type !== 'water') {
+          claimableTiles.add(hex.getKey());
+        }
       }
     }
   }
