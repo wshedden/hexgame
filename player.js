@@ -12,12 +12,40 @@ class Player {
 
     if (hexesToConsider.length > 0) {
       let randomHex = random(hexesToConsider);
-      let newUnit = new Unit(this.id, 'soldier', 100, this.color);
+      let newUnit = new Unit(this.id, 'soldier', 100, 20, 10, this.color); // Example values for attack and defense
       placeUnit(randomHex.q, randomHex.r, newUnit);
 
       console.log(`Player ${this.id} added unit to Hex: (${randomHex.q}, ${randomHex.r})`);
     } else {
       console.log(`Player ${this.id} has no adjacent hexes available for unit placement.`);
+    }
+  }
+
+  canInitiateBattle() {
+    for (let hex of this.occupiedHexes) {
+      let neighbors = getHexNeighbors(hex);
+      if (neighbors.some(neighbor => neighbor.unit && neighbor.unit.id !== this.id)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  initiateBattle() {
+    let possibleBattles = [];
+
+    for (let hex of this.occupiedHexes) {
+      let neighbors = getHexNeighbors(hex);
+      for (let neighbor of neighbors) {
+        if (neighbor.unit && neighbor.unit.id !== this.id) {
+          possibleBattles.push({ attackerHex: hex, defenderHex: neighbor });
+        }
+      }
+    }
+
+    if (possibleBattles.length > 0) {
+      let randomBattle = random(possibleBattles);
+      battle(randomBattle.attackerHex, randomBattle.defenderHex);
     }
   }
 }
@@ -59,4 +87,40 @@ function drawUnits() {
       drawUnit(x, y, hex.unit);
     }
   });
+}
+
+function battle(attackerHex, defenderHex) {
+  if (!attackerHex.unit || !defenderHex.unit) return;
+
+  let attacker = attackerHex.unit;
+  let defender = defenderHex.unit;
+
+  // Calculate damage with randomness
+  let attackMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
+  let defenseMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
+
+  let damageToDefender = Math.max(0, Math.floor(attacker.attack * attackMultiplier - defender.defense * defenseMultiplier));
+  let damageToAttacker = Math.max(0, Math.floor(defender.attack * defenseMultiplier - attacker.defense * attackMultiplier));
+
+  // Apply damage
+  defender.health -= damageToDefender;
+  attacker.health -= damageToAttacker;
+
+  console.log(`Battle between Player ${attacker.id} and Player ${defender.id}`);
+  console.log(`Attacker dealt ${damageToDefender} damage, Defender dealt ${damageToAttacker} damage`);
+
+  // Check for unit deaths
+  if (defender.health <= 0) {
+    console.log(`Player ${attacker.id} wins the battle!`);
+    defenderHex.unit = attacker; // Move the attacker to the defender's hex
+    defenderHex.occupiedBy = attacker.id;
+    attackerHex.unit = null; // Remove the attacker from the original hex
+    attackerHex.occupiedBy = null;
+  }
+
+  if (attacker.health <= 0) {
+    console.log(`Player ${defender.id} wins the battle!`);
+    attackerHex.unit = null; // Remove the attacker unit
+    attackerHex.occupiedBy = null;
+  }
 }

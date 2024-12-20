@@ -1,9 +1,11 @@
 class Unit {
-  constructor(id, type, health, color = [255, 0, 0]) {
+  constructor(id, type, health, attack, defense, color = [255, 0, 0]) {
+    this.id = id;
     this.type = type;
     this.health = health;
+    this.attack = attack;
+    this.defense = defense;
     this.color = color;
-    this.id = id;
   }
 }
 

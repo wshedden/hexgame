@@ -7,7 +7,7 @@ const GameState = {
 
 let currentState = GameState.INIT;
 let currentPlayerIndex = 0;
-let turnDuration = 20;
+let turnDuration = 200;
 let turnStartTime;
 let turnNumber = 1; // Initialize turn number
 
@@ -115,6 +115,10 @@ function switchPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
   // console.log(`Switched to Player ${players[currentPlayerIndex].id}`);
   players[currentPlayerIndex].addRandomUnit();
+
+  if (players[currentPlayerIndex].canInitiateBattle()) {
+    players[currentPlayerIndex].initiateBattle();
+  }
 
   if (currentPlayerIndex === 0) {
     turnNumber++; // Increment turn number when all players have taken their turn

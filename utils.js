@@ -59,6 +59,15 @@ function getHexNeighbors(hex) {
   return directions.map(dir => getHex(hex.q + dir.q, hex.r + dir.r)).filter(neighbor => neighbor);
 }
 
+function isAdjacent(hex1, hex2) {
+  const directions = [
+    { q: 1, r: 0 }, { q: 1, r: -1 }, { q: 0, r: -1 },
+    { q: -1, r: 0 }, { q: -1, r: 1 }, { q: 0, r: 1 }
+  ];
+
+  return directions.some(dir => hex1.q + dir.q === hex2.q && hex1.r + dir.r === hex2.r);
+}
+
 function registerTerrainType(type, colorValue) {
   terrainColors[type] = colorValue;
 }

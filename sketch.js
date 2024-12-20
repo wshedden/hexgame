@@ -2,7 +2,7 @@ let selectedHex = null;
 
 function setup() {
   createCanvas(1800, 900);
-  initializeGrid(8);
+  initializeGrid(9);
   initializeTerrainColors();
   generateTerrain();
 

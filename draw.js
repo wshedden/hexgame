@@ -46,7 +46,7 @@ function drawHexInfoPopup(hex) {
 
   rectMode(CORNER); // Ensure rectMode is set to CORNER
   fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(10, 80, 190, 180, 10); // Rounded rectangle below the game state popup
+  rect(10, 80, 190, 200, 10); // Adjusted height to accommodate new info
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
@@ -56,9 +56,11 @@ function drawHexInfoPopup(hex) {
   if (hex.unit) {
     text(`Unit: ${hex.unit.type}`, 20, 160);
     text(`Health: ${hex.unit.health}`, 20, 180);
+    text(`Attack: ${hex.unit.attack}`, 20, 200);
+    text(`Defense: ${hex.unit.defense}`, 20, 220);
   }
   if (hex.occupiedBy) {
-    text(`Occupied by: ${hex.occupiedBy}`, 20, 200);
+    text(`Occupied by: ${hex.occupiedBy}`, 20, 240);
   }
 }
 
