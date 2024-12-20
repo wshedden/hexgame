@@ -9,6 +9,7 @@ let currentState = GameState.INIT;
 let currentPlayerIndex = 0;
 let turnDuration = 2000;
 let turnStartTime;
+let turnNumber = 1; // Initialize turn number
 
 const players = [
   new Player(1, [139, 0, 0]), // Dark red for player 1
@@ -83,16 +84,17 @@ function drawGameOverState() {
 function drawGameStatePopup() {
   rectMode(CORNER); // Ensure rectMode is set to CORNER
   fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(10, 10, 190, 80, 10); // Adjusted height to accommodate the turn timer
+  rect(10, 10, 190, 100, 10); // Adjusted height to accommodate the turn number
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
   text(`State: ${currentState}`, 20, 30);
   text(`Player: ${players[currentPlayerIndex].id}`, 20, 50);
+  text(`Turn: ${turnNumber}`, 20, 70); // Display the current turn number
 
   // Calculate the remaining time for the current turn
   let remainingTime = Math.max(0, turnDuration - (millis() - turnStartTime));
-  text(`Time Left: ${(remainingTime / 1000).toFixed(1)}s`, 20, 70);
+  text(`Time Left: ${(remainingTime / 1000).toFixed(1)}s`, 20, 90);
 }
 
 function keyPressed() {
@@ -113,4 +115,8 @@ function switchPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
   console.log(`Switched to Player ${players[currentPlayerIndex].id}`);
   players[currentPlayerIndex].addRandomUnit();
+
+  if (currentPlayerIndex === 0) {
+    turnNumber++; // Increment turn number when all players have taken their turn
+  }
 }

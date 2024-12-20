@@ -21,11 +21,14 @@ function placeUnit(q, r, unit) {
   let hex = getHex(q, r);
   if (!hex) return;
 
+  // Check if it's the first turn
+  let isFirstTurn = (turnNumber === 1);
+
   // Check if the hex is adjacent to an occupied hex
   let neighbors = getHexNeighbors(hex);
   let isAdjacentToOccupiedHex = neighbors.some(neighbor => neighbor.occupiedBy === unit.id);
 
-  if (isAdjacentToOccupiedHex && !hex.unit) {
+  if ((isFirstTurn || isAdjacentToOccupiedHex) && !hex.unit) {
     hex.unit = unit;
     hex.occupiedBy = unit.id;
     let player = players.find(p => p.id === unit.id);
