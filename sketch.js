@@ -10,44 +10,7 @@ function setup() {
   setState(GameState.INIT);
 
   panelManager = new PanelManager();
-
-  // Create and register panels
-  panelManager.createPanel(10, 10, 200, 'Game State', () => [
-    `State: ${currentState}`,
-    `Player: ${players[currentPlayerIndex].id}`,
-    `Turn: ${turnNumber}`,
-    `Time Left: ${(Math.max(0, turnDuration * (1 / speedMultiplier) - (millis() - turnStartTime)) / 1000).toFixed(1)}s`,
-    `Speed: ${speedMultiplier.toFixed(3)}x`
-  ]);
-
-  panelManager.createPanel(220, 10, 200, 'Hex Info', () => {
-    if (!selectedHex) return ['No hex selected'];
-    return [
-      `Hex: (${selectedHex.q}, ${selectedHex.r})`,
-      `Type: ${selectedHex.type}`,
-      `Noise: ${selectedHex.noiseValue.toFixed(2)}`,
-      ...selectedHex.units.map((unit, i) => [
-        `Unit ${i}: ${unit.type}`,
-        `Health: ${unit.health}`,
-        `Attack: ${unit.attack}`,
-        `Defence: ${unit.defense}`
-      ]).flat()
-    ];
-  });
-
-  panelManager.createPanel(10, 270, 200, 'Player 1 Hexes', () => [
-    `Claimed Hexes: ${players[0].claimedHexes.length}`,
-    ...players[0].claimedHexes.map((hex, i) => `Hex ${i}: (${hex.q}, ${hex.r})`)
-  ]);
-
-  panelManager.createPanel(220, 270, 200, 'Player 2 Hexes', () => [
-    `Claimed Hexes: ${players[1].claimedHexes.length}`,
-    ...players[1].claimedHexes.map((hex, i) => `Hex ${i}: (${hex.q}, ${hex.r})`)
-  ]);
-
-  panelManager.createPanel(10, height - 60, 200, 'Selected Unit', () => [
-    `Selected Unit: ${selectedUnitType}`
-  ]);
+  panelManager.registerPanels(); // Register panels
 }
 
 function draw() {

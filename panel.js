@@ -67,6 +67,60 @@ class PanelManager {
     return panel;
   }
 
+  registerPanels() {
+    this.createPanel(this.calculateX(0), this.calculateY(0), this.calculateWidth(), 'Game State', () => [
+      `State: ${currentState}`,
+      `Player: ${players[currentPlayerIndex].id}`,
+      `Turn: ${turnNumber}`,
+      `Time Left: ${(Math.max(0, turnDuration * (1 / speedMultiplier) - (millis() - turnStartTime)) / 1000).toFixed(1)}s`,
+      `Speed: ${speedMultiplier.toFixed(3)}x`
+    ]);
+
+    this.createPanel(this.calculateX(1), this.calculateY(1), this.calculateWidth(), 'Hex Info', () => {
+      if (!selectedHex) return ['No hex selected'];
+      return [
+        `Hex: (${selectedHex.q}, ${selectedHex.r})`,
+        `Type: ${selectedHex.type}`,
+        `Noise: ${selectedHex.noiseValue.toFixed(2)}`,
+        ...selectedHex.units.map((unit, i) => [
+          `Unit ${i}: ${unit.type}`,
+          `Health: ${unit.health}`,
+          `Attack: ${unit.attack}`,
+          `Defence: ${unit.defense}`
+        ]).flat()
+      ];
+    });
+
+    this.createPanel(this.calculateX(2), this.calculateY(2), this.calculateWidth(), 'Player 1 Hexes', () => [
+      `Claimed Hexes: ${players[0].claimedHexes.length}`,
+      ...players[0].claimedHexes.map((hex, i) => `Hex ${i}: (${hex.q}, ${hex.r})`)
+    ]);
+
+    this.createPanel(this.calculateX(3), this.calculateY(3), this.calculateWidth(), 'Player 2 Hexes', () => [
+      `Claimed Hexes: ${players[1].claimedHexes.length}`,
+      ...players[1].claimedHexes.map((hex, i) => `Hex ${i}: (${hex.q}, ${hex.r})`)
+    ]);
+
+    this.createPanel(this.calculateX(4), this.calculateY(4), this.calculateWidth(), 'Selected Unit', () => [
+      `Selected Unit: ${selectedUnitType}`
+    ]);
+  }
+
+  calculateX(index) {
+    // Skeleton code for calculating x position
+    return 10 + index * 210; // Example calculation
+  }
+
+  calculateY(index) {
+    // Skeleton code for calculating y position
+    return 10 + index * 260; // Example calculation
+  }
+
+  calculateWidth() {
+    // Skeleton code for calculating width
+    return 200; // Example fixed width
+  }
+
   organizePanels() {
     const leftPanels = this.panels.filter(panel => panel.x < width / 2);
     const rightPanels = this.panels.filter(panel => panel.x >= width / 2);
