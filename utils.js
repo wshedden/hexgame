@@ -6,7 +6,7 @@ function initializeGrid(radius) {
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {
       if (Math.abs(q + r) <= radius) {
-        let hex = new Hex(q, r);
+        let hex = new Hex(null, q, r);
         hexGrid.set(hex.getKey(), hex);
       }
     }

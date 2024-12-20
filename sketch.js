@@ -1,20 +1,19 @@
+let selectedHex = null;
+
 function setup() {
   createCanvas(1800, 900);
   initializeGrid(8);
   initializeTerrainColors();
   generateTerrain();
 
-  // Place a unit in the middle tile
-  let middleQ = 0;
-  let middleR = 0;
-  let middleUnit = new Unit('soldier', 100);
-  placeUnit(middleQ, middleR, middleUnit);
+  setState(GameState.INIT);
 }
 
 function draw() {
   background(20); // Set the background to a dark color
   drawGameState();
   drawGameStatePopup(); // Draw the game state popup in the top left corner
+  drawHexInfoPopup(selectedHex); // Draw the hex info popup below the game state popup
 }
 
 function drawHex(x, y, size, type) {
@@ -44,4 +43,20 @@ function initializeTerrainColors() {
 
 function keyPressed() {
   handleKeyPress();
+}
+
+function mousePressed() {
+  let clickedHex = pixelToHex(mouseX - width / 2, mouseY - height / 2);
+  if (clickedHex) {
+    selectedHex = clickedHex;
+    print(selectedHex);
+    console.log(`Clicked Hex: (${clickedHex.q}, ${clickedHex.r})`);
+    console.log(`Type: ${clickedHex.type}`);
+    console.log(`Noise Value: ${clickedHex.noiseValue}`);
+    console.log(`Text: ${clickedHex.text}`);
+    if (clickedHex.unit) {
+      console.log(`Unit Type: ${clickedHex.unit.type}`);
+      console.log(`Unit Health: ${clickedHex.unit.health}`);
+    }
+  }
 }

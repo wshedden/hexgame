@@ -22,7 +22,7 @@ function drawHex(x, y, size, type, textValue, unit) {
 
   // Draw a dot if there's a unit
   if (unit) {
-    fill(255, 0, 0); // Red color for the unit
+    fill(unit.color); // Use the unit's color
     noStroke();
     ellipse(0, 0, 10, 10); // Draw a dot
   }
@@ -52,16 +52,24 @@ function drawGrid() {
   pop();
 }
 
-function mousePressed() {
-  let clickedHex = pixelToHex(mouseX - width / 2, mouseY - height / 2);
-  if (clickedHex) {
-    console.log(`Clicked Hex: (${clickedHex.q}, ${clickedHex.r})`);
-    console.log(`Type: ${clickedHex.type}`);
-    console.log(`Noise Value: ${clickedHex.noiseValue}`);
-    console.log(`Text: ${clickedHex.text}`);
-    if (clickedHex.unit) {
-      console.log(`Unit Type: ${clickedHex.unit.type}`);
-      console.log(`Unit Health: ${clickedHex.unit.health}`);
-    }
+
+function drawHexInfoPopup(hex) {
+  if (!hex) return;
+
+  rectMode(CORNER); // Ensure rectMode is set to CORNER
+  fill(0, 0, 0, 150); // Semi-transparent black background
+  rect(10, 80, 190, 180, 10); // Rounded rectangle below the game state popup
+  fill(255);
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  text(`Hex: (${hex.q}, ${hex.r})`, 20, 100);
+  text(`Type: ${hex.type}`, 20, 120);
+  text(`Noise: ${hex.noiseValue.toFixed(2)}`, 20, 140);
+  if (hex.unit) {
+    text(`Unit: ${hex.unit.type}`, 20, 160);
+    text(`Health: ${hex.unit.health}`, 20, 180);
+  }
+  if (hex.occupiedBy) {
+    text(`Occupied by: ${hex.occupiedBy}`, 20, 200);
   }
 }

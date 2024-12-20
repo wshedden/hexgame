@@ -6,11 +6,21 @@ const GameState = {
 };
 
 let currentState = GameState.INIT;
-let currentPlayer = 1;
+let currentPlayerIndex = 0;
+let turnDuration = 5000; // 5 seconds
+let turnStartTime;
+
+const players = [
+  new Player(1, [139, 0, 0]), // Dark red for player 1
+  new Player(2, [0, 0, 139])  // Dark blue for player 2
+];
 
 function setState(newState) {
   currentState = newState;
   console.log(`Game state changed to: ${currentState}`);
+  if (newState === GameState.PLAYING) {
+    turnStartTime = millis();
+  }
 }
 
 function getState() {
@@ -46,6 +56,12 @@ function drawPlayingState() {
   // Draw the playing state
   drawGrid();
   drawUnits();
+
+  // Check if the turn duration has elapsed
+  if (millis() - turnStartTime > turnDuration) {
+    switchPlayer();
+    turnStartTime = millis();
+  }
 }
 
 function drawPausedState() {
@@ -72,7 +88,7 @@ function drawGameStatePopup() {
   textSize(16);
   textAlign(LEFT, CENTER);
   text(`State: ${currentState}`, 20, 30);
-  text(`Player: ${currentPlayer}`, 20, 50);
+  text(`Player: ${players[currentPlayerIndex].id}`, 20, 50);
 }
 
 function keyPressed() {
@@ -85,7 +101,12 @@ function keyPressed() {
       setState(GameState.PLAYING);
     }
   } else if (key === 'p' || key === 'P') { // Check if the 'P' key is pressed
-    currentPlayer = currentPlayer === 1 ? 2 : 1;
-    console.log(`Switched to Player ${currentPlayer}`);
+    switchPlayer();
   }
+}
+
+function switchPlayer() {
+  currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+  console.log(`Switched to Player ${players[currentPlayerIndex].id}`);
+  players[currentPlayerIndex].addRandomUnit();
 }
