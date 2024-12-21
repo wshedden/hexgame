@@ -52,7 +52,21 @@ function drawUnit(x, y, unit, size) {
   push();
   translate(x, y);
   fill(unit.colour);
-  ellipse(0, 0, size, size);
+  if (unit.id === 1) {
+    // Draw circle for Player 1
+    ellipse(0, 0, size, size);
+  } else if (unit.id === 2) {
+    // Draw triangle for Player 2
+    let triangleSize = size * 0.8; // Make the triangle slightly smaller
+    beginShape();
+    for (let i = 0; i < 3; i++) {
+      let angle = TWO_PI / 3 * i - HALF_PI;
+      let vx = triangleSize * cos(angle);
+      let vy = triangleSize * sin(angle);
+      vertex(vx, vy);
+    }
+    endShape(CLOSE);
+  }
   pop();
 }
 
@@ -80,7 +94,18 @@ function animateUnitMovement(attackerHex, defenderHex, duration = 1000) {
     push();
     translate(currentX, currentY);
     fill(attackerHex.unit.colour);
-    ellipse(0, 0, 20, 20);
+    if (attackerHex.unit.id === 1) {
+      ellipse(0, 0, 20, 20); // Circle for Player 1
+    } else if (attackerHex.unit.id === 2) {
+      beginShape(); // Triangle for Player 2
+      for (let i = 0; i < 3; i++) {
+        let angle = TWO_PI / 3 * i - HALF_PI;
+        let vx = 20 * cos(angle);
+        let vy = 20 * sin(angle);
+        vertex(vx, vy);
+      }
+      endShape(CLOSE);
+    }
     pop();
 
     if (progress < 1) {

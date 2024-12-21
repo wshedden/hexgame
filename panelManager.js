@@ -113,20 +113,21 @@ class PanelManager {
         this.createPanel('Hex Info', () => {
             if (!selectedHex) return ['No hex selected'];
             let content = [
-                `Hex: (${selectedHex.q}, ${selectedHex.r})`,
-                `Type: ${selectedHex.type}`,
-                `Noise: ${selectedHex.noiseValue.toFixed(2)}`,
-                `Fertility: ${selectedHex.fertility.toFixed(2)}`,
-                `Claimed By: ${selectedHex.claimedBy ? `Player ${selectedHex.claimedBy}` : 'Unclaimed'}`
+                `📍 (${selectedHex.q}, ${selectedHex.r})`,
+                `🌍 ${selectedHex.type}`,
+                `🔢 ${selectedHex.noiseValue.toFixed(2)}`,
+                `🌱 ${selectedHex.fertility.toFixed(2)}`,
+                `👑 ${selectedHex.claimedBy ? `Player ${selectedHex.claimedBy}` : 'Unclaimed'}`
             ];
 
             selectedHex.units.forEach((unit, i) => {
+                let unitEmoji = getUnitEmoji(unit.type);
                 content.push(
-                    `Unit ${i + 1}: ${unit.type}`,
-                    `Health: ${unit.health}`,
-                    `Attack: ${unit.attack}`,
-                    `Defence: ${unit.defence}`,
-                    `Movement: ${unit.movement}`
+                    `${unitEmoji} ${unit.type}`,
+                    `❤️ ${unit.health}`,
+                    `⚔️ ${unit.attack}`,
+                    `🛡️ ${unit.defence}`,
+                    `🚶 ${unit.movement}`
                 );
             });
 

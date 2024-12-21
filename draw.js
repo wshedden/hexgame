@@ -73,7 +73,7 @@ function drawGrid() {
 
 const panelWidth = 200;
 const basePanelHeight = 150;
-const padding = 10;
+const padding = 20;
 const panels = [];
 
 function highlightHexAndNeighbours(hex) {
