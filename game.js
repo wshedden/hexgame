@@ -146,6 +146,18 @@ function keyPressed() {
 }
 
 function switchPlayer() {
+  players[currentPlayerIndex].movesLeft--;
+
+  if (players[currentPlayerIndex].movesLeft > 0) {
+    // If the current player still has moves left, do not switch players
+    console.log(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].movesLeft} moves left.`);
+    return;
+  }
+
+  // Reset moves for the current player
+  players[currentPlayerIndex].resetMoves();
+
+  // Switch to the next player
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
   players[currentPlayerIndex].resetBattles(); // Reset battles at the start of the turn
 
@@ -160,9 +172,21 @@ function switchPlayer() {
 }
 
 function handleAIDecision() {
-  players[currentPlayerIndex].makeDecision();
+  players[currentPlayerIndex].decisionReasoning = ''; // Clear previous reasoning
+
+  while (players[currentPlayerIndex].movesLeft > 0) {
+    players[currentPlayerIndex].makeDecision();
+    players[currentPlayerIndex].movesLeft--;
+  }
+
   if (currentPlayerIndex === 0) {
     turnNumber++; // Increment turn number when all players have taken their turn
+  }
+
+  // Update the AI Decision Reasoning panel
+  const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
+  if (aiPanel) {
+    aiPanel.contentFunction = () => [`Reasoning: ${players[currentPlayerIndex].decisionReasoning}`];
   }
 }
 

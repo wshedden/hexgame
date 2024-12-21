@@ -8,6 +8,11 @@ class Player {
     this.battlesLeft = 3; // Example: Allow 3 battles per turn
     this.humanControlled = false;
     this.decisionReasoning = ''; // Store reasoning behind decisions
+    this.movesLeft = 3; // Allow 3 moves per turn
+  }
+
+  resetMoves() {
+    this.movesLeft = 3;
   }
 
   makeDecision() {
