@@ -101,39 +101,8 @@ class PanelManager {
             return content;
         });
 
-        this.createPanel(0, 0, 200, 'Player 1 Hexes', () => {
-            let lines = [`Occupied Hexes: ${players[0].occupiedHexes.length}`];
-            for (let i = 0; i < players[0].occupiedHexes.length; i += 3) {
-                let hex1 = players[0].occupiedHexes[i];
-                let hex2 = players[0].occupiedHexes[i + 1];
-                let hex3 = players[0].occupiedHexes[i + 2];
-                if (hex3) {
-                    lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.r}    ${hex3.q}, ${hex3.r}`);
-                } else if (hex2) {
-                    lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.r}`);
-                } else {
-                    lines.push(`${hex1.q}, ${hex1.r}`);
-                }
-            }
-            return lines;
-        }, { rightAligned: true });
-
-        this.createPanel(0, 0, 200, 'Player 2 Hexes', () => {
-            let lines = [`Occupied Hexes: ${players[1].occupiedHexes.length}`];
-            for (let i = 0; i < players[1].occupiedHexes.length; i += 3) {
-                let hex1 = players[1].occupiedHexes[i];
-                let hex2 = players[1].occupiedHexes[i + 1];
-                let hex3 = players[1].occupiedHexes[i + 2];
-                if (hex3) {
-                    lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.r}    ${hex3.q}, ${hex3.r}`);
-                } else if (hex2) {
-                    lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.r}`);
-                } else {
-                    lines.push(`${hex1.q}, ${hex1.r}`);
-                }
-            }
-            return lines;
-        }, { rightAligned: true });
+        this.createPanel(0, 0, 200, 'Player 1 Hexes', () => generatePlayerPanelContent(players[0]), { rightAligned: true });
+        this.createPanel(0, 0, 200, 'Player 2 Hexes', () => generatePlayerPanelContent(players[1]), { rightAligned: true });
 
         this.createPanel(0, 0, 200, 'Selected Unit', () => [
             `Selected Unit: ${selectedUnitType}`
@@ -174,4 +143,26 @@ class PanelManager {
             }
         });
     }
+}
+
+function generatePlayerPanelContent(player) {
+    let lines = [
+        `Occupied Hexes: ${player.occupiedHexes.length}`,
+        `Claimed Hexes: ${player.occupiedHexes.filter(hex => hex.claimedBy === player.id).length}`
+    ];
+
+    for (let i = 0; i < player.occupiedHexes.length; i += 3) {
+        let hex1 = player.occupiedHexes[i];
+        let hex2 = player.occupiedHexes[i + 1];
+        let hex3 = player.occupiedHexes[i + 2];
+        if (hex3) {
+            lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.r}    ${hex3.q}, ${hex3.r}`);
+        } else if (hex2) {
+            lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.q}`);
+        } else {
+            lines.push(`${hex1.q}, ${hex1.r}`);
+        }
+    }
+
+    return lines;
 }
