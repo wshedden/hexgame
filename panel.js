@@ -10,8 +10,7 @@ class Panel {
         this.textSize = options.textSize || 16;
         this.headerSize = options.headerSize || 18;
         this.contentHeight = 0;
-        this.rightAligned = options.rightAligned || false; // New attribute for right-aligned panels
-        this.bottomAligned = options.bottomAligned || false; // New attribute for bottom-aligned panels
+        this.alignment = options.alignment || 'top-left'; // New attribute for alignment
     }
 
     // Calculate dynamic height based on the content
@@ -24,9 +23,29 @@ class Panel {
         // Temporarily measure the content height
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
-            this.contentHeight += textAscent() + textDescent() + this.padding / 2;
+            let wrappedLines = this.wrapText(line, this.width - 2 * this.padding);
+            this.contentHeight += wrappedLines.length * (textAscent() + textDescent() + this.padding / 2);
         });
         pop();
+    }
+
+    wrapText(text, maxWidth) {
+        let words = text.split(' ');
+        let lines = [];
+        let currentLine = words[0];
+
+        for (let i = 1; i < words.length; i++) {
+            let word = words[i];
+            let width = textWidth(currentLine + ' ' + word);
+            if (width < maxWidth) {
+                currentLine += ' ' + word;
+            } else {
+                lines.push(currentLine);
+                currentLine = word;
+            }
+        }
+        lines.push(currentLine);
+        return lines;
     }
 
     draw() {
@@ -44,8 +63,11 @@ class Panel {
         let yOffset = this.y + this.headerSize + this.padding; // Space for the header
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
-            text(line, this.x + this.padding, yOffset);
-            yOffset += textAscent() + textDescent() + this.padding / 2;
+            let wrappedLines = this.wrapText(line, this.width - 2 * this.padding);
+            wrappedLines.forEach(wrappedLine => {
+                text(wrappedLine, this.x + this.padding, yOffset);
+                yOffset += textAscent() + textDescent() + this.padding / 2;
+            });
         });
     }
 }
@@ -70,7 +92,7 @@ class PanelManager {
     }
 
     registerPanels() {
-        this.createPanel(0, 0, 200, 'Game State', () => [
+        this.createPanel(10, 10, 200, 'Game State', () => [
             `State: ${currentState}`,
             `Player: ${players[currentPlayerIndex].id}`,
             `Turn: ${turnNumber}`,
@@ -78,7 +100,7 @@ class PanelManager {
             `Speed: ${speedMultiplier.toFixed(3)}x`
         ]);
 
-        this.createPanel(0, 0, 200, 'Hex Info', () => {
+        this.createPanel(10, 220, 200, 'Hex Info', () => {
             if (!selectedHex) return ['No hex selected'];
             let content = [
                 `Hex: (${selectedHex.q}, ${selectedHex.r})`,
@@ -101,49 +123,50 @@ class PanelManager {
             return content;
         });
 
-        this.createPanel(0, 0, 200, 'Player 1 Hexes', () => generatePlayerPanelContent(players[0]), { rightAligned: true });
-        this.createPanel(0, 0, 200, 'Player 2 Hexes', () => generatePlayerPanelContent(players[1]), { rightAligned: true });
+        this.createPanel(10, 430, 200, 'Player 1 Hexes', () => generatePlayerPanelContent(players[0]), { alignment: 'top-left' });
+        this.createPanel(10, 640, 200, 'Player 2 Hexes', () => generatePlayerPanelContent(players[1]), { alignment: 'top-left' });
 
-        this.createPanel(0, 0, 200, 'Selected Unit', () => [
+        this.createPanel(10, 850, 200, 'Selected Unit', () => [
             `Selected Unit: ${selectedUnitType}`
-        ], { bottomAligned: true });
+        ], { alignment: 'bottom-left' });
 
-        this.createPanel(0, 0, 200, 'AI Decision Reasoning', () => [
+        // Adjust the position of the AI Decision Reasoning panel
+        this.createPanel(300, 450, 300, 'AI Decision Reasoning', () => [
             `Reasoning: ${players[currentPlayerIndex].decisionReasoning}`
-        ], { bottomAligned: true });
+        ], { alignment: 'custom' });
 
         this.organizePanels();
     }
 
     organizePanels() {
-        let xOffset = 10;
-        let yOffset = 10;
-        const padding = 10;
-        const columnWidth = 200 + padding; // Panel width + padding
         const canvasWidth = 1800; // Assuming canvas width is 1800
         const canvasHeight = 900; // Assuming canvas height is 900
-        const columns = 2; // Number of columns
 
-        let columnHeights = Array(columns).fill(yOffset);
-        let rightColumnHeights = Array(columns).fill(yOffset);
-        let bottomColumnHeights = Array(columns).fill(canvasHeight - yOffset - 200); // Start from near the bottom
-
-        this.panels.forEach((panel, index) => {
-            if (panel.rightAligned) {
-                const columnIndex = index % columns;
-                panel.x = canvasWidth - xOffset - columnWidth + columnIndex * columnWidth - 200; // Move 200 pixels to the left
-                panel.y = rightColumnHeights[columnIndex];
-                rightColumnHeights[columnIndex] += panel.contentHeight + padding;
-            } else if (panel.bottomAligned) {
-                const columnIndex = index % columns;
-                panel.x = xOffset + columnIndex * columnWidth;
-                panel.y = bottomColumnHeights[columnIndex];
-                bottomColumnHeights[columnIndex] -= panel.contentHeight + padding;
-            } else {
-                const columnIndex = index % columns;
-                panel.x = xOffset + columnIndex * columnWidth;
-                panel.y = columnHeights[columnIndex];
-                columnHeights[columnIndex] += panel.contentHeight + padding;
+        this.panels.forEach(panel => {
+            switch (panel.alignment) {
+                case 'top-left':
+                    // Already positioned correctly
+                    break;
+                case 'bottom-left':
+                    panel.y = canvasHeight - panel.contentHeight - panel.padding;
+                    break;
+                case 'top-right':
+                    panel.x = canvasWidth - panel.width - panel.padding;
+                    break;
+                case 'bottom-right':
+                    panel.x = canvasWidth - panel.width - panel.padding;
+                    panel.y = canvasHeight - panel.contentHeight - panel.padding;
+                    break;
+                case 'center':
+                    panel.x = (canvasWidth - panel.width) / 2;
+                    panel.y = (canvasHeight - panel.contentHeight) / 2;
+                    break;
+                case 'custom':
+                    // Custom positioning, already set
+                    break;
+                default:
+                    // Default to top-left
+                    break;
             }
         });
     }
