@@ -5,7 +5,13 @@ class Unit {
     this.health = health;
     this.attack = attack;
     this.defense = defense;
-    this.color = type === 'settler' ? lerpColor(color(0, 255, 0), color(playerColor[0], playerColor[1], playerColor[2]), 0.5) : color(playerColor[0], playerColor[1], playerColor[2]); // Interpolated color for settlers
+    if (type === 'settler') {
+      this.color = lerpColor(color(0, 255, 0), color(playerColor[0], playerColor[1], playerColor[2]), 0.5); // Interpolated color for settlers
+    } else if (type === 'farmer') {
+      this.color = lerpColor(color(255, 215, 0), color(playerColor[0], playerColor[1], playerColor[2]), 0.5); // Blended color for farmers
+    } else {
+      this.color = color(playerColor[0], playerColor[1], playerColor[2]);
+    }
     this.size = 20; // Default size
   }
 }
