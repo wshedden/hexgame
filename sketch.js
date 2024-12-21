@@ -21,6 +21,7 @@ function setup() {
   toggleButton.id('toggleButton'); // Assign the ID for styling
   toggleButton.class('toggle-button'); // Assign the class for styling
   toggleButton.position(width - 150, 10); // Position the button on the right
+  toggleButton.style('background-color', '#6c757d'); // Set the background color to grey
   toggleButton.mousePressed(toggleAIPanel); // Attach the event listener
 
   // Create the toggle failed output button
@@ -29,6 +30,9 @@ function setup() {
   toggleFailedOutputButton.class('toggle-button'); // Assign the class for styling
   toggleFailedOutputButton.position(width - 150, 50); // Position the button below the toggle button
   toggleFailedOutputButton.mousePressed(toggleFailedOutput); // Attach the event listener
+
+  // Initialize button color based on the initial state
+  toggleFailedOutputButton.style('background-color', showFailedOutput ? '#28a745' : '#dc3545');
 }
 
 function draw() {
@@ -131,6 +135,13 @@ function toggleFailedOutput() {
       const lines = players[currentPlayerIndex].decisionReasoning.split('\n');
       return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
     };
+  }
+  // Update button color based on the state
+  const button = document.getElementById('toggleFailedOutputButton');
+  if (showFailedOutput) {
+    button.style.backgroundColor = '#28a745'; // Nice green color
+  } else {
+    button.style.backgroundColor = '#dc3545'; // Red color
   }
 }
 
