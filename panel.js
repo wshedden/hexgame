@@ -10,6 +10,8 @@ class Panel {
         this.textSize = options.textSize || 16;
         this.headerSize = options.headerSize || 18;
         this.contentHeight = 0;
+        this.rightAligned = options.rightAligned || false; // New attribute for right-aligned panels
+        this.bottomAligned = options.bottomAligned || false; // New attribute for bottom-aligned panels
     }
 
     // Calculate dynamic height based on the content
@@ -68,7 +70,7 @@ class PanelManager {
     }
 
     registerPanels() {
-        this.createPanel(this.calculateX(0), this.calculateY(0), this.calculateWidth(), 'Game State', () => [
+        this.createPanel(0, 0, 200, 'Game State', () => [
             `State: ${currentState}`,
             `Player: ${players[currentPlayerIndex].id}`,
             `Turn: ${turnNumber}`,
@@ -76,7 +78,7 @@ class PanelManager {
             `Speed: ${speedMultiplier.toFixed(3)}x`
         ]);
 
-        this.createPanel(this.calculateX(1), this.calculateY(1), this.calculateWidth(), 'Hex Info', () => {
+        this.createPanel(0, 0, 200, 'Hex Info', () => {
             if (!selectedHex) return ['No hex selected'];
             return [
                 `Hex: (${selectedHex.q}, ${selectedHex.r})`,
@@ -91,52 +93,53 @@ class PanelManager {
             ];
         });
 
-        this.createPanel(this.calculateX(2), this.calculateY(2), this.calculateWidth(), 'Player 1 Hexes', () => [
+        this.createPanel(0, 0, 200, 'Player 1 Hexes', () => [
             `Occupied Hexes: ${players[0].occupiedHexes.length}`,
             ...players[0].occupiedHexes.map((hex, i) => `Hex ${i}: (${hex.q}, ${hex.r})`)
-        ]);
+        ], { rightAligned: true });
 
-        this.createPanel(this.calculateX(3), this.calculateY(3), this.calculateWidth(), 'Player 2 Hexes', () => [
+        this.createPanel(0, 0, 200, 'Player 2 Hexes', () => [
             `Occupied Hexes: ${players[1].occupiedHexes.length}`,
             ...players[1].occupiedHexes.map((hex, i) => `Hex ${i}: (${hex.q}, ${hex.r})`)
-        ]);
+        ], { rightAligned: true });
 
-        this.createPanel(this.calculateX(4), this.calculateY(4), this.calculateWidth(), 'Selected Unit', () => [
+        this.createPanel(0, 0, 200, 'Selected Unit', () => [
             `Selected Unit: ${selectedUnitType}`
-        ]);
-    }
+        ], { bottomAligned: true });
 
-    calculateX(index) {
-        // Skeleton code for calculating x position
-        return 10 + index * 210; // Example calculation
-    }
-
-    calculateY(index) {
-        // Skeleton code for calculating y position
-        return 10 + index * 260; // Example calculation
-    }
-
-    calculateWidth() {
-        // Skeleton code for calculating width
-        return 200; // Example fixed width
+        this.organizePanels();
     }
 
     organizePanels() {
-        const leftPanels = this.panels.filter(panel => panel.x < width / 2);
-        const rightPanels = this.panels.filter(panel => panel.x >= width / 2);
-
-        // Organize left panels
+        let xOffset = 10;
         let yOffset = 10;
-        leftPanels.forEach(panel => {
-            panel.y = yOffset;
-            yOffset += panel.contentHeight + 10;
-        });
+        const padding = 10;
+        const columnWidth = 200 + padding; // Panel width + padding
+        const canvasWidth = 1800; // Assuming canvas width is 1800
+        const canvasHeight = 900; // Assuming canvas height is 900
+        const columns = 2; // Number of columns
 
-        // Organize right panels
-        yOffset = 10;
-        rightPanels.forEach(panel => {
-            panel.y = yOffset;
-            yOffset += panel.contentHeight + 10;
+        let columnHeights = Array(columns).fill(yOffset);
+        let rightColumnHeights = Array(columns).fill(yOffset);
+        let bottomColumnHeights = Array(columns).fill(canvasHeight - yOffset - 200); // Start from near the bottom
+
+        this.panels.forEach((panel, index) => {
+            if (panel.rightAligned) {
+                const columnIndex = index % columns;
+                panel.x = canvasWidth - xOffset - columnWidth + columnIndex * columnWidth - 200; // Move 200 pixels to the left
+                panel.y = rightColumnHeights[columnIndex];
+                rightColumnHeights[columnIndex] += panel.contentHeight + padding;
+            } else if (panel.bottomAligned) {
+                const columnIndex = index % columns;
+                panel.x = xOffset + columnIndex * columnWidth;
+                panel.y = bottomColumnHeights[columnIndex];
+                bottomColumnHeights[columnIndex] -= panel.contentHeight + padding;
+            } else {
+                const columnIndex = index % columns;
+                panel.x = xOffset + columnIndex * columnWidth;
+                panel.y = columnHeights[columnIndex];
+                columnHeights[columnIndex] += panel.contentHeight + padding;
+            }
         });
     }
 }
