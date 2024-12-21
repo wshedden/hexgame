@@ -7,6 +7,8 @@ let toggleFailedOutputButton; // Declare the toggle failed output button
 let showFailedOutput = true; // Track the visibility of failed AI decision output
 let buttonColor1 = '#28a745'; // Green color
 let buttonColor2 = '#dc3545'; // Red color
+let pathfindingMode = false;
+let path = []; // Store the path found by A* algorithm
 
 function setup() {
   createCanvas(1800, 900);
@@ -47,6 +49,9 @@ function draw() {
   if (currentState === GameState.PAUSED) {
     drawPausedState();
   }
+
+  drawPathfindingModeStatus(); // Display pathfinding mode status
+  drawPath(); // Draw the path if in pathfinding mode
 }
 
 function initialiseTerrainColours() {
@@ -82,6 +87,14 @@ function keyPressed() {
     selectedUnitType = 'settler';
   } else if (key === '2') {
     selectedUnitType = 'soldier';
+  } else if (key === 'k' || key === 'K') { // Toggle pathfinding mode
+    pathfindingMode = !pathfindingMode;
+    if (pathfindingMode) {
+      console.log("Pathfinding mode activated.");
+    } else {
+      console.log("Pathfinding mode deactivated.");
+      path = []; // Clear the path when exiting pathfinding mode
+    }
   }
 }
 
@@ -90,7 +103,16 @@ function mousePressed() {
   if (clickedHex) {
     selectedHex = clickedHex;
 
-    if (currentPlayerIndex === 0 && currentState === GameState.PLAYING_HUMAN) {
+    if (pathfindingMode) {
+      if (path.length === 0) {
+        path.push(clickedHex); // Set the start hex
+      } else if (path.length === 1) {
+        path.push(clickedHex); // Set the end hex
+        path = aStar(path[0], path[1], hexGrid); // Find the path using A* algorithm
+      } else {
+        path = [clickedHex]; // Reset the path
+      }
+    } else if (currentPlayerIndex === 0 && currentState === GameState.PLAYING_HUMAN) {
       let player = players[currentPlayerIndex];
       let unitType = selectedUnitType; // Use the selected unit type
       let newUnit = new Unit(player.id, unitType, unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, player.color); // Example values for attack and defense
@@ -113,8 +135,15 @@ function drawSelectedUnitTypePanel() {
   rect(10, height - 60, 190, 50, 10); // Position the panel at the bottom left
   fill(255);
   textSize(16);
-  textAlign(LEFT, CENTER);
+  textAlign(LEFT, CENTER);s
   text(`Selected Unit: ${selectedUnitType}`, 20, height - 35);
+}
+
+function drawPathfindingModeStatus() {
+  fill(255);
+  textSize(16);
+  textAlign(LEFT, TOP);
+  text(`Pathfinding Mode: ${pathfindingMode ? 'ON' : 'OFF'}`, 20, 20);
 }
 
 function windowResized() {
@@ -145,6 +174,20 @@ function toggleFailedOutput() {
     button.style.backgroundColor = buttonColor1;
   } else {
     button.style.backgroundColor = buttonColor2;
+  }
+}
+
+function drawPath() {
+  if (path.length > 1) {
+    stroke(255, 0, 0); // Red color for the path
+    strokeWeight(2);
+    noFill();
+    beginShape();
+    path.forEach(hex => {
+      let { x, y } = hexToPixel(hex);
+      vertex(x, y);
+    });
+    endShape();
   }
 }
 

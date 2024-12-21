@@ -115,35 +115,7 @@ function drawGameStatePopup() {
   text(`Speed: ${speedMultiplier.toFixed(3)}x`, 20, 110);
 }
 
-function keyPressed() {
-  if (currentState === GameState.INIT) {
-    if (key === 't' || key === 'T') {
-      players[0].isHuman = true;
-      setState(GameState.PLAYING_HUMAN);
-    } else {
-      setState(GameState.PLAYING);
-    }
-  } else if (key === ' ') { // Check if the space key is pressed
-    if (currentState === GameState.PLAYING) {
-      setState(GameState.PAUSED);
-    } else if (currentState === GameState.PAUSED) {
-      setState(GameState.PLAYING);
-    }
-  } else if (key === 'p' || key === 'P') { // Check if the 'P' key is pressed
-    switchPlayer();
-  } else if (keyCode === LEFT_ARROW) {
-    speedMultiplier = max(0.1, speedMultiplier / 1.1); // Decrease speed, minimum 0.1x
-  } else if (keyCode === RIGHT_ARROW) {
-    speedMultiplier = min(1000, speedMultiplier * 1.1); // Increase speed, maximum 1000x
-  } else if (key === '1') {
-    selectedUnitType = 'settler';
-  } else if (key === '2') {
-    selectedUnitType = 'soldier';
-  } else if (key === 't' || key === 'T') {
-    // Toggle players[0].isHuman
-    players[0].isHuman = !players[0].isHuman;
-  }
-}
+
 
 function switchPlayer() {
   players[currentPlayerIndex].movesLeft--;
