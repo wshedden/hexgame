@@ -40,7 +40,7 @@ class Player {
       battle(attackerHex, defenderHex);
       this.battlesLeft--;
     } else {
-      console.log(`Player ${this.id} has no battles left this turn.`);
+      // console.log(`Player ${this.id} has no battles left this turn.`);
     }
   }
 
@@ -52,16 +52,16 @@ class Player {
 function placeUnit(q, r, unit) {
   let hex = getHex(q, r);
   if (!hex || !claimableTiles.has(hex.getKey())) {
-    console.log(`Cannot place unit at (${q}, ${r}). Tile is not claimable.`);
+    // console.log(`Cannot place unit at (${q}, ${r}). Tile is not claimable.`);
     return false;
   }
 
-  console.log(`Turn Number: ${turnNumber}, Unit Type: ${unit.type}, Hex: (${q}, ${r})`); // Debugging log
+  // console.log(`Turn Number: ${turnNumber}, Unit Type: ${unit.type}, Hex: (${q}, ${r})`); // Debugging log
 
   // First turn logic
   if (turnNumber === 1) {
     if (unit.type !== 'settler') {
-      console.log(`The first unit placed must be a settler.`);
+      // console.log(`The first unit placed must be a settler.`);
       return false;
     }
     return placeUnitOnHex(hex, unit);
@@ -74,7 +74,7 @@ function placeUnit(q, r, unit) {
   if (isAdjacentToOccupiedHex) {
     return placeUnitOnHex(hex, unit);
   } else {
-    console.log(`Cannot place unit at (${q}, ${r}). It must be adjacent to an occupied hex.`);
+    // console.log(`Cannot place unit at (${q}, ${r}). It must be adjacent to an occupied hex.`);
     return false;
   }
 }
@@ -99,7 +99,7 @@ function placeUnitOnHex(hex, unit) {
       });
       // Remove the current hex from claimedAdjacentHexes if it was there
       player.claimedAdjacentHexes.delete(hex.getKey());
-      console.log(`placeUnitOnHex: (${hex.q}, ${hex.r}) claimedBy = ${hex.claimedBy}`);
+      // console.log(`placeUnitOnHex: (${hex.q}, ${hex.r}) claimedBy = ${hex.claimedBy}`);
     }
   }
   return true;
@@ -133,17 +133,17 @@ function battle(attackerHex, defenderHex) {
   defender.health -= damageToDefender;
   attacker.health -= damageToAttacker;
 
-  console.log(`Battle between Player ${attacker.id} and Player ${defender.id}`);
-  console.log(`Attacker dealt ${damageToDefender} damage, Defender dealt ${damageToAttacker} damage`);
+  // console.log(`Battle between Player ${attacker.id} and Player ${defender.id}`);
+  // console.log(`Attacker dealt ${damageToDefender} damage, Defender dealt ${damageToAttacker} damage`);
 
   // Check for unit deaths
   if (defender.health <= 0) {
-    console.log(`Player ${attacker.id} wins the battle!`);
+    // console.log(`Player ${attacker.id} wins the battle!`);
     animateUnitMovement(attackerHex, defenderHex); // Animate the unit movement
   }
 
   if (attacker.health <= 0) {
-    console.log(`Player ${defender.id} wins the battle!`);
+    // console.log(`Player ${defender.id} wins the battle!`);
     attackerHex.unit = null; // Remove the attacker unit
     attackerHex.occupiedBy = null;
   }

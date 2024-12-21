@@ -5,9 +5,7 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
 
   // Determine the fill color
   if (claimedBy) {
-    // player[claimedBy].colour is a color
     fill(players[claimedBy-1].colour);
-    console.log(`drawHex: (${x}, ${y}) claimedBy = ${claimedBy}`);
   } else {
     fill(getTerrainColour(type));
   }
