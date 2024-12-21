@@ -148,3 +148,45 @@ function battle(attackerHex, defenderHex) {
     attackerHex.occupiedBy = null;
   }
 }
+
+function moveUnit(player, fromHex, toHex) {
+  if (fromHex.units.length === 0) {
+    return false;
+  }
+
+  if (toHex.units.length >= MAX_UNITS_PER_HEX) {
+    return false;
+  }
+
+  let unitToMove = random(fromHex.units);
+
+  // Check if the unit can move
+  if (unitToMove.movement <= 0) {
+    return false;
+  }
+
+  toHex.units.push(unitToMove);
+  fromHex.units.splice(fromHex.units.indexOf(unitToMove), 1);
+
+  if (fromHex.units.length === 0) {
+    player.occupiedHexes.delete(fromHex);
+  }
+  player.occupiedHexes.add(toHex);
+
+  return true;
+}
+
+function createUnit(player, unitType) {
+  switch (unitType) {
+    case 'soldier':
+      return new Unit(player.id, unitType, 50, 10, 5, player.colour, 1); // Example values for soldier
+    case 'farmer':
+      return new Unit(player.id, unitType, 30, 5, 2, player.colour, 1); // Example values for farmer
+    case 'settler':
+      return new Unit(player.id, unitType, 20, 0, 1, player.colour, 0); // Example values for settler with 0 movement
+    case 'builder':
+      return new Unit(player.id, unitType, 40, 0, 3, player.colour, 1); // Example values for builder
+    default:
+      return new Unit(player.id, 'farmer', 30, 5, 2, player.colour, 1); // Default to farmer
+  }
+}

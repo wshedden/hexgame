@@ -161,28 +161,28 @@ function getUnitEmoji(unitType) {
 
 function moveUnit(player, fromHex, toHex) {
   if (fromHex.units.length === 0) {
-    // console.log(`No unit to move from Hex (${fromHex.q}, ${fromHex.r})`);
     return false;
   }
 
   if (toHex.units.length >= MAX_UNITS_PER_HEX) {
-    // console.log(`Hex (${toHex.q}, ${toHex.r}) is already occupied by another unit`);
     return false;
   }
 
-  // Select a random unit from the fromHex
   let unitToMove = random(fromHex.units);
 
-  // Move the unit
+  // Check if the unit can move
+  if (unitToMove.movement <= 0) {
+    player.decisionReasoning += `❌ Unit ${unitToMove.type} cannot move\n`; // Failure emoji
+    return false;
+  }
+
   toHex.units.push(unitToMove);
   fromHex.units.splice(fromHex.units.indexOf(unitToMove), 1);
 
-  // Update player's occupied hexes if necessary
   if (fromHex.units.length === 0) {
     player.occupiedHexes.delete(fromHex);
   }
   player.occupiedHexes.add(toHex);
 
-  // console.log(`Player ${player.id} moved unit to Hex: (${toHex.q}, ${toHex.r})`);
   return true;
 }

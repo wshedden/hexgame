@@ -3,12 +3,13 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
   translate(x, y);
   stroke(getOutlineColour()); // Use the purple outline colour
 
-  // Determine the fill color
+  // Determine the stroke color
   if (claimedBy) {
-    fill(players[claimedBy-1].colour);
-  } else {
-    fill(getTerrainColour(type));
-  }
+    stroke(players[claimedBy-1].colour);
+    strokeWeight(4);
+  } 
+  fill(getTerrainColour(type));
+  
 
   beginShape();
   for (let i = 0; i < 6; i++) {
