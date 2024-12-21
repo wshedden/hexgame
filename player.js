@@ -51,10 +51,24 @@ class Player {
   }
 }
 
+// Define unit costs
+const UNIT_COSTS = {
+  settler: 500,
+  soldier: 300,
+  farmer: 200,
+  builder: 250
+};
+
 function placeUnit(q, r, unit) {
   let hex = getHex(q, r);
   if (!hex || !claimableTiles.has(hex.getKey())) {
     // console.log(`Cannot place unit at (${q}, ${r}). Tile is not claimable.`);
+    return false;
+  }
+
+  let player = players.find(p => p.id === unit.id);
+  if (player.money < UNIT_COSTS[unit.type]) {
+    // console.log(`Player ${player.id} does not have enough money to place a ${unit.type}.`);
     return false;
   }
 
@@ -74,7 +88,10 @@ function placeUnit(q, r, unit) {
   let isAdjacentToOccupiedHex = neighbours.some(neighbour => neighbour.occupiedBy === unit.id);
 
   if (isAdjacentToOccupiedHex) {
-    return placeUnitOnHex(hex, unit);
+    if (placeUnitOnHex(hex, unit)) {
+      player.money -= UNIT_COSTS[unit.type]; // Deduct the cost from the player's money
+      return true;
+    }
   } else {
     // console.log(`Cannot place unit at (${q}, ${r}). It must be adjacent to an occupied hex.`);
     return false;
