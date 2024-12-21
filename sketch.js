@@ -1,7 +1,7 @@
 let selectedHex = null;
 let selectedUnitType = 'settler'; // Default to 'settler'
 let panelManager;
-let aiPanelVisible = true; // Track the visibility of the AI panel
+let aiPanelVisible = true; // Track the7 visibility of the AI panel
 let toggleButton; // Declare the toggle button
 let toggleFailedOutputButton; // Declare the toggle failed output button
 let showFailedOutput = true; // Track the visibility of failed AI decision output
@@ -12,7 +12,7 @@ let path = []; // Store the path found by A* algorithm
 
 function setup() {
   createCanvas(1800, 900);
-  initialiseGrid(9);
+  initialiseGrid(7);
   initialiseTerrainColours();
   generateTerrain();
   setState(GameState.INIT);
@@ -140,10 +140,25 @@ function drawSelectedUnitTypePanel() {
 }
 
 function drawPathfindingModeStatus() {
-  fill(255);
+  const x = 220; // Move to the right by 200 pixels
+  const y = 20;
+  const padding = 10;
+  const textContent = `Pathfinding Mode: ${pathfindingMode ? 'ON' : 'OFF'}`;
+
+  // Calculate the width and height of the background rectangle
   textSize(16);
+  const textWidthValue = textWidth(textContent);
+  const textHeightValue = textAscent() + textDescent();
+
+  // Draw the background rectangle
+  fill(0, 0, 0, 150); // Semi-transparent black background
+  noStroke();
+  rect(x - padding, y - padding, textWidthValue + 2 * padding, textHeightValue + 2 * padding, 5);
+
+  // Draw the text
+  fill(255);
   textAlign(LEFT, TOP);
-  text(`Pathfinding Mode: ${pathfindingMode ? 'ON' : 'OFF'}`, 20, 20);
+  text(textContent, x, y);
 }
 
 function windowResized() {
