@@ -4,8 +4,8 @@ let panelManager;
 
 function setup() {
   createCanvas(1800, 900);
-  initializeGrid(9);
-  initializeTerrainColors();
+  initialiseGrid(9);
+  initialiseTerrainColours();
   generateTerrain();
   setState(GameState.INIT);
 
@@ -24,7 +24,7 @@ function draw() {
   }
 }
 
-function initializeTerrainColors() {
+function initialiseTerrainColours() {
   registerTerrainType('grass', color(100, 200, 100));
   registerTerrainType('water', color(50, 100, 200));
   registerTerrainType('mountain', color(100, 100, 100));

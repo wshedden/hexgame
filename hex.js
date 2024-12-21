@@ -10,6 +10,7 @@ class Hex {
     this.occupiedBy = occupiedBy;
     this.claimedBy = claimedBy; // New attribute
     this.fertility = fertility; // New attribute
+    this.colour = getTerrainColour(type);
   }
 
   getKey() {
@@ -18,5 +19,24 @@ class Hex {
 
   addUnit(unit) {
     this.units.push(unit);
+    if(unit.type == "settler") {
+      this.claimedBy = unit.id;
+    }
   }
+
+  removeUnit(unit) {
+    let index = this.units.indexOf(unit);
+    if (index !== -1) {
+      this.units.splice(index, 1);
+    }
+  }
+
+  claim(player) {
+    this.claimedBy = player.id;
+  }
+
+  unclaim() {
+    this.claimedBy = null;
+  }
+
 }

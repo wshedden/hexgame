@@ -6,7 +6,7 @@ class Panel {
         this.header = header;
         this.contentFunction = contentFunction; // Function that generates content
         this.padding = options.padding || 10;
-        this.backgroundColor = options.backgroundColor || color(0, 0, 0, 200); // Default semi-transparent black
+        this.backgroundColour = options.backgroundColour || color(0, 0, 0, 200); // Default semi-transparent black
         this.textSize = options.textSize || 16;
         this.headerSize = options.headerSize || 18;
         this.contentHeight = 0;
@@ -31,7 +31,7 @@ class Panel {
 
     draw() {
         this.calculateHeight();
-        fill(this.backgroundColor);
+        fill(this.backgroundColour);
         noStroke();
         rect(this.x, this.y, this.width, this.contentHeight, 10);
 
@@ -89,7 +89,7 @@ class PanelManager {
                     `Unit ${i}: ${unit.type}`,
                     `Health: ${unit.health}`,
                     `Attack: ${unit.attack}`,
-                    `Defence: ${unit.defense}`
+                    `Defence: ${unit.defence}`
                 ]).flat()
             ];
         });

@@ -1,10 +1,10 @@
 let hexGrid = new Map();
 
-let terrainColors = {};
+let terrainColours = {};
 
 let claimableTiles = new Set();
 
-function initializeGrid(radius) {
+function initialiseGrid(radius) {
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {
       if (Math.abs(q + r) <= radius) {
@@ -55,13 +55,13 @@ function roundHex(q, r) {
   return getHex(qRounded, rRounded);
 }
 
-function getHexNeighbors(hex) {
+function getHexNeighbours(hex) {
   const directions = [
     { q: 1, r: 0 }, { q: 1, r: -1 }, { q: 0, r: -1 },
     { q: -1, r: 0 }, { q: -1, r: 1 }, { q: 0, r: 1 }
   ];
 
-  return directions.map(dir => getHex(hex.q + dir.q, hex.r + dir.r)).filter(neighbor => neighbor);
+  return directions.map(dir => getHex(hex.q + dir.q, hex.r + dir.r)).filter(neighbour => neighbour);
 }
 
 function isAdjacent(hex1, hex2) {
@@ -73,14 +73,14 @@ function isAdjacent(hex1, hex2) {
   return directions.some(dir => hex1.q + dir.q === hex2.q && hex1.r + dir.r === hex2.r);
 }
 
-function registerTerrainType(type, colorValue) {
-  terrainColors[type] = colorValue;
+function registerTerrainType(type, colourValue) {
+  terrainColours[type] = colourValue;
 }
 
-function getTerrainColor(type) {
-  return terrainColors[type] || color(200); // Default color if type is not found
+function getTerrainColour(type) {
+  return terrainColours[type] || color(200); // Default color if type is not found
 }
 
-function getOutlineColor() {
+function getOutlineColour() {
   return color(128, 0, 128); // Nice purple color
 }

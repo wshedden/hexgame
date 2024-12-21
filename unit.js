@@ -1,16 +1,16 @@
 class Unit {
-  constructor(id, type, health, attack, defense, playerColor) {
+  constructor(id, type, health, attack, defence, playerColour) {
     this.id = id;
     this.type = type;
     this.health = health;
     this.attack = attack;
-    this.defense = defense;
+    this.defence = defence;
     if (type === 'settler') {
-      this.color = lerpColor(color(0, 255, 0), color(playerColor[0], playerColor[1], playerColor[2]), 0.5); // Interpolated color for settlers
+      this.colour = lerpColor(color(0, 255, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Interpolated colour for settlers
     } else if (type === 'farmer') {
-      this.color = lerpColor(color(255, 215, 0), color(playerColor[0], playerColor[1], playerColor[2]), 0.5); // Blended color for farmers
+      this.colour = lerpColor(color(255, 215, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Blended colour for farmers
     } else {
-      this.color = color(playerColor[0], playerColor[1], playerColor[2]);
+      this.colour = color(playerColour[0], playerColour[1], playerColour[2]);
     }
     this.size = 20; // Default size
   }
@@ -18,7 +18,7 @@ class Unit {
 
 function drawUnits() {
   push();
-  translate(width / 2, height / 2); // Translate the origin to the center of the canvas
+  translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
   hexGrid.forEach((hex) => {
     if (hex.units.length > 0) {
       let { x, y } = hexToPixel(hex);
@@ -50,7 +50,7 @@ function drawHexUnits(x, y, units) {
 function drawUnit(x, y, unit, size) {
   push();
   translate(x, y);
-  fill(unit.color);
+  fill(unit.colour);
   ellipse(0, 0, size, size);
   pop();
 }
@@ -78,7 +78,7 @@ function animateUnitMovement(attackerHex, defenderHex, duration = 1000) {
     // Draw the moving unit
     push();
     translate(currentX, currentY);
-    fill(attackerHex.unit.color);
+    fill(attackerHex.unit.colour);
     ellipse(0, 0, 20, 20);
     pop();
 

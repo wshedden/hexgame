@@ -1,7 +1,7 @@
 class Player {
-  constructor(id, color) {
+  constructor(id, colour) {
     this.id = id;
-    this.color = color;
+    this.colour = colour;
     this.occupiedHexes = [];
     this.adjacentHexes = new Set();
     this.battlesLeft = 3; // Example: Allow 3 battles per turn
@@ -40,7 +40,7 @@ class Player {
   }
 
   createUnit(unitType) {
-    return new Unit(this.id, unitType, unitType === 'soldier' ? 50 : 5, 5, 5, this.color); // Example values for attack and defense
+    return new Unit(this.id, unitType, unitType === 'soldier' ? 50 : 5, 5, 5, this.colour); // Example values for attack and defence
   }
 
   placeUnit(hex, unit) {
@@ -58,8 +58,8 @@ class Player {
   canInitiateBattle() {
     if (this.battlesLeft <= 0) return false;
     for (let hex of this.occupiedHexes) {
-      let neighbors = getHexNeighbors(hex);
-      if (neighbors.some(neighbor => neighbor.unit && neighbor.unit.id !== this.id)) {
+      let neighbours = getHexNeighbours(hex);
+      if (neighbours.some(neighbour => neighbour.unit && neighbour.unit.id !== this.id)) {
         return true;
       }
     }
@@ -91,10 +91,10 @@ function placeUnit(q, r, unit) {
     let player = players.find(p => p.id === unit.id);
     if (player) {
       player.occupiedHexes.push(hex);
-      let neighbors = getHexNeighbors(hex);
-      neighbors.forEach(neighbor => {
-        if (!neighbor.occupiedBy && claimableTiles.has(neighbor.getKey())) {
-          player.adjacentHexes.add(neighbor.getKey());
+      let neighbours = getHexNeighbours(hex);
+      neighbours.forEach(neighbour => {
+        if (!neighbour.occupiedBy && claimableTiles.has(neighbour.getKey())) {
+          player.adjacentHexes.add(neighbour.getKey());
         }
       });
       // Remove the current hex from adjacentHexes if it was there
@@ -104,8 +104,8 @@ function placeUnit(q, r, unit) {
   }
 
   // Check if the hex is adjacent to an occupied hex
-  let neighbors = getHexNeighbors(hex);
-  let isAdjacentToOccupiedHex = neighbors.some(neighbor => neighbor.occupiedBy === unit.id);
+  let neighbours = getHexNeighbours(hex);
+  let isAdjacentToOccupiedHex = neighbours.some(neighbour => neighbour.occupiedBy === unit.id);
 
   if (isAdjacentToOccupiedHex) {
     hex.addUnit(unit);
@@ -114,9 +114,9 @@ function placeUnit(q, r, unit) {
     let player = players.find(p => p.id === unit.id);
     if (player) {
       player.occupiedHexes.push(hex);
-      neighbors.forEach(neighbor => {
-        if (!neighbor.occupiedBy && claimableTiles.has(neighbor.getKey())) {
-          player.adjacentHexes.add(neighbor.getKey());
+      neighbours.forEach(neighbour => {
+        if (!neighbour.occupiedBy && claimableTiles.has(neighbour.getKey())) {
+          player.adjacentHexes.add(neighbour.getKey());
         }
       });
       // Remove the current hex from adjacentHexes if it was there
@@ -132,7 +132,7 @@ function placeUnit(q, r, unit) {
 function drawUnit(x, y, unit, size) {
   push();
   translate(x, y);
-  fill(unit.color);
+  fill(unit.colour);
   ellipse(0, 0, size, size);
   pop();
 }
@@ -145,13 +145,13 @@ function battle(attackerHex, defenderHex) {
 
   // Calculate damage with randomness
   let attackMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
-  let defenseMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
+  let defenceMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
 
   // Apply defensive bonus if defender is on a mountain tile
-  let defenseBonus = defenderHex.type === 'mountain' ? 1.5 : 1.0;
+  let defenceBonus = defenderHex.type === 'mountain' ? 1.5 : 1.0;
 
-  let damageToDefender = Math.max(0, Math.floor(attacker.attack * attackMultiplier - defender.defense * defenseMultiplier * defenseBonus));
-  let damageToAttacker = Math.max(0, Math.floor(defender.attack * defenseMultiplier - attacker.defense * attackMultiplier));
+  let damageToDefender = Math.max(0, Math.floor(attacker.attack * attackMultiplier - defender.defence * defenceMultiplier * defenceBonus));
+  let damageToAttacker = Math.max(0, Math.floor(defender.attack * defenceMultiplier - attacker.defence * attackMultiplier));
 
   // Apply damage
   defender.health -= damageToDefender;

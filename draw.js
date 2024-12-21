@@ -1,8 +1,8 @@
-function drawHex(x, y, size, type, textValue, claimedBy) {
+function drawHex(x, y, size, type, textValue, claimedBy, colour) {
   push();
   translate(x, y);
-  stroke(getOutlineColor()); // Use the purple outline color
-  fill(getTerrainColor(type));
+  stroke(getOutlineColour()); // Use the purple outline colour
+  fill(colour || getTerrainColour(type)); // Use the colour attribute if set, otherwise use terrain colour
   beginShape();
   for (let i = 0; i < 6; i++) {
     let angle = TWO_PI / 6 * i;
@@ -15,7 +15,7 @@ function drawHex(x, y, size, type, textValue, claimedBy) {
   // Draw thick outline if claimed
   if (claimedBy) {
     strokeWeight(4);
-    stroke(claimedBy.color);
+    stroke(claimedBy.colour);
     noFill();
     beginShape();
     for (let i = 0; i < 6; i++) {
@@ -29,7 +29,7 @@ function drawHex(x, y, size, type, textValue, claimedBy) {
   pop();
 }
 
-function getTerrainColor(type) {
+function getTerrainColour(type) {
   switch (type) {
     case 'grass': return color(100, 200, 100);
     case 'water': return color(50, 100, 200);
@@ -43,15 +43,15 @@ function getTerrainColor(type) {
 
 function drawGrid() {
   push();
-  translate(width / 2, height / 2); // Translate the origin to the center of the canvas
+  translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
   hexGrid.forEach((hex) => {
     let { x, y } = hexToPixel(hex);
-    drawHex(x, y, 30, hex.type, hex.text, hex.unit);
+    drawHex(x, y, 30, hex.type, hex.text, hex.unit, hex.colour); // Pass the colour attribute
   });
 
-  // Highlight the selected hex and its neighbors
+  // Highlight the selected hex and its neighbours
   if (selectedHex) {
-    highlightHexAndNeighbors(selectedHex);
+    highlightHexAndNeighbours(selectedHex);
   }
   pop();
 }
@@ -61,17 +61,17 @@ const basePanelHeight = 150;
 const padding = 10;
 const panels = [];
 
-function highlightHexAndNeighbors(hex) {
+function highlightHexAndNeighbours(hex) {
   if (!hex) return;
 
   // Highlight the selected hex
   let { x, y } = hexToPixel(hex);
   drawHexHighlight(x, y);
 
-  // Highlight the neighbors
-  let neighbors = getHexNeighbors(hex);
-  neighbors.forEach(neighbor => {
-    let { x, y } = hexToPixel(neighbor);
+  // Highlight the neighbours
+  let neighbours = getHexNeighbours(hex);
+  neighbours.forEach(neighbour => {
+    let { x, y } = hexToPixel(neighbour);
     drawHexHighlight(x, y);
   });
 }
@@ -95,6 +95,6 @@ function drawHexHighlight(x, y) {
 
 function getAttackableTiles(hex) {
   if (!hex.unit) return [];
-  let neighbors = getHexNeighbors(hex);
-  return neighbors.filter(neighbor => neighbor.unit && neighbor.unit.id !== hex.unit.id);
+  let neighbours = getHexNeighbours(hex);
+  return neighbours.filter(neighbour => neighbour.unit && neighbour.unit.id !== hex.unit.id);
 }
