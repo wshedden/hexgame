@@ -37,24 +37,38 @@ class Player {
 
   decideUnitType() {
     // If first turn, settler
-    // Otherwise 75% farmer 20% soldier 5% settler
+    // Otherwise 70% farmer, 20% soldier, 5% settler, 5% builder
     let unitType = 'farmer';
     if (turnNumber === 1) {
       unitType = 'settler';
     } else {
       let rand = random(1);
-      if (rand <= 0.75) {
+      if (rand <= 0.70) {
         unitType = 'farmer';
-      } else if (rand <= 0.95) {
+      } else if (rand <= 0.90) {
         unitType = 'soldier';
+      } else if (rand <= 0.95) {
+        unitType = 'settler';
+      } else {
+        unitType = 'builder';
       }
     }
     return unitType;
-
   }
 
   createUnit(unitType) {
-    return new Unit(this.id, unitType, unitType === 'soldier' ? 50 : 5, 5, 5, this.colour); // Example values for attack and defence
+    switch (unitType) {
+      case 'soldier':
+        return new Unit(this.id, unitType, 50, 10, 5, this.colour); // Example values for soldier
+      case 'farmer':
+        return new Unit(this.id, unitType, 30, 5, 2, this.colour); // Example values for farmer
+      case 'settler':
+        return new Unit(this.id, unitType, 20, 0, 1, this.colour); // Example values for settler
+      case 'builder':
+        return new Unit(this.id, unitType, 40, 0, 3, this.colour); // Example values for builder
+      default:
+        return new Unit(this.id, 'farmer', 30, 5, 2, this.colour); // Default to farmer
+    }
   }
 
   placeUnit(hex, unit) {
@@ -121,7 +135,6 @@ function placeUnit(q, r, unit) {
 function placeUnitOnHex(hex, unit) {
   hex.addUnit(unit);
   hex.occupiedBy = unit.id;
-  hex.claimedBy = unit.id; // Set claimedBy attribute
   let player = players.find(p => p.id === unit.id);
   if (player) {
     player.occupiedHexes.push(hex);
