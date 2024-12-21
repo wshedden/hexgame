@@ -129,20 +129,6 @@ function decideUnitType(player) {
   return unitType;
 }
 
-function createUnit(player, unitType) {
-  switch (unitType) {
-    case 'soldier':
-      return new Unit(player.id, unitType, 50, 10, 5, player.colour); // Example values for soldier
-    case 'farmer':
-      return new Unit(player.id, unitType, 30, 5, 2, player.colour); // Example values for farmer
-    case 'settler':
-      return new Unit(player.id, unitType, 20, 0, 1, player.colour); // Example values for settler
-    case 'builder':
-      return new Unit(player.id, unitType, 40, 0, 3, player.colour); // Example values for builder
-    default:
-      return new Unit(player.id, 'farmer', 30, 5, 2, player.colour); // Default to farmer
-  }
-}
 
 function getUnitEmoji(unitType) {
   switch (unitType) {

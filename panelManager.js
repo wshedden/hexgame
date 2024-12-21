@@ -65,8 +65,12 @@ class PanelManager {
 
     positionSpecialPanels() {
         const aiPanel = this.getPanelByHeader('AI Decision Reasoning');
-        if (aiPanel) {
-            this.positionAIPanel(aiPanel);
+        const player2Panel = this.getPanelByHeader('Player 2 Hexes');
+        if (aiPanel && player2Panel) {
+            aiPanel.x = player2Panel.x;
+            aiPanel.y = player2Panel.y + player2Panel.height + 10; // Position below Player 2 panel with some margin
+            aiPanel.width = player2Panel.width;
+            aiPanel.height = this.canvasHeight - aiPanel.y; // Adjust height to fit within the canvas
         }
 
         const selectedUnitPanel = this.getPanelByHeader('Selected Unit');
@@ -122,7 +126,7 @@ class PanelManager {
                     `Health: ${unit.health}`,
                     `Attack: ${unit.attack}`,
                     `Defence: ${unit.defence}`,
-                    ''
+                    `Movement: ${unit.movement}`
                 );
             });
 
