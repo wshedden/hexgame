@@ -68,23 +68,17 @@ function drawPlayingState() {
 
   // Check if the turn duration has elapsed
   if (millis() - turnStartTime > adjustedTurnDuration) {
-    switchPlayer();
-    turnStartTime = millis();
+    startNewTurn();
   }
 }
 
 function drawPlayingState_human() {
   // Draw the playing state with human input
-  // Switch player only once human input is received
   drawGrid();
   drawUnits();
 
-  
-  // Don't care about time, wait for human input exept for player 2
-  if (currentPlayerIndex === 1) {
-    switchPlayer();
-    turnStartTime = millis();
-  }
+  // Handle human input
+  handleHumanInput();
 }
 
 function drawPausedState() {
@@ -162,8 +156,25 @@ function switchPlayer() {
   }
 
   // AI decision-making for non-human players
+  handleAIDecision();
+}
+
+function handleAIDecision() {
   players[currentPlayerIndex].makeDecision();
   if (currentPlayerIndex === 0) {
     turnNumber++; // Increment turn number when all players have taken their turn
+  }
+}
+
+function startNewTurn() {
+  switchPlayer();
+  turnStartTime = millis();
+}
+
+function handleHumanInput() {
+  // Handle human input logic here
+  if (currentPlayerIndex === 1) {
+    switchPlayer();
+    turnStartTime = millis();
   }
 }
