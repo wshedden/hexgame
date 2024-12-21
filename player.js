@@ -36,7 +36,21 @@ class Player {
   }
 
   decideUnitType() {
-    return random(1) < 0.5 ? 'farmer' : 'soldier';
+    // If first turn, settler
+    // Otherwise 75% farmer 20% soldier 5% settler
+    let unitType = 'farmer';
+    if (turnNumber === 1) {
+      unitType = 'settler';
+    } else {
+      let rand = random(1);
+      if (rand <= 0.75) {
+        unitType = 'farmer';
+      } else if (rand <= 0.95) {
+        unitType = 'soldier';
+      }
+    }
+    return unitType;
+
   }
 
   createUnit(unitType) {
@@ -83,50 +97,44 @@ function placeUnit(q, r, unit) {
     return false;
   }
 
-  // Allow placement anywhere on the first turn
+  // First turn logic
   if (turnNumber === 1) {
-    hex.addUnit(unit);
-    hex.occupiedBy = unit.id;
-    hex.claimedBy = unit.id; // Set claimedBy attribute
-    let player = players.find(p => p.id === unit.id);
-    if (player) {
-      player.occupiedHexes.push(hex);
-      let neighbours = getHexNeighbours(hex);
-      neighbours.forEach(neighbour => {
-        if (!neighbour.occupiedBy && claimableTiles.has(neighbour.getKey())) {
-          player.adjacentHexes.add(neighbour.getKey());
-        }
-      });
-      // Remove the current hex from adjacentHexes if it was there
-      player.adjacentHexes.delete(hex.getKey());
+    if (unit.type !== 'settler') {
+      console.log(`The first unit placed must be a settler.`);
+      return false;
     }
-    return true;
+    return placeUnitOnHex(hex, unit);
   }
 
-  // Check if the hex is adjacent to an occupied hex
+  // Other turns logic
   let neighbours = getHexNeighbours(hex);
   let isAdjacentToOccupiedHex = neighbours.some(neighbour => neighbour.occupiedBy === unit.id);
 
   if (isAdjacentToOccupiedHex) {
-    hex.addUnit(unit);
-    hex.occupiedBy = unit.id;
-    hex.claimedBy = unit.id; // Set claimedBy attribute
-    let player = players.find(p => p.id === unit.id);
-    if (player) {
-      player.occupiedHexes.push(hex);
-      neighbours.forEach(neighbour => {
-        if (!neighbour.occupiedBy && claimableTiles.has(neighbour.getKey())) {
-          player.adjacentHexes.add(neighbour.getKey());
-        }
-      });
-      // Remove the current hex from adjacentHexes if it was there
-      player.adjacentHexes.delete(hex.getKey());
-    }
-    return true;
+    return placeUnitOnHex(hex, unit);
   } else {
     console.log(`Cannot place unit at (${q}, ${r}). It must be adjacent to an occupied hex.`);
     return false;
   }
+}
+
+function placeUnitOnHex(hex, unit) {
+  hex.addUnit(unit);
+  hex.occupiedBy = unit.id;
+  hex.claimedBy = unit.id; // Set claimedBy attribute
+  let player = players.find(p => p.id === unit.id);
+  if (player) {
+    player.occupiedHexes.push(hex);
+    let neighbours = getHexNeighbours(hex);
+    neighbours.forEach(neighbour => {
+      if (!neighbour.occupiedBy && claimableTiles.has(neighbour.getKey())) {
+        player.adjacentHexes.add(neighbour.getKey());
+      }
+    });
+    // Remove the current hex from adjacentHexes if it was there
+    player.adjacentHexes.delete(hex.getKey());
+  }
+  return true;
 }
 
 function drawUnit(x, y, unit, size) {
