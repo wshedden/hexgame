@@ -23,58 +23,61 @@ class PanelManager {
     }
 
     organisePanels() {
-        const panelCount = this.panels.length;
-        const leftPanels = [];
-        const rightPanels = [];
+        const leftPanels = this.getPanelsBySide('left');
+        const rightPanels = this.getPanelsBySide('right');
 
-        // Split panels between left and right sections
-        this.panels.forEach((panel, index) => {
-            if (index % 2 === 0) {
-                leftPanels.push(panel);
-            } else {
-                rightPanels.push(panel);
-            }
+        this.positionPanels(leftPanels, 'left');
+        this.positionPanels(rightPanels, 'right');
+
+        this.positionSpecialPanels();
+    }
+
+    getPanelsBySide(side) {
+        return this.panels.filter((panel, index) => {
+            return side === 'left' ? index % 2 === 0 : index % 2 !== 0;
         });
+    }
 
-        // Calculate available space
-        const leftWidth = this.hexGridStartX;
-        const rightWidth = this.canvasWidth - this.hexGridEndX;
-        const maxPanelHeight = this.canvasHeight / Math.max(leftPanels.length, rightPanels.length);
+    positionPanels(panels, side) {
+        const width = side === 'left' ? this.hexGridStartX : this.canvasWidth - this.hexGridEndX;
+        const maxPanelHeight = this.canvasHeight / panels.length;
 
-        // Position left panels
-        leftPanels.forEach((panel, index) => {
-            panel.x = 0;
+        panels.forEach((panel, index) => {
+            panel.x = side === 'left' ? 0 : this.hexGridEndX;
             panel.y = index * maxPanelHeight;
-            panel.width = leftWidth;
+            panel.width = width;
             panel.height = maxPanelHeight;
         });
+    }
 
-        // Position right panels
-        rightPanels.forEach((panel, index) => {
-            panel.x = this.hexGridEndX;
-            panel.y = index * maxPanelHeight;
-            panel.width = rightWidth;
-            panel.height = maxPanelHeight;
-        });
-
-        // Specific placement for "AI Decision Reasoning" panel
-        const aiPanel = this.panels.find(panel => panel.header === 'AI Decision Reasoning');
+    positionSpecialPanels() {
+        const aiPanel = this.getPanelByHeader('AI Decision Reasoning');
         if (aiPanel) {
-            aiPanel.width = rightWidth;
-            aiPanel.x = this.hexGridEndX;
-            aiPanel.y = 20; // Position it at the top with some margin
+            this.positionAIPanel(aiPanel);
         }
 
-        // Specific placement for "Selected Unit" panel at the bottom left
-        const selectedUnitPanel = this.panels.find(panel => panel.header === 'Selected Unit');
+        const selectedUnitPanel = this.getPanelByHeader('Selected Unit');
         if (selectedUnitPanel) {
-            selectedUnitPanel.width = leftWidth;
-            selectedUnitPanel.x = 0;
-            selectedUnitPanel.y = this.canvasHeight - selectedUnitPanel.contentHeight - 20; // Position it at the bottom left with some margin
+            this.positionSelectedUnitPanel(selectedUnitPanel);
         }
     }
 
-    // Call when canvas is resized
+    getPanelByHeader(header) {
+        return this.panels.find(panel => panel.header === header);
+    }
+
+    positionAIPanel(panel) {
+        panel.width = this.canvasWidth - this.hexGridEndX;
+        panel.x = this.hexGridEndX;
+        panel.y = 800; // Position it at the top with some margin
+    }
+
+    positionSelectedUnitPanel(panel) {
+        panel.width = this.hexGridStartX;
+        panel.x = 0;
+        panel.y = this.canvasHeight - panel.contentHeight - 200; // Position it at the bottom left with some margin
+    }
+
     resizeCanvas(width, height) {
         this.canvasWidth = width;
         this.canvasHeight = height;
