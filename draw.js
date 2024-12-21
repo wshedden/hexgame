@@ -3,13 +3,8 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
   translate(x, y);
   stroke(getOutlineColour()); // Use the purple outline colour
 
-  // Determine the fill color
-  let fillColor = getTerrainColour(type);
-  if (claimedBy) {
-    let playerColour = color(players[claimedBy - 1].colour);
-    fillColor = lerpColor(fillColor, playerColour, 0.2); // 80% terrain colour, 20% claimed player colour
-  }
-  fill(fillColor);
+  // Use the fertility-based color
+  fill(colour);
 
   // Determine the stroke color
   if (claimedBy) {

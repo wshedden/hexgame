@@ -12,8 +12,25 @@ class Hex {
     this.occupiedBy = occupiedBy;
     this.claimedBy = claimedBy;
     this.fertility = fertility;
-    this.colour = getTerrainColour(type);
+    this.colour = this.calculateFertilityColor(fertility);
     this.claimedColour = null; // New attribute
+  }
+
+  calculateFertilityColor(fertility) {
+    // Example: Map fertility (0 to 1) to a color gradient (e.g., brown to green)
+    let green = color(34, 139, 34); // High fertility color
+    let brown = color(139, 69, 19); // Low fertility color
+    return lerpColor(brown, green, fertility);
+  }
+
+  setColourByFertility() {
+    // this.colour = this.calculateFertilityColor(this.fertility);
+    // Remember to lerp with the claimed colour if claimed
+    if (this.claimedColour) {
+      this.colour = lerpColor(this.claimedColour, this.calculateFertilityColor(this.fertility), 0.2);
+    } else {
+      this.colour = this.calculateFertilityColor(this.fertility);
+    }
   }
 
   getKey() {

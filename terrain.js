@@ -4,10 +4,10 @@ function generateTerrain() {
     hex.noiseValue = noiseValue;
     hex.text = noiseValue.toFixed(2); // Set the text to the noise value
 
-    // Adjust the noise thresholds to make water more common
     if (noiseValue < 0.3) { // Increase the threshold for water
       hex.type = 'water';
       hex.fertility = 0; // Water has 0 fertility
+      hex.colour = color(50, 100, 200); // Always blue for water
       claimableTiles.delete(hex.getKey()); // Remove water tiles from claimable tiles
     } else if (noiseValue < 0.4) {
       hex.type = 'grass';
@@ -24,7 +24,10 @@ function generateTerrain() {
     } else {
       hex.type = 'snow';
       hex.fertility = 0.1 + random(-0.05, 0.05); // Snow has very low fertility with some randomness
+      hex.colour = lerpColor(color(255, 250, 250), hex.calculateFertilityColor(hex.fertility), 0.8); // Weight towards whiteness
     }
-    hex.colour = getTerrainColour(hex.type);
+    if (hex.type !== 'water' && hex.type !== 'snow') {
+      hex.setColourByFertility(); // Set the colour based on fertility
+    }
   });
 }
