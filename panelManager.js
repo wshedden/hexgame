@@ -9,7 +9,7 @@ class PanelManager {
 
     registerPanel(panel) {
         this.panels.push(panel);
-        this.managePanels(); // Reorganize whenever a panel is added
+        this.organisePanels(); // Reorganise whenever a panel is added
     }
 
     updatePanels() {
@@ -22,78 +22,63 @@ class PanelManager {
         return panel;
     }
 
-    managePanels() {
-        // Step 1: Assign panels to zones
-        const zones = this.assignPanelsToZones();
+    organisePanels() {
+        const panelCount = this.panels.length;
+        const leftPanels = [];
+        const rightPanels = [];
 
-        // Step 2: Organize each zone
-        this.organizeZone(zones.left, 0, 100, this.hexGridStartX, this.canvasHeight - 200);
-        this.organizeZone(zones.right, this.hexGridEndX, 100, this.canvasWidth - this.hexGridEndX, this.canvasHeight - 200);
-        this.organizeZone(zones.top, 0, 0, this.canvasWidth, 100);
-        this.organizeZone(zones.bottom, 0, this.canvasHeight - 100, this.canvasWidth, 100);
-
-        // Step 3: Update floating panels
-        this.updateFloatingPanels();
-
-        // Step 4: Resize panels dynamically
-        this.resizePanels();
-    }
-
-    assignPanelsToZones() {
-        const zones = { left: [], right: [], top: [], bottom: [] };
-
-        // Distribute panels into zones dynamically based on their header or priority
-        this.panels.forEach(panel => {
-            if (panel.header.includes('Player')) {
-                zones.left.push(panel);
-            } else if (panel.header === 'AI Decision Reasoning') {
-                zones.top.push(panel);
+        // Split panels between left and right sections
+        this.panels.forEach((panel, index) => {
+            if (index % 2 === 0) {
+                leftPanels.push(panel);
             } else {
-                zones.right.push(panel);
+                rightPanels.push(panel);
             }
         });
 
-        return zones;
-    }
+        // Calculate available space
+        const leftWidth = this.hexGridStartX;
+        const rightWidth = this.canvasWidth - this.hexGridEndX;
+        const maxPanelHeight = this.canvasHeight / Math.max(leftPanels.length, rightPanels.length);
 
-    organizeZone(panels, startX, startY, width, height) {
-        const panelHeight = height / panels.length;
-
-        panels.forEach((panel, index) => {
-            panel.x = startX;
-            panel.y = startY + index * panelHeight;
-            panel.width = width;
-            panel.height = panelHeight;
+        // Position left panels
+        leftPanels.forEach((panel, index) => {
+            panel.x = 0;
+            panel.y = index * maxPanelHeight;
+            panel.width = leftWidth;
+            panel.height = maxPanelHeight;
         });
-    }
 
-    updateFloatingPanels() {
-        const floatingPanels = this.panels.filter(panel => panel.floating);
-
-        floatingPanels.forEach(panel => {
-            panel.x = mouseX + 10; // Example: Follow mouse
-            panel.y = mouseY + 10;
+        // Position right panels
+        rightPanels.forEach((panel, index) => {
+            panel.x = this.hexGridEndX;
+            panel.y = index * maxPanelHeight;
+            panel.width = rightWidth;
+            panel.height = maxPanelHeight;
         });
+
+        // Specific placement for "AI Decision Reasoning" panel
+        const aiPanel = this.panels.find(panel => panel.header === 'AI Decision Reasoning');
+        if (aiPanel) {
+            aiPanel.width = rightWidth;
+            aiPanel.x = this.hexGridEndX;
+            aiPanel.y = 20; // Position it at the top with some margin
+        }
+
+        // Specific placement for "Selected Unit" panel at the bottom left
+        const selectedUnitPanel = this.panels.find(panel => panel.header === 'Selected Unit');
+        if (selectedUnitPanel) {
+            selectedUnitPanel.width = leftWidth;
+            selectedUnitPanel.x = 0;
+            selectedUnitPanel.y = this.canvasHeight - selectedUnitPanel.contentHeight - 20; // Position it at the bottom left with some margin
+        }
     }
 
-    resizePanels() {
-        const totalPanelWidth = this.canvasWidth;
-        const maxWidthPerPanel = totalPanelWidth / this.panels.length;
-
-        this.panels.forEach(panel => {
-            if (this.canvasWidth < 1000) {
-                panel.width = Math.min(panel.width, maxWidthPerPanel / 2); // Shrink panels
-                panel.collapsed = true;
-            } else {
-                panel.collapsed = false;
-            }
-        });
-    }
-
+    // Call when canvas is resized
     resizeCanvas(width, height) {
         this.canvasWidth = width;
         this.canvasHeight = height;
-        this.managePanels(); // Reorganize panels based on the new dimensions
+        this.organisePanels(); // Reorganise panels based on the new dimensions
     }
 
     registerPanels() {
@@ -133,6 +118,6 @@ class PanelManager {
         this.createPanel('Selected Unit', () => [`Selected Unit: ${selectedUnitType}`]);
         this.createPanel('AI Decision Reasoning', () => [`Reasoning: ${players[currentPlayerIndex].decisionReasoning}`]);
 
-        this.managePanels(); // Organize panels after registering them
+        this.organisePanels(); // Organise panels after registering them
     }
 }

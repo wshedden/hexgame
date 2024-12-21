@@ -14,20 +14,41 @@ class Panel {
     }
 
     calculateDimensions() {
+        this.calculateContentWidth();
+        this.calculateContentHeight();
+    }
+
+    calculateContentWidth() {
         push();
         textSize(this.textSize);
         textAlign(LEFT, TOP);
-        this.contentHeight = this.headerSize + this.padding;
         this.contentWidth = textWidth(this.header) + 2 * this.padding; // Include header width
 
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
             let wrappedLines = this.wrapText(line, this.width - 2 * this.padding);
-            this.contentHeight += wrappedLines.length * (textAscent() + textDescent() + this.padding / 2);
             wrappedLines.forEach(wrappedLine => {
                 this.contentWidth = max(this.contentWidth, textWidth(wrappedLine) + 2 * this.padding);
             });
         });
+
+        pop();
+    }
+
+    calculateContentHeight() {
+        push();
+        textSize(this.textSize);
+        textAlign(LEFT, TOP);
+        this.contentHeight = this.headerSize + this.padding * 2; // Add extra padding for the header
+
+        let contentLines = this.contentFunction();
+        contentLines.forEach(line => {
+            let wrappedLines = this.wrapText(line, this.width - 2 * this.padding);
+            this.contentHeight += wrappedLines.length * (textAscent() + textDescent() + this.padding); // Increase padding between lines
+        });
+
+        // Add extra padding at the bottom
+        this.contentHeight += this.padding * 2;
 
         pop();
     }
@@ -63,13 +84,13 @@ class Panel {
         text(this.header, this.x + this.padding, this.y + this.padding);
 
         textSize(this.textSize);
-        let yOffset = this.y + this.headerSize + this.padding;
+        let yOffset = this.y + this.headerSize + this.padding * 2;
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
             let wrappedLines = this.wrapText(line, this.contentWidth - 2 * this.padding);
             wrappedLines.forEach(wrappedLine => {
                 text(wrappedLine, this.x + this.padding, yOffset);
-                yOffset += textAscent() + textDescent() + this.padding / 2;
+                yOffset += textAscent() + textDescent() + this.padding; // Increase padding between lines
             });
         });
     }
