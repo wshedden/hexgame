@@ -26,11 +26,12 @@ class Player {
       let randomHex = random(hexesToConsider);
       let unitType = this.decideUnitType();
       let newUnit = this.createUnit(unitType);
+      let emoji = this.getUnitEmoji(unitType);
       if (this.placeUnit(randomHex, newUnit)) {
-        this.decisionReasoning += `✅ ${unitType} at (${randomHex.q}, ${randomHex.r})\n`; // Success emoji
+        this.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Success emoji
         this.movesLeft--; // Decrement movesLeft only if the move is successful
       } else {
-        this.decisionReasoning += `❌ ${unitType} at (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
+        this.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
       }
     } else {
       this.decisionReasoning += '❌ No adjacent hexes\n'; // Failure emoji
@@ -42,6 +43,21 @@ class Player {
     // Ensure decisionReasoning does not exceed max length
     if (this.decisionReasoning.length > this.maxReasoningLength) {
       this.decisionReasoning = this.decisionReasoning.slice(-this.maxReasoningLength);
+    }
+  }
+
+  getUnitEmoji(unitType) {
+    switch (unitType) {
+      case 'soldier':
+        return '⚔️'; // Sword emoji for soldier
+      case 'farmer':
+        return '🌾'; // Sheaf of rice emoji for farmer
+      case 'settler':
+        return '🏠'; // House emoji for settler
+      case 'builder':
+        return '🔨'; // Hammer emoji for builder
+      default:
+        return '❓'; // Question mark emoji for unknown unit type
     }
   }
 
