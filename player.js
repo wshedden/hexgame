@@ -9,6 +9,7 @@ class Player {
     this.humanControlled = false;
     this.decisionReasoning = ''; // Store reasoning behind decisions
     this.movesLeft = 2;
+    this.maxReasoningLength = 1000; // Maximum length for decisionReasoning
   }
 
   resetMoves() {
@@ -17,7 +18,7 @@ class Player {
 
   makeDecision() {
     let initialReasoning = this.decisionReasoning;
-    this.decisionReasoning += 'Attempting to add a random unit. ';
+    this.decisionReasoning += '🛠️ '; // Emoji for decision-making
     let isFirstTurn = (turnNumber === 1);
     let hexesToConsider = this.getHexesToConsiderForUnitPlacement(isFirstTurn);
 
@@ -26,17 +27,22 @@ class Player {
       let unitType = this.decideUnitType();
       let newUnit = this.createUnit(unitType);
       if (this.placeUnit(randomHex, newUnit)) {
-        this.decisionReasoning += `Placed a ${unitType} at (${randomHex.q}, ${randomHex.r}). `;
+        this.decisionReasoning += `✅ ${unitType} at (${randomHex.q}, ${randomHex.r}) `; // Success emoji
         this.movesLeft--; // Decrement movesLeft only if the move is successful
       } else {
-        this.decisionReasoning += `Failed to place a ${unitType} at (${randomHex.q}, ${randomHex.r}). `;
+        this.decisionReasoning += `❌ ${unitType} at (${randomHex.q}, ${randomHex.r}) `; // Failure emoji
       }
     } else {
-      this.decisionReasoning += 'No adjacent hexes available for unit placement. ';
+      this.decisionReasoning += '❌ No adjacent hexes '; // Failure emoji
     }
 
     // Append the decision reasoning to the initial reasoning
     this.decisionReasoning = initialReasoning + this.decisionReasoning;
+
+    // Ensure decisionReasoning does not exceed max length
+    if (this.decisionReasoning.length > this.maxReasoningLength) {
+      this.decisionReasoning = this.decisionReasoning.slice(-this.maxReasoningLength);
+    }
   }
 
   addRandomUnit() {
