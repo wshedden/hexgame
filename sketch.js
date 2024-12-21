@@ -5,6 +5,8 @@ let aiPanelVisible = true; // Track the visibility of the AI panel
 let toggleButton; // Declare the toggle button
 let toggleFailedOutputButton; // Declare the toggle failed output button
 let showFailedOutput = true; // Track the visibility of failed AI decision output
+let buttonColor1 = '#28a745'; // Green color
+let buttonColor2 = '#dc3545'; // Red color
 
 function setup() {
   createCanvas(1800, 900);
@@ -32,7 +34,7 @@ function setup() {
   toggleFailedOutputButton.mousePressed(toggleFailedOutput); // Attach the event listener
 
   // Initialize button color based on the initial state
-  toggleFailedOutputButton.style('background-color', showFailedOutput ? '#28a745' : '#dc3545');
+  toggleFailedOutputButton.style('background-color', buttonColor1);
 }
 
 function draw() {
@@ -40,6 +42,7 @@ function draw() {
   drawGameState();
   // Draw panels
   panelManager.updatePanels();
+  toggleFailedOutputButton.style('background-color', showFailedOutput ? buttonColor1 : buttonColor2);
 
   if (currentState === GameState.PAUSED) {
     drawPausedState();
@@ -136,12 +139,12 @@ function toggleFailedOutput() {
       return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
     };
   }
-  // Update button color based on the state
+  // Swap button colors
   const button = document.getElementById('toggleFailedOutputButton');
   if (showFailedOutput) {
-    button.style.backgroundColor = '#28a745'; // Nice green color
+    button.style.backgroundColor = buttonColor1;
   } else {
-    button.style.backgroundColor = '#dc3545'; // Red color
+    button.style.backgroundColor = buttonColor2;
   }
 }
 
