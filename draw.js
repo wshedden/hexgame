@@ -3,8 +3,14 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
   translate(x, y);
   stroke(getOutlineColour()); // Use the purple outline colour
 
-  // Use the fertility-based color
-  fill(colour);
+  // Use the fertility-based color but if it's claimed then lerp it with the claimed colour
+  if (claimedBy) {
+    // Get player colour and convert it to p5.Color object
+    let playerColour = color(players[claimedBy - 1].colour[0], players[claimedBy - 1].colour[1], players[claimedBy - 1].colour[2]);
+    fill(lerpColor(colour, playerColour, 0.6));
+  } else {
+    fill(colour);
+  }
 
   // Determine the stroke color
   if (claimedBy) {

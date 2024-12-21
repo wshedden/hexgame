@@ -9,8 +9,8 @@ function getTerrainColor(type, fertility) {
     case 'forest':
       return lerpColor(color(34, 139, 34), color(0, 100, 0), fertility); // Example colors for forest
     case 'snow':
-      return lerpColor(color(255, 250, 250), color(200, 200, 200), fertility); // Lerp from white to light grey
-      case 'water':
+      return lerpColor(color(255, 250, 250), color(200, 200, 200), 1 - fertility); // Lerp from white to light grey, grey for more fertile
+    case 'water':
       return color(50, 100, 200); // Always blue for water
     default:
       return color(200); // Default color
