@@ -1,3 +1,11 @@
+// Define unit costs
+const UNIT_COSTS = {
+  settler: 100,  // Reduced from 500
+  soldier: 60,   // Reduced from 300
+  farmer: 40,    // Reduced from 200
+  builder: 50    // Reduced from 250
+};
+
 class Player {
   constructor(id, colour) {
     this.id = id;
@@ -53,14 +61,6 @@ class Player {
     return moveUnit(this, fromHex, toHex);
   }
 }
-
-// Define unit costs
-const UNIT_COSTS = {
-  settler: 500,
-  soldier: 300,
-  farmer: 200,
-  builder: 250
-};
 
 function placeUnit(q, r, unit) {
   let hex = getHex(q, r);
