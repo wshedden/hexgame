@@ -119,7 +119,7 @@ class PanelManager {
         this.createPanel('Player 1 Hexes', () => generatePlayerPanelContent(players[0]));
         this.createPanel('Player 2 Hexes', () => generatePlayerPanelContent(players[1]));
         this.createPanel('Selected Unit', () => [`Selected Unit: ${selectedUnitType}`]);
-        this.createPanel('AI Decision Reasoning', () => [`Reasoning: ${players[currentPlayerIndex].decisionReasoning}`]);
+        this.createPanel('AI Decision Reasoning', () => players[currentPlayerIndex].decisionReasoning.split('\n'));
 
         this.organisePanels(); // Organise panels after registering them
     }

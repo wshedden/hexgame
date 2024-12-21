@@ -27,13 +27,13 @@ class Player {
       let unitType = this.decideUnitType();
       let newUnit = this.createUnit(unitType);
       if (this.placeUnit(randomHex, newUnit)) {
-        this.decisionReasoning += `✅ ${unitType} at (${randomHex.q}, ${randomHex.r}) `; // Success emoji
+        this.decisionReasoning += `✅ ${unitType} at (${randomHex.q}, ${randomHex.r})\n`; // Success emoji
         this.movesLeft--; // Decrement movesLeft only if the move is successful
       } else {
-        this.decisionReasoning += `❌ ${unitType} at (${randomHex.q}, ${randomHex.r}) `; // Failure emoji
+        this.decisionReasoning += `❌ ${unitType} at (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
       }
     } else {
-      this.decisionReasoning += '❌ No adjacent hexes '; // Failure emoji
+      this.decisionReasoning += '❌ No adjacent hexes\n'; // Failure emoji
     }
 
     // Append the decision reasoning to the initial reasoning

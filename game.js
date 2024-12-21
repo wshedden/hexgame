@@ -174,8 +174,16 @@ function switchPlayer() {
 function handleAIDecision() {
   players[currentPlayerIndex].decisionReasoning = ''; // Clear previous reasoning
 
-  while (players[currentPlayerIndex].movesLeft > 0) {
+  let maxAttempts = 10; // Maximum number of attempts to make decisions
+  let attempts = 0;
+
+  while (players[currentPlayerIndex].movesLeft > 0 && attempts < maxAttempts) {
     players[currentPlayerIndex].makeDecision();
+    attempts++;
+  }
+
+  if (attempts >= maxAttempts) {
+    console.log(`Player ${players[currentPlayerIndex].id} reached the maximum number of decision attempts.`);
   }
 
   if (currentPlayerIndex === 0) {
@@ -185,7 +193,7 @@ function handleAIDecision() {
   // Update the AI Decision Reasoning panel
   const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
   if (aiPanel) {
-    aiPanel.contentFunction = () => [`Reasoning: ${players[currentPlayerIndex].decisionReasoning}`];
+    aiPanel.contentFunction = () => players[currentPlayerIndex].decisionReasoning.split('\n');
   }
 }
 
