@@ -29,7 +29,7 @@ class PanelManager {
 
         // Calculate panel dimensions
         this.panels.forEach(panel => panel.calculateDimensions());
-        const maxPanelWidth = Math.max(...this.panels.map(panel => panel.contentWidth));
+        const maxPanelWidth = Math.max(...this.panels.map(panel => panel.contentWidth)) + 20; // Increase width slightly
         const panelHeight = this.canvasHeight / rows;
 
         // Position panels in the grid
@@ -37,10 +37,18 @@ class PanelManager {
             const col = index % columns;
             const row = Math.floor(index / columns);
 
-            panel.x = col * maxPanelWidth;
-            panel.y = row * panelHeight;
+            // Adjust horizontal and vertical spacing
+            panel.x = col * (maxPanelWidth + 5); // Reduce horizontal spacing slightly
+            panel.y = row * (panelHeight + 10); // Keep vertical spacing
             panel.width = maxPanelWidth;
             panel.height = panelHeight;
+
+            // Specific placement for "AI Decision Reasoning" panel
+            if (panel.header === 'AI Decision Reasoning') {
+                panel.width = this.canvasWidth / 2; // Make it wider
+                panel.x = this.canvasWidth - panel.width - 20; // Position it to the right with some margin
+                panel.y = 20; // Position it at the top with some margin
+            }
         });
     }
 

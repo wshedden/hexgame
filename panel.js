@@ -18,18 +18,17 @@ class Panel {
         textSize(this.textSize);
         textAlign(LEFT, TOP);
         this.contentHeight = this.headerSize + this.padding;
-        this.contentWidth = 0;
+        this.contentWidth = textWidth(this.header) + 2 * this.padding; // Include header width
 
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
             let wrappedLines = this.wrapText(line, this.width - 2 * this.padding);
             this.contentHeight += wrappedLines.length * (textAscent() + textDescent() + this.padding / 2);
             wrappedLines.forEach(wrappedLine => {
-                this.contentWidth = max(this.contentWidth, textWidth(wrappedLine));
+                this.contentWidth = max(this.contentWidth, textWidth(wrappedLine) + 2 * this.padding);
             });
         });
 
-        this.contentWidth += 2 * this.padding; // Add padding to the content width
         pop();
     }
 
