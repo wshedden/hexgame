@@ -1,7 +1,7 @@
 // Define unit costs
 const UNIT_COSTS = {
   settler: 100,  // Reduced from 500
-  soldier: 60,   // Reduced from 300
+  soldier: 10,   // Reduced from 300
   farmer: 40,    // Reduced from 200
   builder: 50    // Reduced from 250
 };
@@ -35,25 +35,12 @@ class Player {
     this.battlesLeft = 3; // Reset the battle counter at the start of each turn
   }
 
-  canInitiateBattle() {
-    if (this.battlesLeft <= 0) return false;
-    for (let hex of this.occupiedHexes) {
-      let neighbours = getHexNeighbours(hex);
-      if (neighbours.some(neighbour => neighbour.unit && neighbour.unit.id !== this.id)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   initiateBattle(attackerHex, defenderHex) {
     if (this.battlesLeft > 0) {
       let battle = new Battle(attackerHex, defenderHex);
       battle.start();
       this.battlesLeft--;
       this.battleHexes.add(defenderHex.getKey()); // Add the hex to the battle hexes set
-    } else {
-      // console.log(`Player ${this.id} has no battles left this turn.`);
     }
   }
 
@@ -65,28 +52,21 @@ class Player {
 function placeUnit(q, r, unit) {
   let hex = getHex(q, r);
   if (!hex || !claimableTiles.has(hex.getKey())) {
-    // console.log(`Cannot place unit at (${q}, ${r}). Tile is not claimable.`);
     return false;
   }
 
   let player = players.find(p => p.id === unit.id);
   if (player.money < UNIT_COSTS[unit.type]) {
-    // console.log(`Player ${player.id} does not have enough money to place a ${unit.type}.`);
     return false;
   }
 
-  // console.log(`Turn Number: ${turnNumber}, Unit Type: ${unit.type}, Hex: (${q}, ${r})`); // Debugging log
-
-  // First turn logic
   if (turnNumber === 1) {
     if (unit.type !== 'settler') {
-      // console.log(`The first unit placed must be a settler.`);
       return false;
     }
     return placeUnitOnHex(hex, unit);
   }
 
-  // Other turns logic
   let neighbours = getHexNeighbours(hex);
   let isAdjacentToOccupiedHex = neighbours.some(neighbour => neighbour.occupiedBy === unit.id);
 
@@ -96,7 +76,6 @@ function placeUnit(q, r, unit) {
       return true;
     }
   } else {
-    // console.log(`Cannot place unit at (${q}, ${r}). It must be adjacent to an occupied hex.`);
     return false;
   }
 }
@@ -119,9 +98,7 @@ function placeUnitOnHex(hex, unit) {
           player.claimedAdjacentHexes.add(neighbour.getKey());
         }
       });
-      // Remove the current hex from claimedAdjacentHexes if it was there
       player.claimedAdjacentHexes.delete(hex.getKey());
-      // console.log(`placeUnitOnHex: (${hex.q}, ${hex.r}) claimedBy = ${hex.claimedBy}`);
     }
   }
   return true;
@@ -135,42 +112,6 @@ function drawUnit(x, y, unit, size) {
   pop();
 }
 
-function battle(attackerHex, defenderHex) {
-  if (!attackerHex.unit || !defenderHex.unit) return;
-
-  let attacker = attackerHex.unit;
-  let defender = defenderHex.unit;
-
-  // Calculate damage with randomness
-  let attackMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
-  let defenceMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
-
-  // Apply defensive bonus if defender is on a mountain tile
-  let defenceBonus = defenderHex.type === 'mountain' ? 1.5 : 1.0;
-
-  let damageToDefender = Math.max(0, Math.floor(attacker.attack * attackMultiplier - defender.defence * defenceMultiplier * defenceBonus));
-  let damageToAttacker = Math.max(0, Math.floor(defender.attack * defenceMultiplier - attacker.defence * attackMultiplier));
-
-  // Apply damage
-  defender.health -= damageToDefender;
-  attacker.health -= damageToAttacker;
-
-  // console.log(`Battle between Player ${attacker.id} and Player ${defender.id}`);
-  // console.log(`Attacker dealt ${damageToDefender} damage, Defender dealt ${damageToAttacker} damage`);
-
-  // Check for unit deaths
-  if (defender.health <= 0) {
-    // console.log(`Player ${attacker.id} wins the battle!`);
-    animateUnitMovement(attackerHex, defenderHex); // Animate the unit movement
-  }
-
-  if (attacker.health <= 0) {
-    // console.log(`Player ${defender.id} wins the battle!`);
-    attackerHex.unit = null; // Remove the attacker unit
-    attackerHex.occupiedBy = null;
-  }
-}
-
 function moveUnit(player, fromHex, toHex) {
   if (fromHex.units.length === 0) {
     return false;
@@ -182,15 +123,8 @@ function moveUnit(player, fromHex, toHex) {
 
   let unitToMove = random(fromHex.units);
 
-  // Check if the unit can move
   if (unitToMove.movement <= 0) {
     return false;
-  }
-
-  // Check if the destination hex is occupied by an enemy unit
-  if (toHex.units.length > 0 && toHex.units[0].id !== unitToMove.id) {
-    player.initiateBattle(fromHex, toHex);
-    return true;
   }
 
   toHex.units.push(unitToMove);

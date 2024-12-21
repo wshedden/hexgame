@@ -146,6 +146,25 @@ function moveUnit(player, fromHex, toHex) {
         return false;
     }
 
+    // Check if the destination hex is occupied by an enemy unit
+    if (toHex.units.length > 0 && toHex.units[0].id !== unitToMove.id) {
+        console.log(`Battle condition met: fromHex (${fromHex.q}, ${fromHex.r}) toHex (${toHex.q}, ${toHex.r})`);
+        console.log(`Unit to move: ${unitToMove.id}, Destination unit: ${toHex.units[0].id}`);
+        
+        // Initiate a battle using the Battle class
+        let battle = new Battle(fromHex, toHex);
+        battle.start();
+        player.movesLeft--; // Decrement movesLeft only if the battle is initiated
+        return true;
+    } else {
+        console.log(`No battle: fromHex (${fromHex.q}, ${fromHex.r}) toHex (${toHex.q}, ${toHex.r})`);
+        if (toHex.units.length === 0) {
+            console.log('Reason: Destination hex has no units');
+        } else if (toHex.units[0].id === unitToMove.id) {
+            console.log('Reason: Destination unit is the same as the unit to move');
+        }
+    }
+
     toHex.units.push(unitToMove);
     fromHex.units.splice(fromHex.units.indexOf(unitToMove), 1);
 

@@ -1,6 +1,8 @@
 let selectedHex = null;
 let selectedUnitType = 'settler'; // Default to 'settler'
 let panelManager;
+let aiPanelVisible = true; // Track the visibility of the AI panel
+let toggleButton; // Declare the toggle button
 
 function setup() {
   createCanvas(1800, 900);
@@ -11,6 +13,12 @@ function setup() {
 
   panelManager = new PanelManager();
   panelManager.registerPanels(); // Register panels
+
+  // Create the toggle button
+  toggleButton = createButton('Toggle AI Panel');
+  toggleButton.id('toggleButton'); // Assign the ID for styling
+  toggleButton.position(width - 150, 10); // Position the button on the right
+  toggleButton.mousePressed(toggleAIPanel); // Attach the event listener
 }
 
 function draw() {
@@ -95,5 +103,13 @@ function drawSelectedUnitTypePanel() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   panelManager.resizeCanvas(windowWidth, windowHeight);
+}
+
+function toggleAIPanel() {
+  aiPanelVisible = !aiPanelVisible;
+  const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
+  if (aiPanel) {
+    aiPanel.visible = aiPanelVisible;
+  }
 }
 

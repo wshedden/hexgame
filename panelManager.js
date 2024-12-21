@@ -121,14 +121,21 @@ class PanelManager {
                 `👑 ${selectedHex.claimedBy ? `Player ${selectedHex.claimedBy}` : 'Unclaimed'}`
             ];
 
-            selectedHex.units.forEach((unit, i) => {
-                let unitEmoji = getUnitEmoji(unit.type);
-                let unitTypeCapitalized = unit.type.charAt(0).toUpperCase() + unit.type.slice(1);
-                let playerSymbol = unit.id === 1 ? '🔴' : '🔵'; // Red circle for Player 1, Blue circle for Player 2
-                content.push(
-                    `${playerSymbol} ${unitEmoji} ${unitTypeCapitalized} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement}`
-                );
-            });
+            if (selectedHex.units.length > 0) {
+                selectedHex.units.forEach((unit, i) => {
+                    let unitEmoji = getUnitEmoji(unit.type);
+                    let unitTypeCapitalized = unit.type.charAt(0).toUpperCase() + unit.type.slice(1);
+                    let playerSymbol = unit.id === 1 ? '🔴' : '🔵'; // Red circle for Player 1, Blue circle for Player 2
+                    content.push(
+                        `${playerSymbol} ${unitEmoji} ${unitTypeCapitalized} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement}`
+                    );
+                });
+            }
+
+            // Check if there's a battle happening in the selected hex
+            if (players.some(player => player.battleHexes.has(selectedHex.getKey()))) {
+                content.push('⚔️🔥💥 Battle in progress! 💥🔥⚔️');
+            }
 
             return content;
         });

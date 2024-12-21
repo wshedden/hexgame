@@ -11,6 +11,7 @@ class Panel {
         this.headerSize = options.headerSize || 18;
         this.contentHeight = 0;
         this.contentWidth = 0;
+        this.visible = true; // Add visible property
     }
 
     calculateDimensions() {
@@ -73,6 +74,8 @@ class Panel {
     }
 
     draw() {
+        if (!this.visible) return; // Skip drawing if the panel is not visible
+
         this.calculateDimensions();
         fill(this.backgroundColour);
         noStroke();
