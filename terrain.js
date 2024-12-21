@@ -1,3 +1,20 @@
+function getTerrainColor(type, fertility) {
+  switch (type) {
+    case 'grass':
+      return lerpColor(color(100, 200, 100), color(50, 150, 50), fertility); // Example colors for grass
+    case 'desert':
+      return lerpColor(color(237, 201, 175), color(255, 255, 224), fertility); // Lerp from orange to light yellow
+    case 'mountain':
+      return lerpColor(color(64, 64, 64), color(192, 192, 192), fertility); // Lerp from dark grey to light grey
+    case 'forest':
+      return lerpColor(color(34, 139, 34), color(0, 100, 0), fertility); // Example colors for forest
+    case 'snow':
+      return lerpColor(color(255, 250, 250), color(200, 200, 200), fertility); // Lerp from white to light grey
+    default:
+      return color(200); // Default color
+  }
+}
+
 function generateTerrain() {
   hexGrid.forEach((hex) => {
     let noiseValue = noise(hex.q * 0.1, hex.r * 0.1);
@@ -24,8 +41,10 @@ function generateTerrain() {
     } else {
       hex.type = 'snow';
       hex.fertility = 0.1 + random(-0.05, 0.05); // Snow has very low fertility with some randomness
-      hex.colour = lerpColor(color(255, 250, 250), hex.calculateFertilityColor(hex.fertility), 0.8); // Weight towards whiteness
     }
+
+    hex.colour = getTerrainColor(hex.type, hex.fertility);
+
     if (hex.type !== 'water' && hex.type !== 'snow') {
       hex.setColourByFertility(); // Set the colour based on fertility
     }
