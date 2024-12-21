@@ -69,7 +69,7 @@ class PanelManager {
     positionAIPanel(panel) {
         panel.width = this.canvasWidth - this.hexGridEndX;
         panel.x = this.hexGridEndX;
-        panel.y = 800; // Position it at the top with some margin
+        panel.y = 500; // Position it at the top with some margin
     }
 
     positionSelectedUnitPanel(panel) {

@@ -8,17 +8,35 @@ class Player {
     this.battlesLeft = 3; // Example: Allow 3 battles per turn
     this.humanControlled = false;
     this.decisionReasoning = ''; // Store reasoning behind decisions
-    this.movesLeft = 3; // Allow 3 moves per turn
+    this.movesLeft = 2;
   }
 
   resetMoves() {
-    this.movesLeft = 3;
+    this.movesLeft = 2;
   }
 
   makeDecision() {
-    // For now, just call addRandomUnit as a placeholder for more complex decision-making
-    this.decisionReasoning = 'Adding a random unit.';
-    this.addRandomUnit();
+    let initialReasoning = this.decisionReasoning;
+    this.decisionReasoning += 'Attempting to add a random unit. ';
+    let isFirstTurn = (turnNumber === 1);
+    let hexesToConsider = this.getHexesToConsiderForUnitPlacement(isFirstTurn);
+
+    if (hexesToConsider.length > 0) {
+      let randomHex = random(hexesToConsider);
+      let unitType = this.decideUnitType();
+      let newUnit = this.createUnit(unitType);
+      if (this.placeUnit(randomHex, newUnit)) {
+        this.decisionReasoning += `Placed a ${unitType} at (${randomHex.q}, ${randomHex.r}). `;
+        this.movesLeft--; // Decrement movesLeft only if the move is successful
+      } else {
+        this.decisionReasoning += `Failed to place a ${unitType} at (${randomHex.q}, ${randomHex.r}). `;
+      }
+    } else {
+      this.decisionReasoning += 'No adjacent hexes available for unit placement. ';
+    }
+
+    // Append the decision reasoning to the initial reasoning
+    this.decisionReasoning = initialReasoning + this.decisionReasoning;
   }
 
   addRandomUnit() {

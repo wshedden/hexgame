@@ -176,7 +176,6 @@ function handleAIDecision() {
 
   while (players[currentPlayerIndex].movesLeft > 0) {
     players[currentPlayerIndex].makeDecision();
-    players[currentPlayerIndex].movesLeft--;
   }
 
   if (currentPlayerIndex === 0) {
