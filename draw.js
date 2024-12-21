@@ -2,6 +2,7 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
   push();
   translate(x, y);
   stroke(getOutlineColour()); // Use the purple outline colour
+  strokeWeight(1); // Set stroke weight
 
   // Use the fertility-based color but if it's claimed then lerp it with the claimed colour
   if (claimedBy) {

@@ -97,7 +97,6 @@ function keyPressed() {
     }
   }
 }
-
 function mousePressed() {
   let clickedHex = pixelToHex(mouseX - width / 2, mouseY - height / 2);
   if (clickedHex) {

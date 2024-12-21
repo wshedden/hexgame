@@ -52,6 +52,9 @@ function drawUnit(x, y, unit, size) {
   push();
   translate(x, y);
   fill(unit.colour);
+  stroke(unit.colour); // Set stroke to the player color
+  strokeWeight(2); // Set a consistent stroke weight
+
   if (unit.id === 1) {
     // Draw circle for Player 1
     ellipse(0, 0, size, size);
