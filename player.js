@@ -56,6 +56,8 @@ function placeUnit(q, r, unit) {
     return false;
   }
 
+  console.log(`Turn Number: ${turnNumber}, Unit Type: ${unit.type}, Hex: (${q}, ${r})`); // Debugging log
+
   // First turn logic
   if (turnNumber === 1) {
     if (unit.type !== 'settler') {

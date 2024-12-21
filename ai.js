@@ -74,7 +74,7 @@ function handleUnitPlacement(player) {
     let unitType = decideUnitType(player);
     let newUnit = createUnit(player, unitType);
     let emoji = getUnitEmoji(unitType);
-    if (placeUnit(randomHex, newUnit)) {
+    if (placeUnit(randomHex.q, randomHex.r, newUnit)) { // Pass q and r values correctly
       player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Success emoji
       player.movesLeft--; // Decrement movesLeft only if the move is successful
     } else {
