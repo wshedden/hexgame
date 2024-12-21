@@ -3,13 +3,15 @@ function getTerrainColor(type, fertility) {
     case 'grass':
       return lerpColor(color(100, 200, 100), color(50, 150, 50), fertility); // Example colors for grass
     case 'desert':
-      return lerpColor(color(237, 201, 175), color(255, 255, 224), fertility); // Lerp from orange to light yellow
+      return lerpColor(color(207, 169, 56), color(255, 255, 224), fertility*4); // Lerp from dark tan to light yellow
     case 'mountain':
       return lerpColor(color(64, 64, 64), color(192, 192, 192), fertility); // Lerp from dark grey to light grey
     case 'forest':
       return lerpColor(color(34, 139, 34), color(0, 100, 0), fertility); // Example colors for forest
     case 'snow':
       return lerpColor(color(255, 250, 250), color(200, 200, 200), fertility); // Lerp from white to light grey
+      case 'water':
+      return color(50, 100, 200); // Always blue for water
     default:
       return color(200); // Default color
   }
