@@ -124,11 +124,7 @@ class PanelManager {
             selectedHex.units.forEach((unit, i) => {
                 let unitEmoji = getUnitEmoji(unit.type);
                 content.push(
-                    `${unitEmoji} ${unit.type}`,
-                    `❤️ ${unit.health}`,
-                    `⚔️ ${unit.attack}`,
-                    `🛡️ ${unit.defence}`,
-                    `🚶 ${unit.movement}`
+                    `${unitEmoji} ${unit.type} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement}`
                 );
             });
 
