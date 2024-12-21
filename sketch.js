@@ -193,6 +193,8 @@ function toggleFailedOutput() {
 
 function drawPath() {
   if (path.length > 1) {
+    push();
+    translate(width / 2, height / 2); // Translate the origin to the center of the canvas
     stroke(255, 0, 0); // Red color for the path
     strokeWeight(2);
     noFill();
@@ -202,6 +204,7 @@ function drawPath() {
       vertex(x, y);
     });
     endShape();
+    pop();
   }
 }
 
