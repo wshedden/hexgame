@@ -12,29 +12,11 @@ class Player {
     let isFirstTurn = (turnNumber === 1);
     let hexesToConsider = isFirstTurn ? Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit) : Array.from(this.adjacentHexes).map(key => hexGrid.get(key)).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
 
-    // If first turn, place a settler in a random place
-    if (isFirstTurn) {
-      let randomHex = random(hexesToConsider);
-      let newUnit = new Unit(this.id, 'settler', 100, 0, 0, this.color); // Example values for attack and defense
-      placeUnit(randomHex.q, randomHex.r, newUnit);
-      print(`Player ${this.id} added settler unit to Hex: (${randomHex.q}, ${randomHex.r})`);
-      return;
-    }
-
     if (hexesToConsider.length > 0) {
-      if(random(1) < 0.5) {
-        // Add farmer to a claimed hex
-        let randomHex = random(this.occupiedHexes);
-        let newUnit = new Unit(this.id, "farmer", 5, 5, 5, this.color); // Example values for attack and defense
-        placeUnit(randomHex.q, randomHex.r, newUnit);
-        console.log(`Player ${this.id} added ${newUnit.type} unit to Hex: (${randomHex.q}, ${randomHex.r})`);
-        return;
-      }
       let randomHex = random(hexesToConsider);
-      // let newUnit = new Unit(this.id, "soldier", unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, this.color); // Example values for attack and defense
-      let newUnit = new Unit(this.id, "soldier", 50, 5, 5, this.color); // Example values for attack and defense  
+      let unitType = random(1) < 0.5 ? 'farmer' : 'soldier';
+      let newUnit = new Unit(this.id, unitType, unitType === 'soldier' ? 50 : 5, 5, 5, this.color); // Example values for attack and defense
       placeUnit(randomHex.q, randomHex.r, newUnit);
-
       console.log(`Player ${this.id} added ${newUnit.type} unit to Hex: (${randomHex.q}, ${randomHex.r})`);
     } else {
       console.log(`Player ${this.id} has no adjacent hexes available for unit placement.`);
@@ -117,30 +99,6 @@ function placeUnit(q, r, unit) {
     console.log(`Cannot place unit at (${q}, ${r}). It must be adjacent to an occupied hex.`);
     return false;
   }
-}
-
-function drawUnits() {
-  push();
-  translate(width / 2, height / 2); // Translate the origin to the center of the canvas
-  hexGrid.forEach((hex) => {
-    if (hex.units.length > 0) {
-      let { x, y } = hexToPixel(hex);
-      drawHexUnits(x, y, hex.units);
-    }
-  });
-  pop();
-}
-
-function drawHexUnits(x, y, units) {
-  let maxUnits = 5; // Maximum number of units to fit in one hex
-  let unitSize = 20 / Math.sqrt(units.length); // Adjust size based on the number of units
-
-  units.forEach((unit, index) => {
-    let angle = TWO_PI / maxUnits * index;
-    let offsetX = unitSize * cos(angle);
-    let offsetY = unitSize * sin(angle);
-    drawUnit(x + offsetX, y + offsetY, unit, unitSize);
-  });
 }
 
 function drawUnit(x, y, unit, size) {

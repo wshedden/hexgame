@@ -10,14 +10,6 @@ class Unit {
   }
 }
 
-// function placeUnit(q, r, unit) {
-//   let hex = getHex(q, r);
-//   hex.occupiedBy = unit.id;
-//   if (hex && !hex.unit) {
-//     hex.unit = unit;
-//   }
-// }
-
 function drawUnits() {
   push();
   translate(width / 2, height / 2); // Translate the origin to the center of the canvas
