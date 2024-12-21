@@ -77,10 +77,6 @@ function registerTerrainType(type, colourValue) {
   terrainColours[type] = colourValue;
 }
 
-function getTerrainColour(type) {
-  return terrainColours[type] || color(200); // Default color if type is not found
-}
-
 function getOutlineColour() {
   return color(128, 0, 128); // Nice purple color
 }

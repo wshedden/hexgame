@@ -25,5 +25,6 @@ function generateTerrain() {
       hex.type = 'snow';
       hex.fertility = 0.1 + random(-0.05, 0.05); // Snow has very low fertility with some randomness
     }
+    hex.colour = getTerrainColour(hex.type);
   });
 }
