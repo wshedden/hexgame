@@ -101,22 +101,14 @@ function generatePlayerPanelContent(player) {
     let claimedHexesArray = Array.from(player.claimedHexes);
 
     let lines = [
-        `Claimed Hexes: ${claimedHexesArray.length}`,
-        `Money: ${player.money}`, // Display money
-        `Unit Limit: ${player.unitLimit}` // Display unit limit
+        `🔷 Claimed Hexes: ${claimedHexesArray.length}`,
+        `💰 Money: ${player.money}`, // Display money
+        `🔢 Unit Limit: ${player.unitLimit}` // Display unit limit
     ];
 
-    for (let i = 0; i < claimedHexesArray.length; i += 3) {
-        let hex1 = claimedHexesArray[i];
-        let hex2 = claimedHexesArray[i + 1];
-        let hex3 = claimedHexesArray[i + 2];
-        if (hex3) {
-            lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.r}    ${hex3.q}, ${hex3.r}`);
-        } else if (hex2) {
-            lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.r}`);
-        } else {
-            lines.push(`${hex1.q}, ${hex1.r}`);
-        }
+    for (let i = 0; i < claimedHexesArray.length; i++) {
+        let hex = claimedHexesArray[i];
+        lines.push(`📍 ${hex.q}, ${hex.r}`);
     }
 
     return lines;
