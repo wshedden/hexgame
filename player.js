@@ -2,8 +2,9 @@ class Player {
   constructor(id, colour) {
     this.id = id;
     this.colour = colour;
-    this.occupiedHexes = [];
-    this.adjacentHexes = new Set();
+    this.occupiedHexes = new Set();
+    this.claimedHexes = new Set();
+    this.claimedAdjacentHexes = new Set();
     this.battlesLeft = 3; // Example: Allow 3 battles per turn
     this.humanControlled = false;
   }
@@ -31,7 +32,7 @@ class Player {
     if (isFirstTurn) {
       return Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit);
     } else {
-      return Array.from(this.adjacentHexes).map(key => hexGrid.get(key)).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
+      return Array.from(this.claimedAdjacentHexes).map(key => hexGrid.get(key)).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
     }
   }
 
@@ -137,15 +138,19 @@ function placeUnitOnHex(hex, unit) {
   hex.occupiedBy = unit.id;
   let player = players.find(p => p.id === unit.id);
   if (player) {
-    player.occupiedHexes.push(hex);
-    let neighbours = getHexNeighbours(hex);
-    neighbours.forEach(neighbour => {
-      if (!neighbour.occupiedBy && claimableTiles.has(neighbour.getKey())) {
-        player.adjacentHexes.add(neighbour.getKey());
-      }
-    });
-    // Remove the current hex from adjacentHexes if it was there
-    player.adjacentHexes.delete(hex.getKey());
+    player.occupiedHexes.add(hex);
+    if (unit.type === 'settler') {
+      hex.claimedBy = unit.id; // Only claim hex if the unit is a settler
+      player.claimedHexes.add(hex);
+      let neighbours = getHexNeighbours(hex);
+      neighbours.forEach(neighbour => {
+        if (!neighbour.occupiedBy && claimableTiles.has(neighbour.getKey())) {
+          player.claimedAdjacentHexes.add(neighbour.getKey());
+        }
+      });
+      // Remove the current hex from claimedAdjacentHexes if it was there
+      player.claimedAdjacentHexes.delete(hex.getKey());
+    }
   }
   return true;
 }

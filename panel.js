@@ -146,19 +146,20 @@ class PanelManager {
 }
 
 function generatePlayerPanelContent(player) {
+    let claimedHexesArray = Array.from(player.claimedHexes);
+
     let lines = [
-        `Occupied Hexes: ${player.occupiedHexes.length}`,
-        `Claimed Hexes: ${player.occupiedHexes.filter(hex => hex.claimedBy === player.id).length}`
+        `Claimed Hexes: ${claimedHexesArray.length}`
     ];
 
-    for (let i = 0; i < player.occupiedHexes.length; i += 3) {
-        let hex1 = player.occupiedHexes[i];
-        let hex2 = player.occupiedHexes[i + 1];
-        let hex3 = player.occupiedHexes[i + 2];
+    for (let i = 0; i < claimedHexesArray.length; i += 3) {
+        let hex1 = claimedHexesArray[i];
+        let hex2 = claimedHexesArray[i + 1];
+        let hex3 = claimedHexesArray[i + 2];
         if (hex3) {
             lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.r}    ${hex3.q}, ${hex3.r}`);
         } else if (hex2) {
-            lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.q}`);
+            lines.push(`${hex1.q}, ${hex1.r}    ${hex2.q}, ${hex2.r}`);
         } else {
             lines.push(`${hex1.q}, ${hex1.r}`);
         }
