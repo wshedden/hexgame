@@ -10,19 +10,26 @@ class Panel {
         this.textSize = options.textSize || 16;
         this.headerSize = options.headerSize || 18;
         this.contentHeight = 0;
+        this.contentWidth = 0;
     }
 
-    calculateHeight() {
+    calculateDimensions() {
         push();
         textSize(this.textSize);
         textAlign(LEFT, TOP);
         this.contentHeight = this.headerSize + this.padding;
+        this.contentWidth = 0;
 
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
             let wrappedLines = this.wrapText(line, this.width - 2 * this.padding);
             this.contentHeight += wrappedLines.length * (textAscent() + textDescent() + this.padding / 2);
+            wrappedLines.forEach(wrappedLine => {
+                this.contentWidth = max(this.contentWidth, textWidth(wrappedLine));
+            });
         });
+
+        this.contentWidth += 2 * this.padding; // Add padding to the content width
         pop();
     }
 
@@ -46,10 +53,10 @@ class Panel {
     }
 
     draw() {
-        this.calculateHeight();
+        this.calculateDimensions();
         fill(this.backgroundColour);
         noStroke();
-        rect(this.x, this.y, this.width, this.contentHeight, 10);
+        rect(this.x, this.y, this.contentWidth, this.contentHeight, 10);
 
         fill(255);
         textSize(this.headerSize);
@@ -60,7 +67,7 @@ class Panel {
         let yOffset = this.y + this.headerSize + this.padding;
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
-            let wrappedLines = this.wrapText(line, this.width - 2 * this.padding);
+            let wrappedLines = this.wrapText(line, this.contentWidth - 2 * this.padding);
             wrappedLines.forEach(wrappedLine => {
                 text(wrappedLine, this.x + this.padding, yOffset);
                 yOffset += textAscent() + textDescent() + this.padding / 2;

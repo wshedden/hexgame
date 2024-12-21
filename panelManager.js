@@ -1,16 +1,13 @@
 class PanelManager {
     constructor() {
         this.panels = [];
-        this.grid = [];
-        this.columns = 3; // Example column count for grid layout
-        this.rows = 3; // Example row count for grid layout
-        this.canvasWidth = 1800; // Assuming canvas width is 1800
-        this.canvasHeight = 900; // Assuming canvas height is 900
+        this.canvasWidth = 1800; // Default canvas width
+        this.canvasHeight = 900; // Default canvas height
     }
 
     registerPanel(panel) {
         this.panels.push(panel);
-        this.organizePanels();
+        this.organisePanels(); // Reorganise whenever a panel is added
     }
 
     updatePanels() {
@@ -23,19 +20,35 @@ class PanelManager {
         return panel;
     }
 
-    organizePanels() {
-        const panelWidth = this.canvasWidth / this.columns;
-        const panelHeight = this.canvasHeight / this.rows;
+    organisePanels() {
+        const panelCount = this.panels.length;
 
+        // Calculate grid dimensions dynamically
+        const columns = Math.ceil(Math.sqrt(panelCount)); // Square-like layout
+        const rows = Math.ceil(panelCount / columns);
+
+        // Calculate panel dimensions
+        this.panels.forEach(panel => panel.calculateDimensions());
+        const maxPanelWidth = Math.max(...this.panels.map(panel => panel.contentWidth));
+        const panelHeight = this.canvasHeight / rows;
+
+        // Position panels in the grid
         this.panels.forEach((panel, index) => {
-            const col = index % this.columns;
-            const row = Math.floor(index / this.columns);
+            const col = index % columns;
+            const row = Math.floor(index / columns);
 
-            panel.x = col * panelWidth;
+            panel.x = col * maxPanelWidth;
             panel.y = row * panelHeight;
-            panel.width = panelWidth;
+            panel.width = maxPanelWidth;
             panel.height = panelHeight;
         });
+    }
+
+    // Call when canvas is resized
+    resizeCanvas(width, height) {
+        this.canvasWidth = width;
+        this.canvasHeight = height;
+        this.organisePanels(); // Reorganise panels based on the new dimensions
     }
 
     registerPanels() {
@@ -75,6 +88,6 @@ class PanelManager {
         this.createPanel('Selected Unit', () => [`Selected Unit: ${selectedUnitType}`]);
         this.createPanel('AI Decision Reasoning', () => [`Reasoning: ${players[currentPlayerIndex].decisionReasoning}`]);
 
-        this.organizePanels();
+        this.organisePanels(); // Organise panels after registering them
     }
 }
