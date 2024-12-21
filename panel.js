@@ -80,19 +80,25 @@ class PanelManager {
 
         this.createPanel(0, 0, 200, 'Hex Info', () => {
             if (!selectedHex) return ['No hex selected'];
-            return [
+            let content = [
                 `Hex: (${selectedHex.q}, ${selectedHex.r})`,
                 `Type: ${selectedHex.type}`,
                 `Noise: ${selectedHex.noiseValue.toFixed(2)}`,
                 `Fertility: ${selectedHex.fertility.toFixed(2)}`, // Display fertility
-                `Claimed By: ${selectedHex.claimedBy ? `Player ${selectedHex.claimedBy}` : 'Unclaimed'}`, // Display claimed status
-                ...selectedHex.units.map((unit, i) => [
-                    `Unit ${i}: ${unit.type}`,
+                `Claimed By: ${selectedHex.claimedBy ? `Player ${selectedHex.claimedBy}` : 'Unclaimed'}` // Display claimed status
+            ];
+
+            selectedHex.units.forEach((unit, i) => {
+                content.push(
+                    `Unit ${i + 1}: ${unit.type}`,
                     `Health: ${unit.health}`,
                     `Attack: ${unit.attack}`,
-                    `Defence: ${unit.defence}`
-                ]).flat()
-            ];
+                    `Defence: ${unit.defence}`,
+                    '' // Add a blank line for spacing
+                );
+            });
+
+            return content;
         });
 
         this.createPanel(0, 0, 200, 'Player 1 Hexes', () => {
