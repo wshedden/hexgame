@@ -65,17 +65,18 @@ class PanelManager {
 
     positionSpecialPanels() {
         const aiPanel = this.getPanelByHeader('AI Decision Reasoning');
+        const selectedUnitPanel = this.getPanelByHeader('Selected Unit');
         const player2Panel = this.getPanelByHeader('Player 2 Hexes');
-        if (aiPanel && player2Panel) {
-            aiPanel.x = player2Panel.x;
-            aiPanel.y = player2Panel.y + player2Panel.height + 10; // Position below Player 2 panel with some margin
-            aiPanel.width = player2Panel.width;
-            aiPanel.height = this.canvasHeight - aiPanel.y; // Adjust height to fit within the canvas
+
+        if (selectedUnitPanel && player2Panel) {
+            selectedUnitPanel.x = player2Panel.x;
+            selectedUnitPanel.y = player2Panel.y + player2Panel.height + 10; // Position below Player 2 panel with some margin
+            selectedUnitPanel.width = player2Panel.width;
+            selectedUnitPanel.height = this.canvasHeight - selectedUnitPanel.y; // Adjust height to fit within the canvas
         }
 
-        const selectedUnitPanel = this.getPanelByHeader('Selected Unit');
-        if (selectedUnitPanel) {
-            this.positionSelectedUnitPanel(selectedUnitPanel);
+        if (aiPanel) {
+            this.positionAIPanel(aiPanel);
         }
     }
 
@@ -84,9 +85,9 @@ class PanelManager {
     }
 
     positionAIPanel(panel) {
-        panel.width = this.canvasWidth - this.hexGridEndX;
-        panel.x = this.hexGridEndX;
-        panel.y = 500; // Position it at the top with some margin
+        panel.width = this.hexGridStartX;
+        panel.x = 0;
+        panel.y = this.canvasHeight - panel.contentHeight - 360; // Position it at the bottom left with some margin
     }
 
     positionSelectedUnitPanel(panel) {

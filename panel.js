@@ -22,13 +22,13 @@ class Panel {
         push();
         textSize(this.textSize);
         textAlign(LEFT, TOP);
-        this.contentWidth = textWidth(this.header) + 2 * this.padding; // Include header width
+        this.contentWidth = textWidth(this.header) + 5 * this.padding; // Include header width
 
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
             let wrappedLines = this.wrapText(line, this.width - 2 * this.padding);
             wrappedLines.forEach(wrappedLine => {
-                this.contentWidth = max(this.contentWidth, textWidth(wrappedLine) + 2 * this.padding);
+                this.contentWidth = max(this.contentWidth, textWidth(wrappedLine) + 5 * this.padding);
             });
         });
 
