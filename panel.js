@@ -85,6 +85,7 @@ class PanelManager {
                 `Type: ${selectedHex.type}`,
                 `Noise: ${selectedHex.noiseValue.toFixed(2)}`,
                 `Fertility: ${selectedHex.fertility.toFixed(2)}`, // Display fertility
+                `Claimed By: ${selectedHex.claimedBy ? `Player ${selectedHex.claimedBy}` : 'Unclaimed'}`, // Display claimed status
                 ...selectedHex.units.map((unit, i) => [
                     `Unit ${i}: ${unit.type}`,
                     `Health: ${unit.health}`,

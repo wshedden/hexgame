@@ -38,5 +38,4 @@ class Hex {
   unclaim() {
     this.claimedBy = null;
   }
-
 }
