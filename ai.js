@@ -25,22 +25,31 @@ function handleUnitMovement(player) {
   for (let hex of unitHexes) {
     if (hex.units.length >= 5) {
       let neighbours = getHexNeighbours(hex).filter(neighbour => !neighbour.unit && claimableTiles.has(neighbour.getKey()));
+      print(`Hex (${hex.q}, ${hex.r}) has ${hex.units.length} units. Neighbours: ${neighbours.map(n => `(${n.q}, ${n.r})`).join(', ')}`);
       if (neighbours.length > 0) {
         let toHex = random(neighbours);
         let unitToMove = hex.units[0]; // Move the first unit
+        print(`Trying to move unit from (${hex.q}, ${hex.r}) to (${toHex.q}, ${toHex.r})`);
         if (moveUnit(player, hex, toHex, unitToMove)) {
           player.decisionReasoning += `➡️ Moved unit from (${hex.q}, ${hex.r}) to (${toHex.q}, ${toHex.r})\n`; // Movement emoji
           player.movesLeft--; // Decrement movesLeft only if the move is successful
           moved = true;
+          print(`Successfully moved unit from (${hex.q}, ${hex.r}) to (${toHex.q}, ${toHex.r})`);
           break;
         } else {
           player.decisionReasoning += `❌ Failed to move unit from (${hex.q}, ${hex.r}) to (${toHex.q}, ${toHex.r})\n`; // Failure emoji
+          print(`Failed to move unit from (${hex.q}, ${hex.r}) to (${toHex.q}, ${toHex.r})`);
         }
+      } else {
+        print(`No valid neighbours to move to from Hex (${hex.q}, ${hex.r})`);
       }
+    } else {
+      print(`Hex (${hex.q}, ${hex.r}) does not have enough units to move`);
     }
   }
 
   if (!moved) {
+    print(`No suitable hex found with 5 units. Trying to move any unit.`);
     moveAnyUnit(player, unitHexes);
   }
 }
@@ -49,19 +58,25 @@ function moveAnyUnit(player, unitHexes) {
   if (unitHexes.length > 0) {
     let fromHex = random(unitHexes);
     let neighbours = getHexNeighbours(fromHex).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
+    print(`Trying to move unit from (${fromHex.q}, ${fromHex.r}). Neighbours: ${neighbours.map(n => `(${n.q}, ${n.r})`).join(', ')}`);
     if (neighbours.length > 0) {
       let toHex = random(neighbours);
+      print(`Selected neighbour (${toHex.q}, ${toHex.r}) for movement`);
       if (moveUnit(player, fromHex, toHex)) {
         player.decisionReasoning += `➡️ Moved unit to (${toHex.q}, ${toHex.r})\n`; // Movement emoji
         player.movesLeft--; // Decrement movesLeft only if the move is successful
+        print(`Successfully moved unit to (${toHex.q}, ${toHex.r})`);
       } else {
         player.decisionReasoning += `❌ Failed to move unit to (${toHex.q}, ${toHex.r})\n`; // Failure emoji
+        print(`Failed to move unit to (${toHex.q}, ${toHex.r})`);
       }
     } else {
       player.decisionReasoning += '❌ No adjacent hexes for movement\n'; // Failure emoji
+      print(`No valid neighbours to move to from Hex (${fromHex.q}, ${fromHex.r})`);
     }
   } else {
     player.decisionReasoning += '❌ No units to move\n'; // Failure emoji
+    print(`No units available to move for player ${player.id}`);
   }
 }
 
@@ -145,24 +160,27 @@ function getUnitEmoji(unitType) {
 }
 
 function moveUnit(player, fromHex, toHex) {
-  if (!fromHex.unit) {
+  if (fromHex.units.length === 0) {
     console.log(`No unit to move from Hex (${fromHex.q}, ${fromHex.r})`);
     return false;
   }
 
-  if (toHex.unit) {
+  if (toHex.units.length >= MAX_UNITS_PER_HEX) {
     console.log(`Hex (${toHex.q}, ${toHex.r}) is already occupied by another unit`);
     return false;
   }
 
-  // Move the unit
-  toHex.unit = fromHex.unit;
-  toHex.occupiedBy = fromHex.unit.id;
-  fromHex.unit = null;
-  fromHex.occupiedBy = null;
+  // Select a random unit from the fromHex
+  let unitToMove = random(fromHex.units);
 
-  // Update player's occupied hexes
-  player.occupiedHexes.delete(fromHex);
+  // Move the unit
+  toHex.units.push(unitToMove);
+  fromHex.units.splice(fromHex.units.indexOf(unitToMove), 1);
+
+  // Update player's occupied hexes if necessary
+  if (fromHex.units.length === 0) {
+    player.occupiedHexes.delete(fromHex);
+  }
   player.occupiedHexes.add(toHex);
 
   console.log(`Player ${player.id} moved unit to Hex: (${toHex.q}, ${toHex.r})`);
