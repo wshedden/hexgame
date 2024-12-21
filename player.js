@@ -10,6 +10,8 @@ class Player {
     this.decisionReasoning = ''; // Store reasoning behind decisions
     this.movesLeft = 2;
     this.maxReasoningLength = 1000; // Maximum length for decisionReasoning
+    this.money = 1000; // New attribute: money
+    this.unitLimit = 10; // New attribute: unit limit
   }
 
   resetMoves() {

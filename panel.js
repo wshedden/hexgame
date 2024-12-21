@@ -101,7 +101,9 @@ function generatePlayerPanelContent(player) {
     let claimedHexesArray = Array.from(player.claimedHexes);
 
     let lines = [
-        `Claimed Hexes: ${claimedHexesArray.length}`
+        `Claimed Hexes: ${claimedHexesArray.length}`,
+        `Money: ${player.money}`, // Display money
+        `Unit Limit: ${player.unitLimit}` // Display unit limit
     ];
 
     for (let i = 0; i < claimedHexesArray.length; i += 3) {
