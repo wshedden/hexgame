@@ -2,7 +2,16 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
   push();
   translate(x, y);
   stroke(getOutlineColour()); // Use the purple outline colour
-  fill(colour || getTerrainColour(type)); // Use the colour attribute if set, otherwise use terrain colour
+
+  // Determine the fill color
+  if (claimedBy) {
+    // player[claimedBy].colour is a color
+    fill(players[claimedBy-1].colour);
+    console.log(`drawHex: (${x}, ${y}) claimedBy = ${claimedBy}`);
+  } else {
+    fill(getTerrainColour(type));
+  }
+
   beginShape();
   for (let i = 0; i < 6; i++) {
     let angle = TWO_PI / 6 * i;
@@ -15,7 +24,7 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
   // Draw thick outline if claimed
   if (claimedBy) {
     strokeWeight(4);
-    stroke(claimedBy.colour);
+    stroke(players[claimedBy-1].colour);
     noFill();
     beginShape();
     for (let i = 0; i < 6; i++) {
@@ -46,7 +55,7 @@ function drawGrid() {
   translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
   hexGrid.forEach((hex) => {
     let { x, y } = hexToPixel(hex);
-    drawHex(x, y, 30, hex.type, hex.text, hex.unit, hex.colour); // Pass the colour attribute
+    drawHex(x, y, 30, hex.type, hex.text, hex.claimedBy, hex.colour); // Pass the colour attribute
   });
 
   // Highlight the selected hex and its neighbours

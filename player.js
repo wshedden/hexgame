@@ -89,6 +89,7 @@ function placeUnitOnHex(hex, unit) {
     player.occupiedHexes.add(hex);
     if (unit.type === 'settler') {
       hex.claimedBy = unit.id; // Only claim hex if the unit is a settler
+      hex.claimedColour = color(player.colour[0], player.colour[1], player.colour[2]); // Set the claimedColour
       player.claimedHexes.add(hex);
       let neighbours = getHexNeighbours(hex);
       neighbours.forEach(neighbour => {
@@ -98,6 +99,7 @@ function placeUnitOnHex(hex, unit) {
       });
       // Remove the current hex from claimedAdjacentHexes if it was there
       player.claimedAdjacentHexes.delete(hex.getKey());
+      console.log(`placeUnitOnHex: (${hex.q}, ${hex.r}) claimedBy = ${hex.claimedBy}`);
     }
   }
   return true;

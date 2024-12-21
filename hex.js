@@ -10,9 +10,10 @@ class Hex {
     this.text = text;
     this.noiseValue = noiseValue;
     this.occupiedBy = occupiedBy;
-    this.claimedBy = claimedBy; // New attribute
-    this.fertility = fertility; // New attribute
+    this.claimedBy = claimedBy;
+    this.fertility = fertility;
     this.colour = getTerrainColour(type);
+    this.claimedColour = null; // New attribute
   }
 
   getKey() {
@@ -26,7 +27,8 @@ class Hex {
     }
     this.units.push(unit);
     if (unit.type == "settler") {
-      this.claimedBy = unit.id;
+      this.claimedBy = unit.id;544
+      this.claimedColour = color(255);
     }
     return true;
   }
@@ -40,9 +42,11 @@ class Hex {
 
   claim(player) {
     this.claimedBy = player.id;
+    this.claimedColour = color(player.colour[0], player.colour[1], player.colour[2]); // Set the claimedColour
   }
 
   unclaim() {
     this.claimedBy = null;
+    this.claimedColour = null; // Reset the claimedColour
   }
 }
