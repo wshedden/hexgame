@@ -57,4 +57,8 @@ class Hex {
     this.claimedBy = null;
     this.claimedColour = null; // Reset the claimedColour
   }
+
+  getMovableUnits() {
+    return this.units.filter(unit => unit.type !== 'settler');
+  }
 }

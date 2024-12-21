@@ -23,11 +23,12 @@ function handleUnitMovement(player) {
 
     // Check for hexes with 5 units and try to move one unit
     for (let hex of unitHexes) {
-        if (hex.units.length >= 5) {
+        let movableUnits = hex.getMovableUnits();
+        if (movableUnits.length >= 5) {
             let neighbours = getHexNeighbours(hex).filter(neighbour => !neighbour.unit && claimableTiles.has(neighbour.getKey()));
             if (neighbours.length > 0) {
                 let toHex = random(neighbours);
-                let unitToMove = hex.units[0]; // Move the first unit
+                let unitToMove = movableUnits[0]; // Move the first movable unit
                 if (moveUnit(player, hex, toHex, unitToMove)) {
                     player.decisionReasoning += `➡️ Moved unit from (${hex.q}, ${hex.r}) to (${toHex.q}, ${toHex.r})\n`; // Movement emoji
                     player.movesLeft--; // Decrement movesLeft only if the move is successful
@@ -48,17 +49,22 @@ function handleUnitMovement(player) {
 function moveAnyUnit(player, unitHexes) {
     if (unitHexes.length > 0) {
         let fromHex = random(unitHexes);
-        let neighbours = getHexNeighbours(fromHex).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
-        if (neighbours.length > 0) {
-            let toHex = random(neighbours);
-            if (moveUnit(player, fromHex, toHex)) {
-                player.decisionReasoning += `➡️ Moved unit to (${toHex.q}, ${toHex.r})\n`; // Movement emoji
-                player.movesLeft--; // Decrement movesLeft only if the move is successful
+        let movableUnits = fromHex.getMovableUnits();
+        if (movableUnits.length > 0) {
+            let neighbours = getHexNeighbours(fromHex).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
+            if (neighbours.length > 0) {
+                let toHex = random(neighbours);
+                if (moveUnit(player, fromHex, toHex)) {
+                    player.decisionReasoning += `➡️ Moved unit to (${toHex.q}, ${toHex.r})\n`; // Movement emoji
+                    player.movesLeft--; // Decrement movesLeft only if the move is successful
+                } else {
+                    player.decisionReasoning += `❌ Move failed to (${toHex.q}, ${toHex.r})\n`; // Failure emoji
+                }
             } else {
-                player.decisionReasoning += `❌ Move failed to (${toHex.q}, ${toHex.r})\n`; // Failure emoji
+                player.decisionReasoning += '❌ No adjacent hexes for movement\n'; // Failure emoji
             }
         } else {
-            player.decisionReasoning += '❌ No adjacent hexes for movement\n'; // Failure emoji
+            player.decisionReasoning += '❌ No units to move\n'; // Failure emoji
         }
     } else {
         player.decisionReasoning += '❌ No units to move\n'; // Failure emoji
