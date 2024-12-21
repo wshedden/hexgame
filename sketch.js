@@ -91,3 +91,9 @@ function drawSelectedUnitTypePanel() {
   textAlign(LEFT, CENTER);
   text(`Selected Unit: ${selectedUnitType}`, 20, height - 35);
 }
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  panelManager.resizeCanvas(windowWidth, windowHeight);
+}
+

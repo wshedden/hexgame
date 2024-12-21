@@ -3,11 +3,13 @@ class PanelManager {
         this.panels = [];
         this.canvasWidth = 1800; // Default canvas width
         this.canvasHeight = 900; // Default canvas height
+        this.hexGridStartX = 300; // Example value, adjust based on actual hex grid start
+        this.hexGridEndX = 1500; // Example value, adjust based on actual hex grid end
     }
 
     registerPanel(panel) {
         this.panels.push(panel);
-        this.organisePanels(); // Reorganise whenever a panel is added
+        this.managePanels(); // Reorganize whenever a panel is added
     }
 
     updatePanels() {
@@ -20,43 +22,78 @@ class PanelManager {
         return panel;
     }
 
-    organisePanels() {
-        const panelCount = this.panels.length;
+    managePanels() {
+        // Step 1: Assign panels to zones
+        const zones = this.assignPanelsToZones();
 
-        // Calculate grid dimensions dynamically
-        const columns = Math.ceil(Math.sqrt(panelCount)); // Square-like layout
-        const rows = Math.ceil(panelCount / columns);
+        // Step 2: Organize each zone
+        this.organizeZone(zones.left, 0, 100, this.hexGridStartX, this.canvasHeight - 200);
+        this.organizeZone(zones.right, this.hexGridEndX, 100, this.canvasWidth - this.hexGridEndX, this.canvasHeight - 200);
+        this.organizeZone(zones.top, 0, 0, this.canvasWidth, 100);
+        this.organizeZone(zones.bottom, 0, this.canvasHeight - 100, this.canvasWidth, 100);
 
-        // Calculate panel dimensions
-        this.panels.forEach(panel => panel.calculateDimensions());
-        const maxPanelWidth = Math.max(...this.panels.map(panel => panel.contentWidth)) + 20; // Increase width slightly
-        const panelHeight = this.canvasHeight / rows;
+        // Step 3: Update floating panels
+        this.updateFloatingPanels();
 
-        // Position panels in the grid
-        this.panels.forEach((panel, index) => {
-            const col = index % columns;
-            const row = Math.floor(index / columns);
+        // Step 4: Resize panels dynamically
+        this.resizePanels();
+    }
 
-            // Adjust horizontal and vertical spacing
-            panel.x = col * (maxPanelWidth + 5); // Reduce horizontal spacing slightly
-            panel.y = row * (panelHeight + 10); // Keep vertical spacing
-            panel.width = maxPanelWidth;
+    assignPanelsToZones() {
+        const zones = { left: [], right: [], top: [], bottom: [] };
+
+        // Distribute panels into zones dynamically based on their header or priority
+        this.panels.forEach(panel => {
+            if (panel.header.includes('Player')) {
+                zones.left.push(panel);
+            } else if (panel.header === 'AI Decision Reasoning') {
+                zones.top.push(panel);
+            } else {
+                zones.right.push(panel);
+            }
+        });
+
+        return zones;
+    }
+
+    organizeZone(panels, startX, startY, width, height) {
+        const panelHeight = height / panels.length;
+
+        panels.forEach((panel, index) => {
+            panel.x = startX;
+            panel.y = startY + index * panelHeight;
+            panel.width = width;
             panel.height = panelHeight;
+        });
+    }
 
-            // Specific placement for "AI Decision Reasoning" panel
-            if (panel.header === 'AI Decision Reasoning') {
-                panel.width = this.canvasWidth / 2; // Make it wider
-                panel.x = this.canvasWidth - panel.width - 20; // Position it to the right with some margin
-                panel.y = 20; // Position it at the top with some margin
+    updateFloatingPanels() {
+        const floatingPanels = this.panels.filter(panel => panel.floating);
+
+        floatingPanels.forEach(panel => {
+            panel.x = mouseX + 10; // Example: Follow mouse
+            panel.y = mouseY + 10;
+        });
+    }
+
+    resizePanels() {
+        const totalPanelWidth = this.canvasWidth;
+        const maxWidthPerPanel = totalPanelWidth / this.panels.length;
+
+        this.panels.forEach(panel => {
+            if (this.canvasWidth < 1000) {
+                panel.width = Math.min(panel.width, maxWidthPerPanel / 2); // Shrink panels
+                panel.collapsed = true;
+            } else {
+                panel.collapsed = false;
             }
         });
     }
 
-    // Call when canvas is resized
     resizeCanvas(width, height) {
         this.canvasWidth = width;
         this.canvasHeight = height;
-        this.organisePanels(); // Reorganise panels based on the new dimensions
+        this.managePanels(); // Reorganize panels based on the new dimensions
     }
 
     registerPanels() {
@@ -96,6 +133,6 @@ class PanelManager {
         this.createPanel('Selected Unit', () => [`Selected Unit: ${selectedUnitType}`]);
         this.createPanel('AI Decision Reasoning', () => [`Reasoning: ${players[currentPlayerIndex].decisionReasoning}`]);
 
-        this.organisePanels(); // Organise panels after registering them
+        this.managePanels(); // Organize panels after registering them
     }
 }
