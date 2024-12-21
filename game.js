@@ -155,8 +155,6 @@ function switchPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
   players[currentPlayerIndex].resetBattles(); // Reset battles at the start of the turn
 
-  
-
   // Skip AI decision-making for Player 1 if human-controlled
   if (currentPlayerIndex === 0 && players[0].isHuman) {
     console.log("Player 1 is human-controlled. Waiting for human input.");
@@ -164,7 +162,7 @@ function switchPlayer() {
   }
 
   // AI decision-making for non-human players
-  players[currentPlayerIndex].addRandomUnit();
+  players[currentPlayerIndex].makeDecision();
   if (currentPlayerIndex === 0) {
     turnNumber++; // Increment turn number when all players have taken their turn
   }

@@ -8,18 +8,46 @@ class Player {
     this.humanControlled = false;
   }
 
+  makeDecision() {
+    // For now, just call addRandomUnit as a placeholder for more complex decision-making
+    this.addRandomUnit();
+  }
+
   addRandomUnit() {
     let isFirstTurn = (turnNumber === 1);
-    let hexesToConsider = isFirstTurn ? Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit) : Array.from(this.adjacentHexes).map(key => hexGrid.get(key)).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
+    let hexesToConsider = this.getHexesToConsiderForUnitPlacement(isFirstTurn);
 
     if (hexesToConsider.length > 0) {
       let randomHex = random(hexesToConsider);
-      let unitType = random(1) < 0.5 ? 'farmer' : 'soldier';
-      let newUnit = new Unit(this.id, unitType, unitType === 'soldier' ? 50 : 5, 5, 5, this.color); // Example values for attack and defense
-      placeUnit(randomHex.q, randomHex.r, newUnit);
-      console.log(`Player ${this.id} added ${newUnit.type} unit to Hex: (${randomHex.q}, ${randomHex.r})`);
+      let unitType = this.decideUnitType();
+      let newUnit = this.createUnit(unitType);
+      this.placeUnit(randomHex, newUnit);
     } else {
       console.log(`Player ${this.id} has no adjacent hexes available for unit placement.`);
+    }
+  }
+
+  getHexesToConsiderForUnitPlacement(isFirstTurn) {
+    if (isFirstTurn) {
+      return Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit);
+    } else {
+      return Array.from(this.adjacentHexes).map(key => hexGrid.get(key)).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
+    }
+  }
+
+  decideUnitType() {
+    return random(1) < 0.5 ? 'farmer' : 'soldier';
+  }
+
+  createUnit(unitType) {
+    return new Unit(this.id, unitType, unitType === 'soldier' ? 50 : 5, 5, 5, this.color); // Example values for attack and defense
+  }
+
+  placeUnit(hex, unit) {
+    if (placeUnit(hex.q, hex.r, unit)) {
+      console.log(`Player ${this.id} added ${unit.type} unit to Hex: (${hex.q}, ${hex.r})`);
+    } else {
+      console.log(`Player ${this.id} could not place unit at Hex: (${hex.q}, ${hex.r})`);
     }
   }
 
