@@ -32,12 +32,19 @@ function drawUnits() {
 
 function drawHexUnits(x, y, units) {
   let maxUnits = 5; // Maximum number of units to fit in one hex
-  let unitSize = 20 / Math.sqrt(units.length); // Adjust size based on the number of units
+  let minUnitSize = 12; // Increased minimum unit size
+  let maxUnitSize = 18; // Decreased maximum unit size
+  let unitSize = maxUnitSize - (maxUnitSize - minUnitSize) * (units.length - 1) / (maxUnits - 1); // Adjust size based on the number of units
 
   units.forEach((unit, index) => {
-    let angle = TWO_PI / maxUnits * index;
-    let offsetX = unitSize * cos(angle);
-    let offsetY = unitSize * sin(angle);
+    let offsetX = 0;
+    let offsetY = 0;
+    if (units.length > 1) {
+      let angle = TWO_PI / maxUnits * index;
+      let spacing = units.length <= 3 ? unitSize + 3 : unitSize + 5; // Closer spacing for 2 or 3 units
+      offsetX = spacing * cos(angle);
+      offsetY = spacing * sin(angle);
+    }
     drawUnit(x + offsetX, y + offsetY, unit, unitSize);
   });
 }
