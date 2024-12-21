@@ -7,10 +7,12 @@ class Player {
     this.claimedAdjacentHexes = new Set();
     this.battlesLeft = 3; // Example: Allow 3 battles per turn
     this.humanControlled = false;
+    this.decisionReasoning = ''; // Store reasoning behind decisions
   }
 
   makeDecision() {
     // For now, just call addRandomUnit as a placeholder for more complex decision-making
+    this.decisionReasoning = 'Adding a random unit.';
     this.addRandomUnit();
   }
 
@@ -22,9 +24,14 @@ class Player {
       let randomHex = random(hexesToConsider);
       let unitType = this.decideUnitType();
       let newUnit = this.createUnit(unitType);
-      this.placeUnit(randomHex, newUnit);
+      if (this.placeUnit(randomHex, newUnit)) {
+        this.decisionReasoning += ` Placed a ${unitType} at (${randomHex.q}, ${randomHex.r}).`;
+      } else {
+        this.decisionReasoning += ` Failed to place a ${unitType} at (${randomHex.q}, ${randomHex.r}).`;
+      }
     } else {
       console.log(`Player ${this.id} has no adjacent hexes available for unit placement.`);
+      this.decisionReasoning += ' No adjacent hexes available for unit placement.';
     }
   }
 
@@ -75,8 +82,10 @@ class Player {
   placeUnit(hex, unit) {
     if (placeUnit(hex.q, hex.r, unit)) {
       console.log(`Player ${this.id} added ${unit.type} unit to Hex: (${hex.q}, ${hex.r})`);
+      return true;
     } else {
       console.log(`Player ${this.id} could not place unit at Hex: (${hex.q}, ${hex.r})`);
+      return false;
     }
   }
 
@@ -134,7 +143,9 @@ function placeUnit(q, r, unit) {
 }
 
 function placeUnitOnHex(hex, unit) {
-  hex.addUnit(unit);
+  if (!hex.addUnit(unit)) {
+    return false;
+  }
   hex.occupiedBy = unit.id;
   let player = players.find(p => p.id === unit.id);
   if (player) {

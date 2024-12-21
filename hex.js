@@ -1,3 +1,5 @@
+const MAX_UNITS_PER_HEX = 5;
+
 class Hex {
   constructor(occupiedBy, q, r, type = 'grass', units = [], text = '', noiseValue = 0, claimedBy = null, fertility = 0) {
     this.q = q;
@@ -18,10 +20,15 @@ class Hex {
   }
 
   addUnit(unit) {
+    if (this.units.length >= MAX_UNITS_PER_HEX) {
+      console.log(`Cannot add unit to Hex (${this.q}, ${this.r}). Maximum limit of ${MAX_UNITS_PER_HEX} units reached.`);
+      return false;
+    }
     this.units.push(unit);
-    if(unit.type == "settler") {
+    if (unit.type == "settler") {
       this.claimedBy = unit.id;
     }
+    return true;
   }
 
   removeUnit(unit) {

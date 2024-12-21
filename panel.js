@@ -108,6 +108,10 @@ class PanelManager {
             `Selected Unit: ${selectedUnitType}`
         ], { bottomAligned: true });
 
+        this.createPanel(0, 0, 200, 'AI Decision Reasoning', () => [
+            `Reasoning: ${players[currentPlayerIndex].decisionReasoning}`
+        ], { bottomAligned: true });
+
         this.organizePanels();
     }
 
