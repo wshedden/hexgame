@@ -15,36 +15,83 @@ class Player {
   resetMoves() {
     this.movesLeft = 2;
   }
-
   makeDecision() {
     let initialReasoning = this.decisionReasoning;
     this.decisionReasoning += '🛠️ '; // Emoji for decision-making
     let isFirstTurn = (turnNumber === 1);
     let hexesToConsider = this.getHexesToConsiderForUnitPlacement(isFirstTurn);
-
-    if (hexesToConsider.length > 0) {
-      let randomHex = random(hexesToConsider);
-      let unitType = this.decideUnitType();
-      let newUnit = this.createUnit(unitType);
-      let emoji = this.getUnitEmoji(unitType);
-      if (this.placeUnit(randomHex, newUnit)) {
-        this.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Success emoji
-        this.movesLeft--; // Decrement movesLeft only if the move is successful
-      } else {
-        this.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
+  
+    if (turnNumber > 2 && Math.random() < 0.5) {
+      // 50% chance to move a unit
+      let unitHexes = Array.from(this.occupiedHexes);
+      let moved = false;
+  
+      // Check for hexes with 5 units and try to move one unit
+      for (let hex of unitHexes) {
+        if (hex.units.length >= 5) {
+          let neighbours = getHexNeighbours(hex).filter(neighbour => !neighbour.unit && claimableTiles.has(neighbour.getKey()));
+          if (neighbours.length > 0) {
+            let toHex = random(neighbours);
+            let unitToMove = hex.units[0]; // Move the first unit
+            if (this.moveUnit(hex, toHex, unitToMove)) {
+              this.decisionReasoning += `➡️ Moved unit from (${hex.q}, ${hex.r}) to (${toHex.q}, ${toHex.r})\n`; // Movement emoji
+              this.movesLeft--; // Decrement movesLeft only if the move is successful
+              moved = true;
+              break;
+            } else {
+              this.decisionReasoning += `❌ Failed to move unit from (${hex.q}, ${hex.r}) to (${toHex.q}, ${toHex.r})\n`; // Failure emoji
+            }
+          }
+        }
+      }
+  
+      if (!moved) {
+        // If no units were moved, try to move any unit
+        if (unitHexes.length > 0) {
+          let fromHex = random(unitHexes);
+          let neighbours = getHexNeighbours(fromHex).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
+          if (neighbours.length > 0) {
+            let toHex = random(neighbours);
+            if (this.moveUnit(fromHex, toHex)) {
+              this.decisionReasoning += `➡️ Moved unit to (${toHex.q}, ${toHex.r})\n`; // Movement emoji
+              this.movesLeft--; // Decrement movesLeft only if the move is successful
+            } else {
+              this.decisionReasoning += `❌ Failed to move unit to (${toHex.q}, ${toHex.r})\n`; // Failure emoji
+            }
+          } else {
+            this.decisionReasoning += '❌ No adjacent hexes for movement\n'; // Failure emoji
+          }
+        } else {
+          this.decisionReasoning += '❌ No units to move\n'; // Failure emoji
+        }
       }
     } else {
-      this.decisionReasoning += '❌ No adjacent hexes\n'; // Failure emoji
+      // Place a unit
+      if (hexesToConsider.length > 0) {
+        let randomHex = random(hexesToConsider);
+        let unitType = this.decideUnitType();
+        let newUnit = this.createUnit(unitType);
+        let emoji = this.getUnitEmoji(unitType);
+        if (this.placeUnit(randomHex, newUnit)) {
+          this.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Success emoji
+          this.movesLeft--; // Decrement movesLeft only if the move is successful
+        } else {
+          this.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
+        }
+      } else {
+        this.decisionReasoning += '❌ No hexes available for unit placement\n'; // Failure emoji
+      }
     }
-
+  
     // Append the decision reasoning to the initial reasoning
     this.decisionReasoning = initialReasoning + this.decisionReasoning;
-
+  
     // Ensure decisionReasoning does not exceed max length
     if (this.decisionReasoning.length > this.maxReasoningLength) {
       this.decisionReasoning = this.decisionReasoning.slice(-this.maxReasoningLength);
     }
   }
+  
 
   getUnitEmoji(unitType) {
     switch (unitType) {
@@ -156,6 +203,31 @@ class Player {
     } else {
       console.log(`Player ${this.id} has no battles left this turn.`);
     }
+  }
+
+  moveUnit(fromHex, toHex) {
+    if (!fromHex.unit) {
+      console.log(`No unit to move from Hex (${fromHex.q}, ${fromHex.r})`);
+      return false;
+    }
+
+    if (toHex.unit) {
+      console.log(`Hex (${toHex.q}, ${toHex.r}) is already occupied by another unit`);
+      return false;
+    }
+
+    // Move the unit
+    toHex.unit = fromHex.unit;
+    toHex.occupiedBy = fromHex.unit.id;
+    fromHex.unit = null;
+    fromHex.occupiedBy = null;
+
+    // Update player's occupied hexes
+    this.occupiedHexes.delete(fromHex);
+    this.occupiedHexes.add(toHex);
+
+    console.log(`Player ${this.id} moved unit to Hex: (${toHex.q}, ${toHex.r})`);
+    return true;
   }
 }
 
