@@ -193,7 +193,10 @@ function handleAIDecision() {
   // Update the AI Decision Reasoning panel
   const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
   if (aiPanel) {
-    aiPanel.contentFunction = () => players[currentPlayerIndex].decisionReasoning.split('\n');
+    aiPanel.contentFunction = () => {
+      const lines = players[currentPlayerIndex].decisionReasoning.split('\n');
+      return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
+    };
   }
 }
 

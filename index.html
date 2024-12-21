@@ -31,10 +31,9 @@
         width: 80vw;
         height: 80vh;
       }
-      #toggleButton {
+      .toggle-button {
         position: absolute;
         right: 10px;
-        top: 10px;
         padding: 10px 20px;
         background-color: #333;
         color: #fff;
@@ -44,13 +43,16 @@
         font-size: 16px;
         transition: background-color 0.3s, transform 0.3s;
       }
-      #toggleButton:hover {
+      .toggle-button:hover {
         background-color: #555;
         transform: scale(1.05);
       }
-      #toggleButton:active {
+      .toggle-button:active {
         background-color: #777;
         transform: scale(1);
+      }
+      #toggleFailedOutputButton {
+        top: 50px; /* Position below the toggle button */
       }
     </style>
   </head>
@@ -61,7 +63,8 @@
       <!-- <h1>Hex Grid Simulation</h1> -->
     </main>
 
-    <button id="toggleButton">Toggle AI Panel</button>
+    <!-- <button id="toggleButton" class="toggle-button">Toggle AI Panel</button> -->
+    <button id="toggleFailedOutputButton" class="toggle-button">Toggle Failed Output</button>
 
     <!-- Your JavaScript Files -->
     <script src="panel.js"></script>

@@ -3,6 +3,8 @@ let selectedUnitType = 'settler'; // Default to 'settler'
 let panelManager;
 let aiPanelVisible = true; // Track the visibility of the AI panel
 let toggleButton; // Declare the toggle button
+let toggleFailedOutputButton; // Declare the toggle failed output button
+let showFailedOutput = true; // Track the visibility of failed AI decision output
 
 function setup() {
   createCanvas(1800, 900);
@@ -17,8 +19,16 @@ function setup() {
   // Create the toggle button
   toggleButton = createButton('Toggle AI Panel');
   toggleButton.id('toggleButton'); // Assign the ID for styling
+  toggleButton.class('toggle-button'); // Assign the class for styling
   toggleButton.position(width - 150, 10); // Position the button on the right
   toggleButton.mousePressed(toggleAIPanel); // Attach the event listener
+
+  // Create the toggle failed output button
+  toggleFailedOutputButton = createButton('Toggle Failed Output');
+  toggleFailedOutputButton.id('toggleFailedOutputButton'); // Assign the ID for styling
+  toggleFailedOutputButton.class('toggle-button'); // Assign the class for styling
+  toggleFailedOutputButton.position(width - 150, 50); // Position the button below the toggle button
+  toggleFailedOutputButton.mousePressed(toggleFailedOutput); // Attach the event listener
 }
 
 function draw() {
@@ -110,6 +120,17 @@ function toggleAIPanel() {
   const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
   if (aiPanel) {
     aiPanel.visible = aiPanelVisible;
+  }
+}
+
+function toggleFailedOutput() {
+  showFailedOutput = !showFailedOutput;
+  const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
+  if (aiPanel) {
+    aiPanel.contentFunction = () => {
+      const lines = players[currentPlayerIndex].decisionReasoning.split('\n');
+      return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
+    };
   }
 }
 
