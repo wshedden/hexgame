@@ -12,6 +12,7 @@ class Player {
     this.maxReasoningLength = 1000; // Maximum length for decisionReasoning
     this.money = 1000; // New attribute: money
     this.unitLimit = 10; // New attribute: unit limit
+    this.battleHexes = new Set(); // New attribute: hexes where battles are occurring
   }
 
   resetMoves() {
@@ -39,8 +40,10 @@ class Player {
 
   initiateBattle(attackerHex, defenderHex) {
     if (this.battlesLeft > 0) {
-      battle(attackerHex, defenderHex);
+      let battle = new Battle(attackerHex, defenderHex);
+      battle.start();
       this.battlesLeft--;
+      this.battleHexes.add(defenderHex.getKey()); // Add the hex to the battle hexes set
     } else {
       // console.log(`Player ${this.id} has no battles left this turn.`);
     }
@@ -182,6 +185,12 @@ function moveUnit(player, fromHex, toHex) {
   // Check if the unit can move
   if (unitToMove.movement <= 0) {
     return false;
+  }
+
+  // Check if the destination hex is occupied by an enemy unit
+  if (toHex.units.length > 0 && toHex.units[0].id !== unitToMove.id) {
+    player.initiateBattle(fromHex, toHex);
+    return true;
   }
 
   toHex.units.push(unitToMove);
