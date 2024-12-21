@@ -1,7 +1,7 @@
 // Define unit costs
 const UNIT_COSTS = {
   settler: 100,  // Reduced from 500
-  soldier: 10,   // Reduced from 300
+  soldier: 50,   // Reduced from 300
   farmer: 40,    // Reduced from 200
   builder: 50    // Reduced from 250
 };
@@ -57,6 +57,7 @@ function placeUnit(q, r, unit) {
 
   let player = players.find(p => p.id === unit.id);
   if (player.money < UNIT_COSTS[unit.type]) {
+    player.decisionReasoning += `❌💰 ${getUnitEmoji(unit.type)} (${UNIT_COSTS[unit.type]} needed)\n`; // Failure emoji
     return false;
   }
 
