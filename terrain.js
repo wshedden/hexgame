@@ -11,19 +11,19 @@ function generateTerrain() {
       claimableTiles.delete(hex.getKey()); // Remove water tiles from claimable tiles
     } else if (noiseValue < 0.4) {
       hex.type = 'grass';
-      hex.fertility = 0.8; // Grass has high fertility
+      hex.fertility = 0.8 + random(-0.1, 0.1); // Grass has high fertility with some randomness
     } else if (noiseValue < 0.6) {
       hex.type = 'desert';
-      hex.fertility = 0.1; // Desert has very low fertility
+      hex.fertility = 0.1 + random(-0.05, 0.05); // Desert has very low fertility with some randomness
     } else if (noiseValue < 0.7) {
       hex.type = 'mountain'; // Mountain tiles
-      hex.fertility = 0.3; // Mountain has low fertility
+      hex.fertility = 0.3 + random(-0.1, 0.1); // Mountain has low fertility with some randomness
     } else if (noiseValue < 0.8) {
       hex.type = 'forest';
-      hex.fertility = 0.9; // Forest has very high fertility
+      hex.fertility = 0.9 + random(-0.1, 0.1); // Forest has very high fertility with some randomness
     } else {
       hex.type = 'snow';
-      hex.fertility = 0.1; // Snow has very low fertility
+      hex.fertility = 0.1 + random(-0.05, 0.05); // Snow has very low fertility with some randomness
     }
   });
 }
