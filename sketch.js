@@ -7,7 +7,7 @@ let toggleFailedOutputButton; // Declare the toggle failed output button
 let showFailedOutput = true; // Track the visibility of failed AI decision output
 let buttonColor1 = '#28a745'; // Green color
 let buttonColor2 = '#dc3545'; // Red color
-let pathfindingMode = false;
+let pathfindingMode = true;
 let path = []; // Store the path found by A* algorithm
 
 function setup() {
