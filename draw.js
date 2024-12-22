@@ -146,29 +146,22 @@ function drawHexUnits(x, y, units) {
     drawUnit(x + offsetX, y + offsetY, unit, unitSize);
   });
 }
-
 function drawUnit(x, y, unit, size) {
   push();
   translate(x, y);
-  fill(unit.colour);
-  stroke(unit.colour); // Set stroke to the player color
-  strokeWeight(2); // Set a consistent stroke weight
 
-  if (unit.id === 1) {
-    // Draw circle for Player 1
-    ellipse(0, 0, size, size);
-  } else if (unit.id === 2) {
-    // Draw triangle for Player 2
-    let triangleSize = size * 0.8; // Make the triangle slightly smaller
-    beginShape();
-    for (let i = 0; i < 3; i++) {
-      let angle = TWO_PI / 3 * i - HALF_PI;
-      let vx = triangleSize * cos(angle);
-      let vy = triangleSize * sin(angle);
-      vertex(vx, vy);
-    }
-    endShape(CLOSE);
-  }
+  // Lerp the unit color with the player color
+  let playerColour = color(players[unit.id - 1].colour[0], players[unit.id - 1].colour[1], players[unit.id - 1].colour[2]);
+  let unitColour = lerpColor(unit.colour, playerColour, 0.8);
+
+  // Set the fill and stroke
+  fill(unitColour);
+  stroke(lerpColor(playerColour, color(0), 0.5)); // Darker version of the player color
+  strokeWeight(2);
+
+  // Draw the correct shape for the unit type
+  drawUnitShape(unit.type, size);
+
   pop();
 }
 

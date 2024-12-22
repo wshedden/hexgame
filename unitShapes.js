@@ -10,7 +10,7 @@ function drawUnitShape(type, size) {
       drawSettlerShape(size);
       break;
     case 'builder':
-      drawBuilderShape(size-3);
+      drawBuilderShape(size - 3); // Make the builder shape smaller
       break;
     default:
       drawDefaultShape(size);
@@ -31,8 +31,8 @@ function drawSettlerShape(size) {
   beginShape();
   for (let i = 0; i < 3; i++) {
     let angle = TWO_PI / 3 * i - HALF_PI;
-    let vx = size * cos(angle);
-    let vy = size * sin(angle);
+    let vx = (size - 5) * cos(angle); // Make the triangle smaller
+    let vy = (size - 5) * sin(angle);
     vertex(vx, vy);
   }
   endShape(CLOSE); // Triangle for settler
@@ -42,8 +42,8 @@ function drawBuilderShape(size) {
   beginShape();
   for (let i = 0; i < 5; i++) {
     let angle = TWO_PI / 5 * i - HALF_PI;
-    let vx = size * cos(angle);
-    let vy = size * sin(angle);
+    let vx = (size - 5) * cos(angle); // Make the pentagon smaller
+    let vy = (size - 5) * sin(angle);
     vertex(vx, vy);
   }
   endShape(CLOSE); // Pentagon for builder
