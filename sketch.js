@@ -75,7 +75,7 @@ function keyPressed() {
       setState(GameState.PLAYING);
     }
   } else if (key === 'p' || key === 'P') { // Pause the game with 'p'
-    if (currentState === GameState.PLAYING) {
+    if (currentState != GameState.PAUSED) {
       setState(GameState.PAUSED);
     } else if (currentState === GameState.PAUSED) {
       setState(GameState.PLAYING);
