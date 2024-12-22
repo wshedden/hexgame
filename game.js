@@ -19,6 +19,10 @@ let speedMultiplier = 1.0;
 let decisionsMadeTime; // Time when decisions were made
 let animationStartTime; // Time when animation started
 
+// New variables for adjustable delays
+let decisionDelay = 20; // 1 second delay for decisions made
+let animationDelay = 200; // 1 second delay for animation
+
 const players = [
   new Player(1, [139, 0, 0]), // Dark red for player 1
   new Player(2, [0, 0, 139])  // Dark blue for player 2
@@ -123,7 +127,7 @@ function drawDecisionsMadeState() {
   drawUnits();
 
   // Check if 2 seconds have passed since decisions were made
-  if (millis() - decisionsMadeTime > 2000) {
+  if (millis() - decisionsMadeTime > decisionDelay) {
     setState(GameState.ANIMATING);
   }
 }
@@ -208,7 +212,7 @@ function drawAnimatingState() {
   drawUnits();
 
   // Check if 2 seconds have passed since animation started
-  if (millis() - animationStartTime > 2000) {
+  if (millis() - animationStartTime > animationDelay) {
     setState(GameState.ANIMATION_COMPLETE);
     progressGameState();
   }
