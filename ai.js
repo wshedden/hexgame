@@ -21,28 +21,28 @@ function handleUnitMovement(player) {
     let unitHexes = Array.from(player.occupiedHexes);
     let moved = false;
 
-    // Check for hexes with 5 units and try to move one unit
+    // Check for hexes with movable units and try to find a path
     for (let hex of unitHexes) {
         let movableUnits = hex.getMovableUnits();
-        if (movableUnits.length >= 5) {
-            let neighbours = getHexNeighbours(hex).filter(neighbour => !neighbour.unit && claimableTiles.has(neighbour.getKey()));
-            if (neighbours.length > 0) {
-                let toHex = random(neighbours);
-                let unitToMove = movableUnits[0]; // Move the first movable unit
-                if (moveUnit(player, hex, toHex, unitToMove)) {
-                    player.decisionReasoning += `➡️ Moved unit from (${hex.q}, ${hex.r}) to (${toHex.q}, ${toHex.r})\n`; // Movement emoji
-                    player.movesLeft--; // Decrement movesLeft only if the move is successful
-                    moved = true;
-                    break;
-                } else {
-                    player.decisionReasoning += `❌ Move failed (${hex.q}, ${hex.r}) ➡️ (${toHex.q}, ${toHex.r})\n`; // Failure emoji
-                }
+        if (movableUnits.length > 0) {
+            let unitToMove = movableUnits[0]; // Move the first movable unit
+            let randomHex = random(Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit));
+            let path = aStar(hex, randomHex, hexGrid);
+
+            if (path.length > 0) {
+                player.paths.set(unitToMove, path);
+                player.decisionReasoning += `➡️ Path found for unit from (${hex.q}, ${hex.r}) to (${randomHex.q}, ${randomHex.r})\n`; // Pathfinding emoji
+                player.movesLeft--; // Decrement movesLeft only if the path is found
+                moved = true;
+                break;
+            } else {
+                player.decisionReasoning += `❌ No path found from (${hex.q}, ${hex.r}) to (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
             }
         }
     }
 
     if (!moved) {
-        moveAnyUnit(player, unitHexes);
+        player.decisionReasoning += '❌ No units to move or no valid paths found\n'; // Failure emoji
     }
 }
 

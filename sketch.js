@@ -56,6 +56,9 @@ function draw() {
   }
 
   drawPath(); // Draw the path if in pathfinding mode
+
+  // Draw AI paths
+  drawAIPaths();
 }
 
 function initialiseTerrainColours() {
@@ -191,6 +194,39 @@ function toggleFailedOutput() {
 }
 
 function drawPath() {
+  if (path.length > 1) {
+    push();
+    translate(width / 2, height / 2); // Translate the origin to the center of the canvas
+    stroke(0, 100, 0); // Dark green color for the path
+    strokeWeight(3);
+    noFill();
+    beginShape();
+    path.forEach(hex => {
+      let { x, y } = hexToPixel(hex);
+      vertex(x, y);
+    });
+    endShape();
+
+    // Draw the arrowhead at the final line segment
+    let lastHex = path[path.length - 1];
+    let secondLastHex = path[path.length - 2];
+    let { x: x1, y: y1 } = hexToPixel(secondLastHex);
+    let { x: x2, y: y2 } = hexToPixel(lastHex);
+    drawArrowhead(x1, y1, x2, y2);
+
+    pop();
+  }
+}
+
+function drawAIPaths() {
+  players.forEach(player => {
+    player.paths.forEach((path, unit) => {
+      drawUnitPath(path);
+    });
+  });
+}
+
+function drawUnitPath(path) {
   if (path.length > 1) {
     push();
     translate(width / 2, height / 2); // Translate the origin to the center of the canvas

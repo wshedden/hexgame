@@ -21,6 +21,7 @@ class Player {
     this.money = 1000; // New attribute: money
     this.unitLimit = 10; // New attribute: unit limit
     this.battleHexes = new Set(); // New attribute: hexes where battles are occurring
+    this.paths = new Map(); // New attribute: paths for units
   }
 
   resetMoves() {
