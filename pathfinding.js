@@ -77,38 +77,3 @@ function isValidHexForPathfinding(hex) {
     return hex.type !== 'water';
 }
 
-function mousePressed() {
-  let clickedHex = pixelToHex(mouseX - width / 2, mouseY - height / 2);
-  if (clickedHex) {
-    selectedHex = clickedHex;
-
-    if (pathfindingMode) {
-      if (path.length === 0) {
-        path.push(clickedHex); // Set the start hex
-        print(`Start hex: (${clickedHex.q}, ${clickedHex.r})`);
-      } else if (path.length === 1) {
-        path.push(clickedHex); // Set the end hex
-        print(`End hex: (${clickedHex.q}, ${clickedHex.r})`);
-        path = aStar(path[0], path[1], hexGrid); // Find the path using A* algorithm
-        print("Path found:");
-        path.forEach(hex => print(`(${hex.q}, ${hex.r})`));
-      } else {
-        path = [clickedHex]; // Reset the path
-        print(`Start hex: (${clickedHex.q}, ${clickedHex.r})`);
-      }
-    } else if (currentPlayerIndex === 0 && currentState === GameState.PLAYING_HUMAN) {
-      let player = players[currentPlayerIndex];
-      let unitType = selectedUnitType; // Use the selected unit type
-      let newUnit = new Unit(player.id, unitType, unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, player.colour); // Example values for attack and defence
-
-      if (placeUnit(clickedHex.q, clickedHex.r, newUnit)) {
-        switchPlayer(); // Switch to the next player if unit placement is successful
-        turnStartTime = millis();
-        // Update turn number
-        turnNumber++;
-      } else {
-        print(`Cannot place unit at (${clickedHex.q}, ${clickedHex.r}).`);
-      }
-    }
-  }
-}

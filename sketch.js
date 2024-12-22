@@ -195,8 +195,8 @@ function drawPath() {
   if (path.length > 1) {
     push();
     translate(width / 2, height / 2); // Translate the origin to the center of the canvas
-    stroke(255, 0, 0); // Red color for the path
-    strokeWeight(2);
+    stroke(0, 100, 0); // Dark green color for the path
+    strokeWeight(3);
     noFill();
     beginShape();
     path.forEach(hex => {
@@ -204,7 +204,34 @@ function drawPath() {
       vertex(x, y);
     });
     endShape();
+
+    // Draw the arrowhead at the final line segment
+    let lastHex = path[path.length - 1];
+    let secondLastHex = path[path.length - 2];
+    let { x: x1, y: y1 } = hexToPixel(secondLastHex);
+    let { x: x2, y: y2 } = hexToPixel(lastHex);
+    drawArrowhead(x1, y1, x2, y2);
+
     pop();
   }
+}
+
+function drawArrowhead(x1, y1, x2, y2) {
+  const arrowSize = 15; // Size of the arrowhead
+  const angle = atan2(y2 - y1, x2 - x1);
+  const offset = 5; // Offset to move the arrowhead forward
+
+  push();
+  translate(x2, y2);
+  translate(cos(angle) * offset, sin(angle) * offset); // Move the arrowhead forward
+  rotate(angle);
+  fill(0, 100, 0); // Green color for the arrowhead
+  noStroke();
+  beginShape();
+  vertex(0, 0);
+  vertex(-arrowSize, arrowSize / 2);
+  vertex(-arrowSize, -arrowSize / 2);
+  endShape(CLOSE);
+  pop();
 }
 
