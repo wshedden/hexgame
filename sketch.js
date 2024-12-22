@@ -90,9 +90,9 @@ function keyPressed() {
   } else if (key === 'k' || key === 'K') { // Toggle pathfinding mode
     pathfindingMode = !pathfindingMode;
     if (pathfindingMode) {
-      console.log("Pathfinding mode activated.");
+      print("Pathfinding mode activated.");
     } else {
-      console.log("Pathfinding mode deactivated.");
+      print("Pathfinding mode deactivated.");
       path = []; // Clear the path when exiting pathfinding mode
     }
   }

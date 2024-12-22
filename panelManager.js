@@ -37,31 +37,35 @@ class PanelManager {
             return side === 'left' ? index % 2 === 0 : index % 2 !== 0;
         });
     }
+positionPanels(panels, side) {
+    const width = side === 'left' ? this.hexGridStartX : this.canvasWidth - this.hexGridEndX;
+    const maxPanelHeight = this.canvasHeight / panels.length;
 
-    positionPanels(panels, side) {
-        const width = side === 'left' ? this.hexGridStartX : this.canvasWidth - this.hexGridEndX;
-        const maxPanelHeight = this.canvasHeight / panels.length;
-
-        panels.forEach((panel, index) => {
-            if (panel.header === 'Player 1 Hexes') {
-                panel.x = 0;
-                panel.y = index * maxPanelHeight;
-                panel.width = width;
-                panel.height = maxPanelHeight;
-            } else if (panel.header === 'Player 2 Hexes') {
-                const player1Panel = this.getPanelByHeader('Player 1 Hexes');
-                panel.x = player1Panel.x + player1Panel.width - 20; // Position to the right of Player 1 panel with some margin
-                panel.y = player1Panel.y;
-                panel.width = width;
-                panel.height = maxPanelHeight;
-            } else {
-                panel.x = side === 'left' ? 0 : this.hexGridEndX;
-                panel.y = index * maxPanelHeight;
-                panel.width = width;
-                panel.height = maxPanelHeight;
-            }
-        });
-    }
+    panels.forEach((panel, index) => {
+        if (panel.header === 'Player 1 Hexes') {
+            panel.x = 0;
+            panel.y = index * maxPanelHeight;
+            panel.width = width;
+            panel.height = maxPanelHeight;
+        } else if (panel.header === 'Player 2 Hexes') {
+            const player1Panel = this.getPanelByHeader('Player 1 Hexes');
+            panel.x = player1Panel.x + player1Panel.width - 20; // Position to the right of Player 1 panel with some margin
+            panel.y = player1Panel.y;
+            panel.width = width;
+            panel.height = maxPanelHeight;
+        } else if (panel.header === 'Hex Info') {
+            panel.x = side === 'left' ? 0 : this.hexGridEndX;
+            panel.y = index * maxPanelHeight + 200; // Move down by 200 pixels
+            panel.width = width;
+            panel.height = maxPanelHeight;
+        } else {
+            panel.x = side === 'left' ? 0 : this.hexGridEndX;
+            panel.y = index * maxPanelHeight;
+            panel.width = width;
+            panel.height = maxPanelHeight;
+        }
+    });
+}
 
     positionSpecialPanels() {
         const aiPanel = this.getPanelByHeader('AI Decision Reasoning');

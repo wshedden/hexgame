@@ -14,6 +14,7 @@ class Hex {
     this.fertility = fertility;
     this.colour = getTerrainColor(type, fertility);
     this.claimedColour = null; // New attribute
+    this.movementCost = 1; // Example value, adjust as needed
   }
 
   setColourByFertility() {

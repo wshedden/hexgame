@@ -20,7 +20,7 @@ const players = [
 
 function setState(newState) {
   currentState = newState;
-  // console.log(`Game state changed to: ${currentState}`);
+  // print(`Game state changed to: ${currentState}`);
   if (newState === GameState.PLAYING) {
     turnStartTime = millis();
   }
@@ -122,7 +122,7 @@ function switchPlayer() {
 
   if (players[currentPlayerIndex].movesLeft > 0) {
     // If the current player still has moves left, do not switch players
-    // console.log(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].movesLeft} moves left.`);
+    // print(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].movesLeft} moves left.`);
     return;
   }
 
@@ -135,7 +135,7 @@ function switchPlayer() {
 
   // Skip AI decision-making for Player 1 if human-controlled
   if (currentPlayerIndex === 0 && players[0].isHuman) {
-    // console.log("Player 1 is human-controlled. Waiting for human input.");
+    // print("Player 1 is human-controlled. Waiting for human input.");
     return;
   }
 
@@ -155,7 +155,7 @@ function handleAIDecision() {
   }
 
   if (attempts >= maxAttempts) {
-    // console.log(`Player ${players[currentPlayerIndex].id} reached the maximum number of decision attempts.`);
+    // print(`Player ${players[currentPlayerIndex].id} reached the maximum number of decision attempts.`);
   }
 
   if (currentPlayerIndex === 0) {
