@@ -221,16 +221,16 @@ function drawPath() {
 function drawAIPaths() {
   players.forEach(player => {
     player.paths.forEach((path, unit) => {
-      drawUnitPath(path);
+      drawUnitPath(path, player.colour);
     });
   });
 }
 
-function drawUnitPath(path) {
+function drawUnitPath(path, playerColour) {
   if (path.length > 1) {
     push();
     translate(width / 2, height / 2); // Translate the origin to the center of the canvas
-    stroke(0, 100, 0); // Dark green color for the path
+    stroke(playerColour); // Use the player's color for the path
     strokeWeight(3);
     noFill();
     beginShape();
@@ -245,13 +245,13 @@ function drawUnitPath(path) {
     let secondLastHex = path[path.length - 2];
     let { x: x1, y: y1 } = hexToPixel(secondLastHex);
     let { x: x2, y: y2 } = hexToPixel(lastHex);
-    drawArrowhead(x1, y1, x2, y2);
+    drawArrowhead(x1, y1, x2, y2, playerColour);
 
     pop();
   }
 }
 
-function drawArrowhead(x1, y1, x2, y2) {
+function drawArrowhead(x1, y1, x2, y2, playerColour) {
   const arrowSize = 15; // Size of the arrowhead
   const angle = atan2(y2 - y1, x2 - x1);
   const offset = 5; // Offset to move the arrowhead forward
@@ -260,7 +260,7 @@ function drawArrowhead(x1, y1, x2, y2) {
   translate(x2, y2);
   translate(cos(angle) * offset, sin(angle) * offset); // Move the arrowhead forward
   rotate(angle);
-  fill(0, 100, 0); // Green color for the arrowhead
+  fill(playerColour); // Use the player's color for the arrowhead
   noStroke();
   beginShape();
   vertex(0, 0);
