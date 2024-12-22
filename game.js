@@ -121,26 +121,19 @@ function switchPlayer() {
   players[currentPlayerIndex].movesLeft--;
 
   if (players[currentPlayerIndex].movesLeft > 0) {
-    // If the current player still has moves left, do not switch players
-    // print(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].movesLeft} moves left.`);
     return;
   }
 
-  // Reset moves for the current player
   players[currentPlayerIndex].resetMoves();
 
-  // Switch to the next player
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-  players[currentPlayerIndex].resetBattles(); // Reset battles at the start of the turn
+  players[currentPlayerIndex].resetBattles();
 
-  // Skip AI decision-making for Player 1 if human-controlled
   if (currentPlayerIndex === 0 && players[0].isHuman) {
-    // print("Player 1 is human-controlled. Waiting for human input.");
     return;
   }
 
-  // AI decision-making for non-human players
-  handleAIDecision();
+  handleAIDecision({ enablePrinting: false }); // Disable printing for AI decisions
 }
 
 function handleAIDecision() {

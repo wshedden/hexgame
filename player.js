@@ -113,7 +113,7 @@ function drawUnit(x, y, unit, size) {
   pop();
 }
 
-function moveUnit(player, fromHex, toHex) {
+function moveUnit(player, fromHex, toHex, options = {}) {
   if (fromHex.units.length === 0) {
     return false;
   }
@@ -126,6 +126,13 @@ function moveUnit(player, fromHex, toHex) {
 
   if (unitToMove.movement <= 0) {
     return false;
+  }
+
+  if (toHex.units.length > 0 && toHex.units[0].id !== unitToMove.id) {
+    let battle = new Battle(fromHex, toHex, options);
+    battle.start();
+    player.movesLeft--; // Decrement movesLeft only if the battle is initiated
+    return true;
   }
 
   toHex.units.push(unitToMove);

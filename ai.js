@@ -135,7 +135,7 @@ function getUnitEmoji(unitType) {
     }
 }
 
-function moveUnit(player, fromHex, toHex) {
+function moveUnit(player, fromHex, toHex, options = {}) {
     if (fromHex.units.length === 0) {
         return false;
     }
@@ -154,20 +154,24 @@ function moveUnit(player, fromHex, toHex) {
 
     // Check if the destination hex is occupied by an enemy unit
     if (toHex.units.length > 0 && toHex.units[0].id !== unitToMove.id) {
-        console.log(`Battle condition met: fromHex (${fromHex.q}, ${fromHex.r}) toHex (${toHex.q}, ${toHex.r})`);
-        console.log(`Unit to move: ${unitToMove.id}, Destination unit: ${toHex.units[0].id}`);
-        
+        if (options.enablePrinting) {
+            print(`Battle condition met: fromHex (${fromHex.q}, ${fromHex.r}) toHex (${toHex.q}, ${toHex.r})`);
+            print(`Unit to move: ${unitToMove.id}, Destination unit: ${toHex.units[0].id}`);
+        }
+
         // Initiate a battle using the Battle class
-        let battle = new Battle(fromHex, toHex);
+        let battle = new Battle(fromHex, toHex, options);
         battle.start();
         player.movesLeft--; // Decrement movesLeft only if the battle is initiated
         return true;
     } else {
-        console.log(`No battle: fromHex (${fromHex.q}, ${fromHex.r}) toHex (${toHex.q}, ${toHex.r})`);
-        if (toHex.units.length === 0) {
-            console.log('Reason: Destination hex has no units');
-        } else if (toHex.units[0].id === unitToMove.id) {
-            console.log('Reason: Destination unit is the same as the unit to move');
+        if (options.enablePrinting) {
+            print(`No battle: fromHex (${fromHex.q}, ${fromHex.r}) toHex (${toHex.q}, ${toHex.r})`);
+            if (toHex.units.length === 0) {
+                print('Reason: Destination hex has no units');
+            } else if (toHex.units[0].id === unitToMove.id) {
+                print('Reason: Destination unit is the same as the unit to move');
+            }
         }
     }
 
@@ -180,4 +184,32 @@ function moveUnit(player, fromHex, toHex) {
     player.occupiedHexes.add(toHex);
 
     return true;
+}
+
+function handleAIDecision() {
+  players[currentPlayerIndex].decisionReasoning = ''; // Clear previous reasoning
+
+  let maxAttempts = 10; // Maximum number of attempts to make decisions
+  let attempts = 0;
+
+  while (players[currentPlayerIndex].movesLeft > 0 && attempts < maxAttempts) {
+    players[currentPlayerIndex].makeDecision({ enablePrinting: false }); // Disable printing for AI decisions
+    attempts++;
+  }
+
+  if (attempts >= maxAttempts) {
+    print(`Player ${players[currentPlayerIndex].id} reached the maximum number of decision attempts.`);
+  }
+
+  if (currentPlayerIndex === 0) {
+    turnNumber++; // Increment turn number when all players have taken their turn
+  }
+
+  const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
+  if (aiPanel) {
+    aiPanel.contentFunction = () => {
+      const lines = players[currentPlayerIndex].decisionReasoning.split('\n');
+      return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
+    };
+  }
 }

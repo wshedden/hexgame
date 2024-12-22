@@ -1,4 +1,6 @@
-function aStar(startHex, endHex, hexGrid) {
+function aStar(startHex, endHex, hexGrid, options = {}) {
+    const { enablePrinting = false } = options;
+
     const openSet = [startHex];
     const cameFrom = new Map();
     const gScore = new Map();
@@ -16,26 +18,35 @@ function aStar(startHex, endHex, hexGrid) {
         openSet.sort((a, b) => fScore.get(a) - fScore.get(b)); // Lowest fScore first
         const current = openSet.shift();
 
-        print(`Current hex: (${current.q}, ${current.r})`);
+        if (enablePrinting) {
+            print(`Current hex: (${current.q}, ${current.r})`);
+        }
 
         if (current === endHex) {
-            print("Path found!");
+            if (enablePrinting) {
+                print("Path found!");
+            }
             return reconstructPath(cameFrom, current);
         }
 
         getHexNeighbours(current).forEach(neighbour => {
             if (!hexGrid.has(neighbour.getKey())) {
-                print(`Neighbour (${neighbour.q}, ${neighbour.r}) is not in the hex grid`);
+                if (enablePrinting) {
+                    print(`Neighbour (${neighbour.q}, ${neighbour.r}) is not in the hex grid`);
+                }
                 return;
             }
 
-            // Use the validation function to check if the neighbour is valid
             if (!isValidHexForPathfinding(neighbour)) {
-                print(`Neighbour (${neighbour.q}, ${neighbour.r}) is not valid for pathfinding`);
+                if (enablePrinting) {
+                    print(`Neighbour (${neighbour.q}, ${neighbour.r}) is not valid for pathfinding`);
+                }
                 return;
             }
 
-            print(`Evaluating neighbour: (${neighbour.q}, ${neighbour.r})`);
+            if (enablePrinting) {
+                print(`Evaluating neighbour: (${neighbour.q}, ${neighbour.r})`);
+            }
             const tentativeGScore = gScore.get(current) + neighbour.movementCost;
 
             if (tentativeGScore < gScore.get(neighbour)) {
@@ -44,18 +55,18 @@ function aStar(startHex, endHex, hexGrid) {
                 fScore.set(neighbour, tentativeGScore + heuristic(neighbour, endHex));
                 if (!openSet.includes(neighbour)) {
                     openSet.push(neighbour);
-                    print(`Neighbour hex: (${neighbour.q}, ${neighbour.r}) added to open set`);
+                    if (enablePrinting) {
+                        print(`Neighbour hex: (${neighbour.q}, ${neighbour.r}) added to open set`);
+                    }
                 }
             }
         });
 
-        // Commented out the printing of the open set
-        // print(`Open set: ${openSet.map(hex => `(${hex.q}, ${hex.r})`).join(', ')}`);
-        // print(`gScore: ${Array.from(gScore.entries()).map(([hex, score]) => `(${hex.q}, ${hex.r}): ${score}`).join(', ')}`);
-        // print(`fScore: ${Array.from(fScore.entries()).map(([hex, score]) => `(${hex.q}, ${hex.r}): ${score}`).join(', ')}`);
     }
 
-    print("No path found");
+    if (enablePrinting) {
+        print("No path found");
+    }
     return []; // No path found
 }
 

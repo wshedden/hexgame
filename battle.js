@@ -1,16 +1,18 @@
 // battle.js
 
 class Battle {
-  constructor(attackerHex, defenderHex) {
+  constructor(attackerHex, defenderHex, options = {}) {
     this.attackerHex = attackerHex;
     this.defenderHex = defenderHex;
     this.attacker = attackerHex.units[0]; // Assuming the first unit is the attacker
     this.defender = defenderHex.units[0]; // Assuming the first unit is the defender
+    this.enablePrinting = options.enablePrinting || false;
   }
 
   start() {
-    // Implement the battle logic here
-    console.log(`Battle started between Player ${this.attacker.id} and Player ${this.defender.id}`);
+    if (this.enablePrinting) {
+      print(`Battle started between Player ${this.attacker.id} and Player ${this.defender.id}`);
+    }
     this.resolve();
   }
 
@@ -29,16 +31,22 @@ class Battle {
     this.defender.health -= damageToDefender;
     this.attacker.health -= damageToAttacker;
 
-    console.log(`Attacker dealt ${damageToDefender} damage, Defender dealt ${damageToAttacker} damage`);
+    if (this.enablePrinting) {
+      print(`Attacker dealt ${damageToDefender} damage, Defender dealt ${damageToAttacker} damage`);
+    }
 
     // Check for unit deaths
     if (this.defender.health <= 0) {
-      console.log(`Player ${this.attacker.id} wins the battle!`);
+      if (this.enablePrinting) {
+        print(`Player ${this.attacker.id} wins the battle!`);
+      }
       this.defenderHex.units.splice(this.defenderHex.units.indexOf(this.defender), 1); // Remove the defender unit
     }
 
     if (this.attacker.health <= 0) {
-      console.log(`Player ${this.defender.id} wins the battle!`);
+      if (this.enablePrinting) {
+        print(`Player ${this.defender.id} wins the battle!`);
+      }
       this.attackerHex.units.splice(this.attackerHex.units.indexOf(this.attacker), 1); // Remove the attacker unit
     }
   }
