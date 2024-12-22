@@ -33,9 +33,9 @@ function handleUnitMovement(player) {
 
     // Check for hexes with movable units and try to move them along their path
     for (let hex of unitHexes) {
-        let movableUnits = hex.getMovableUnits();
+        let movableUnits = hex.getMovableUnits().filter(unit => unit.movement > 0);
         if (movableUnits.length > 0) {
-            let unitToMove = movableUnits[0]; // Move the first movable unit
+            let unitToMove = random(movableUnits); // Move a random movable unit
             let path = player.paths.get(unitToMove);
 
             if (path && path.length > 1) {
