@@ -37,47 +37,40 @@ class PanelManager {
             return side === 'left' ? index % 2 === 0 : index % 2 !== 0;
         });
     }
-positionPanels(panels, side) {
-    const width = side === 'left' ? this.hexGridStartX : this.canvasWidth - this.hexGridEndX;
-    const maxPanelHeight = this.canvasHeight / panels.length;
 
-    panels.forEach((panel, index) => {
-        if (panel.header === 'Player 1 Hexes') {
-            panel.x = 0;
-            panel.y = index * maxPanelHeight;
-            panel.width = width;
-            panel.height = maxPanelHeight;
-        } else if (panel.header === 'Player 2 Hexes') {
-            const player1Panel = this.getPanelByHeader('Player 1 Hexes');
-            panel.x = player1Panel.x + player1Panel.width - 20; // Position to the right of Player 1 panel with some margin
-            panel.y = player1Panel.y;
-            panel.width = width;
-            panel.height = maxPanelHeight;
-        } else if (panel.header === 'Hex Info') {
-            panel.x = side === 'left' ? 0 : this.hexGridEndX;
-            panel.y = index * maxPanelHeight + 200; // Move down by 200 pixels
-            panel.width = width;
-            panel.height = maxPanelHeight;
-        } else {
-            panel.x = side === 'left' ? 0 : this.hexGridEndX;
-            panel.y = index * maxPanelHeight;
-            panel.width = width;
-            panel.height = maxPanelHeight;
-        }
-    });
-}
+    positionPanels(panels, side) {
+        const width = side === 'left' ? this.hexGridStartX : this.canvasWidth - this.hexGridEndX;
+        const maxPanelHeight = this.canvasHeight / panels.length;
+
+        panels.forEach((panel, index) => {
+            if (panel.header === 'Player 1 Hexes') {
+                panel.x = 0;
+                panel.y = index * maxPanelHeight;
+                panel.width = width;
+                panel.height = maxPanelHeight;
+            } else if (panel.header === 'Player 2 Hexes') {
+                const player1Panel = this.getPanelByHeader('Player 1 Hexes');
+                panel.x = player1Panel.x + player1Panel.width - 20; // Position to the right of Player 1 panel with some margin
+                panel.y = player1Panel.y;
+                panel.width = width;
+                panel.height = maxPanelHeight;
+            } else if (panel.header === 'Hex Info') {
+                panel.x = side === 'left' ? 0 : this.hexGridEndX;
+                panel.y = index * maxPanelHeight + 200; // Move down by 200 pixels
+                panel.width = width;
+                panel.height = maxPanelHeight;
+            } else {
+                panel.x = side === 'left' ? 0 : this.hexGridEndX;
+                panel.y = index * maxPanelHeight;
+                panel.width = width;
+                panel.height = maxPanelHeight;
+            }
+        });
+    }
 
     positionSpecialPanels() {
         const aiPanel = this.getPanelByHeader('AI Decision Reasoning');
-        const selectedUnitPanel = this.getPanelByHeader('Selected Unit');
         const player2Panel = this.getPanelByHeader('Player 2 Hexes');
-
-        if (selectedUnitPanel && player2Panel) {
-            selectedUnitPanel.x = player2Panel.x;
-            selectedUnitPanel.y = player2Panel.y + player2Panel.height + 10; // Position below Player 2 panel with some margin
-            selectedUnitPanel.width = player2Panel.width;
-            selectedUnitPanel.height = this.canvasHeight - selectedUnitPanel.y; // Adjust height to fit within the canvas
-        }
 
         if (aiPanel) {
             this.positionAIPanel(aiPanel);
@@ -94,12 +87,6 @@ positionPanels(panels, side) {
         panel.y = this.canvasHeight - panel.contentHeight - 360; // Position it at the bottom left with some margin
     }
 
-    positionSelectedUnitPanel(panel) {
-        panel.width = this.hexGridStartX;
-        panel.x = 0;
-        panel.y = this.canvasHeight - panel.contentHeight - 200; // Position it at the bottom left with some margin
-    }
-
     resizeCanvas(width, height) {
         this.canvasWidth = width;
         this.canvasHeight = height;
@@ -112,7 +99,8 @@ positionPanels(panels, side) {
             `Player: ${players[currentPlayerIndex].id}`,
             `Turn: ${turnNumber}`,
             `Time Left: ${(Math.max(0, turnDuration * (1 / speedMultiplier) - (millis() - turnStartTime)) / 1000).toFixed(1)}s`,
-            `Speed: ${speedMultiplier.toFixed(3)}x`
+            `Speed: ${speedMultiplier.toFixed(3)}x`,
+            `Pathfinding: ${pathfindingMode ? '✅' : '❌'}` // Add pathfinding status here
         ]);
 
         this.createPanel('Hex Info', () => {
@@ -146,7 +134,6 @@ positionPanels(panels, side) {
 
         this.createPanel('Player 1 Hexes', () => generatePlayerPanelContent(players[0]));
         this.createPanel('Player 2 Hexes', () => generatePlayerPanelContent(players[1]));
-        this.createPanel('Selected Unit', () => [`Selected Unit: ${selectedUnitType}`]);
         this.createPanel('AI Decision Reasoning', () => players[currentPlayerIndex].decisionReasoning.split('\n'));
 
         this.organisePanels(); // Organise panels after registering them

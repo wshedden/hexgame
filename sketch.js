@@ -47,7 +47,6 @@ function draw() {
     drawPausedState();
   }
 
-  drawPathfindingModeStatus(); // Display pathfinding mode status
   drawPath(); // Draw the path if in pathfinding mode
 }
 
@@ -151,27 +150,6 @@ function drawSelectedUnitTypePanel() {
   text(`Selected Unit: ${selectedUnitType}`, 20, height - 35);
 }
 
-function drawPathfindingModeStatus() {
-  const x = 220; // Move to the right by 200 pixels
-  const y = 20;
-  const padding = 10;
-  const textContent = `Pathfinding Mode: ${pathfindingMode ? 'ON' : 'OFF'}`;
-
-  // Calculate the width and height of the background rectangle
-  textSize(16);
-  const textWidthValue = textWidth(textContent);
-  const textHeightValue = textAscent() + textDescent();
-
-  // Draw the background rectangle
-  fill(0, 0, 0, 150); // Semi-transparent black background
-  noStroke();
-  rect(x - padding, y - padding, textWidthValue + 2 * padding, textHeightValue + 2 * padding, 5);
-
-  // Draw the text
-  fill(255);
-  textAlign(LEFT, TOP);
-  text(textContent, x, y);
-}
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
