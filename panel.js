@@ -11,7 +11,11 @@ class Panel {
         this.headerSize = options.headerSize || 18;
         this.contentHeight = 0;
         this.contentWidth = 0;
-        this.visible = true; // Add visible property
+        this.visible = true;
+        this.dragging = false;
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.wasDragged = false;
     }
 
     calculateDimensions() {
@@ -23,7 +27,7 @@ class Panel {
         push();
         textSize(this.textSize);
         textAlign(LEFT, TOP);
-        this.contentWidth = textWidth(this.header) + 5 * this.padding; // Include header width
+        this.contentWidth = textWidth(this.header) + 5 * this.padding;
 
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
@@ -40,15 +44,14 @@ class Panel {
         push();
         textSize(this.textSize);
         textAlign(LEFT, TOP);
-        this.contentHeight = this.headerSize + this.padding * 2; // Add extra padding for the header
+        this.contentHeight = this.headerSize + this.padding * 2;
 
         let contentLines = this.contentFunction();
         contentLines.forEach(line => {
             let wrappedLines = this.wrapText(line, this.width - 2 * this.padding);
-            this.contentHeight += wrappedLines.length * (textAscent() + textDescent() + this.padding); // Increase padding between lines
+            this.contentHeight += wrappedLines.length * (textAscent() + textDescent() + this.padding);
         });
 
-        // Add extra padding at the bottom
         this.contentHeight += this.padding * 2;
 
         pop();
@@ -74,7 +77,7 @@ class Panel {
     }
 
     draw() {
-        if (!this.visible) return; // Skip drawing if the panel is not visible
+        if (!this.visible) return;
 
         this.calculateDimensions();
         fill(this.backgroundColour);
@@ -93,9 +96,33 @@ class Panel {
             let wrappedLines = this.wrapText(line, this.contentWidth - 2 * this.padding);
             wrappedLines.forEach(wrappedLine => {
                 text(wrappedLine, this.x + this.padding, yOffset);
-                yOffset += textAscent() + textDescent() + this.padding; // Increase padding between lines
+                yOffset += textAscent() + textDescent() + this.padding;
             });
         });
+    }
+
+    mousePressed() {
+        if (mouseX > this.x && mouseX < this.x + this.contentWidth && mouseY > this.y && mouseY < this.y + this.contentHeight) {
+            this.dragging = true;
+            this.offsetX = this.x - mouseX;
+            this.offsetY = this.y - mouseY;
+            this.wasDragged = false;
+        }
+    }
+
+    mouseDragged() {
+        if (this.dragging) {
+            this.x = mouseX + this.offsetX;
+            this.y = mouseY + this.offsetY;
+            this.wasDragged = true;
+        }
+    }
+
+    mouseReleased() {
+        this.dragging = false;
+        if (this.wasDragged) {
+            panelManager.savePanelPositions();
+        }
     }
 }
 

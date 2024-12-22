@@ -18,24 +18,21 @@ function setup() {
   setState(GameState.INIT);
 
   panelManager = new PanelManager();
-  panelManager.registerPanels(); // Register panels
+  panelManager.registerPanels();
+  panelManager.loadPanelPositions(); // Load panel positions
 
-  // Create the toggle button
   toggleButton = createButton('Toggle AI Panel');
-  toggleButton.id('toggleButton'); // Assign the ID for styling
-  toggleButton.class('toggle-button'); // Assign the class for styling
-  toggleButton.position(width - 150, 10); // Position the button on the right
-  toggleButton.style('background-color', '#6c757d'); // Set the background color to grey
-  toggleButton.mousePressed(toggleAIPanel); // Attach the event listener
+  toggleButton.id('toggleButton');
+  toggleButton.class('toggle-button');
+  toggleButton.position(width - 150, 10);
+  toggleButton.style('background-color', '#6c757d');
+  toggleButton.mousePressed(toggleAIPanel);
 
-  // Create the toggle failed output button
   toggleFailedOutputButton = createButton('Toggle Failed Output');
-  toggleFailedOutputButton.id('toggleFailedOutputButton'); // Assign the ID for styling
-  toggleFailedOutputButton.class('toggle-button'); // Assign the class for styling
-  toggleFailedOutputButton.position(width - 150, 50); // Position the button below the toggle button
-  toggleFailedOutputButton.mousePressed(toggleFailedOutput); // Attach the event listener
-
-  // Initialize button color based on the initial state
+  toggleFailedOutputButton.id('toggleFailedOutputButton');
+  toggleFailedOutputButton.class('toggle-button');
+  toggleFailedOutputButton.position(width - 150, 50);
+  toggleFailedOutputButton.mousePressed(toggleFailedOutput);
   toggleFailedOutputButton.style('background-color', buttonColor1);
 }
 
@@ -97,34 +94,51 @@ function keyPressed() {
   }
 }
 function mousePressed() {
-  let clickedHex = pixelToHex(mouseX - width / 2, mouseY - height / 2);
-  if (clickedHex) {
-    selectedHex = clickedHex;
+  let wasPanelClicked = false;
+  panelManager.panels.forEach(panel => {
+    panel.mousePressed();
+    if (panel.dragging) {
+      wasPanelClicked = true;
+    }
+  });
 
-    if (pathfindingMode) {
-      if (path.length === 0) {
-        path.push(clickedHex); // Set the start hex
-      } else if (path.length === 1) {
-        path.push(clickedHex); // Set the end hex
-        path = aStar(path[0], path[1], hexGrid); // Find the path using A* algorithm
-      } else {
-        path = [clickedHex]; // Reset the path
-      }
-    } else if (currentPlayerIndex === 0 && currentState === GameState.PLAYING_HUMAN) {
-      let player = players[currentPlayerIndex];
-      let unitType = selectedUnitType; // Use the selected unit type
-      let newUnit = new Unit(player.id, unitType, unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, player.color); // Example values for attack and defense
+  if (!wasPanelClicked) {
+    let clickedHex = pixelToHex(mouseX - width / 2, mouseY - height / 2);
+    if (clickedHex) {
+      selectedHex = clickedHex;
 
-      if (placeUnit(clickedHex.q, clickedHex.r, newUnit)) {
-        switchPlayer(); // Switch to the next player if unit placement is successful
-        turnStartTime = millis();
-        // Update turn number
-        turnNumber++;
-      } else {
-        print(`Cannot place unit at (${clickedHex.q}, ${clickedHex.r}).`);
+      if (pathfindingMode) {
+        if (path.length === 0) {
+          path.push(clickedHex);
+        } else if (path.length === 1) {
+          path.push(clickedHex);
+          path = aStar(path[0], path[1], hexGrid);
+        } else {
+          path = [clickedHex];
+        }
+      } else if (currentPlayerIndex === 0 && currentState === GameState.PLAYING_HUMAN) {
+        let player = players[currentPlayerIndex];
+        let unitType = selectedUnitType;
+        let newUnit = new Unit(player.id, unitType, unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, player.color);
+
+        if (placeUnit(clickedHex.q, clickedHex.r, newUnit)) {
+          switchPlayer();
+          turnStartTime = millis();
+          turnNumber++;
+        } else {
+          print(`Cannot place unit at (${clickedHex.q}, ${clickedHex.r}).`);
+        }
       }
     }
   }
+}
+
+function mouseDragged() {
+  panelManager.panels.forEach(panel => panel.mouseDragged());
+}
+
+function mouseReleased() {
+  panelManager.panels.forEach(panel => panel.mouseReleased());
 }
 
 function drawSelectedUnitTypePanel() {

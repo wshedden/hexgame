@@ -151,4 +151,22 @@ positionPanels(panels, side) {
 
         this.organisePanels(); // Organise panels after registering them
     }
+
+    savePanelPositions() {
+        const positions = this.panels.map(panel => ({ header: panel.header, x: panel.x, y: panel.y }));
+        localStorage.setItem('panelPositions', JSON.stringify(positions));
+    }
+
+    loadPanelPositions() {
+        const positions = JSON.parse(localStorage.getItem('panelPositions'));
+        if (positions) {
+            positions.forEach(pos => {
+                const panel = this.getPanelByHeader(pos.header);
+                if (panel) {
+                    panel.x = pos.x;
+                    panel.y = pos.y;
+                }
+            });
+        }
+    }
 }
