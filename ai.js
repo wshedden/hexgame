@@ -186,30 +186,3 @@ function moveUnit(player, fromHex, toHex, options = {}) {
     return true;
 }
 
-function handleAIDecision() {
-  players[currentPlayerIndex].decisionReasoning = ''; // Clear previous reasoning
-
-  let maxAttempts = 10; // Maximum number of attempts to make decisions
-  let attempts = 0;
-
-  while (players[currentPlayerIndex].movesLeft > 0 && attempts < maxAttempts) {
-    players[currentPlayerIndex].makeDecision({ enablePrinting: false }); // Disable printing for AI decisions
-    attempts++;
-  }
-
-  if (attempts >= maxAttempts) {
-    print(`Player ${players[currentPlayerIndex].id} reached the maximum number of decision attempts.`);
-  }
-
-  if (currentPlayerIndex === 0) {
-    turnNumber++; // Increment turn number when all players have taken their turn
-  }
-
-  const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
-  if (aiPanel) {
-    aiPanel.contentFunction = () => {
-      const lines = players[currentPlayerIndex].decisionReasoning.split('\n');
-      return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
-    };
-  }
-}

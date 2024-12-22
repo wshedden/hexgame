@@ -4,6 +4,8 @@ const GameState = {
   PLAYING_HUMAN: 'playing_human',
   PAUSED: 'paused',
   GAME_OVER: 'game_over',
+  THINKING: 'thinking', // New state for AI thinking
+  ANIMATING: 'animating' // New state for animations
 };
 
 let currentState = GameState.INIT;
@@ -20,9 +22,13 @@ const players = [
 
 function setState(newState) {
   currentState = newState;
-  // print(`Game state changed to: ${currentState}`);
   if (newState === GameState.PLAYING) {
     turnStartTime = millis();
+  } else if (newState === GameState.THINKING) {
+    handleAIDecision();
+    setState(GameState.ANIMATING); // Transition to ANIMATING state after AI decisions
+  } else if (newState === GameState.ANIMATING) {
+    // For now, do nothing special in the ANIMATING state
   }
 }
 
@@ -46,6 +52,12 @@ function drawGameState() {
       break;
     case GameState.GAME_OVER:
       drawGameOverState();
+      break;
+    case GameState.THINKING:
+      // For now, do nothing special in the THINKING state
+      break;
+    case GameState.ANIMATING:
+      drawAnimatingState();
       break;
   }
 }
@@ -163,6 +175,8 @@ function handleAIDecision() {
       return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
     };
   }
+
+  setState(GameState.ANIMATING); // Transition to ANIMATING state after AI decisions
 }
 
 function startNewTurn() {
@@ -175,5 +189,25 @@ function handleHumanInput() {
   if (currentPlayerIndex === 1) {
     switchPlayer();
     turnStartTime = millis();
+  }
+}
+
+function drawAnimatingState() {
+  // For now, do nothing special in the ANIMATING state
+  drawGrid();
+  drawUnits();
+}
+
+function progressGameState() {
+  if (currentState === GameState.ANIMATING) {
+    // Transition to the next state after ANIMATING
+    if (currentPlayerIndex === players.length - 1) {
+      // If the last player has finished their turn, start a new turn
+      startNewTurn();
+    } else {
+      // Otherwise, switch to the next player
+      switchPlayer();
+    }
+    setState(GameState.PLAYING);
   }
 }

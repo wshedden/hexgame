@@ -34,6 +34,14 @@ function setup() {
   toggleFailedOutputButton.position(width - 150, 50);
   toggleFailedOutputButton.mousePressed(toggleFailedOutput);
   toggleFailedOutputButton.style('background-color', buttonColor1);
+
+  // New button
+  const progressButton = createButton('Progress Game State');
+  progressButton.id('progressButton');
+  progressButton.class('toggle-button');
+  progressButton.position(width - 150, 90); // Position below the toggle failed output button
+  progressButton.style('background-color', '#6c757d');
+  progressButton.mousePressed(progressGameState);
 }
 
 function draw() {
