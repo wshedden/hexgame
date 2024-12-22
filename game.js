@@ -5,6 +5,7 @@ const GameState = {
   PAUSED: 'paused',
   GAME_OVER: 'game_over',
   THINKING: 'thinking', // New state for AI thinking
+  DECISIONS_MADE: 'decisions_made', // New state for decisions made
   ANIMATING: 'animating' // New state for animations
 };
 
@@ -14,6 +15,8 @@ let turnDuration = 500;
 let turnStartTime;
 let turnNumber = 1; // Initialize turn number
 let speedMultiplier = 1.0;
+let decisionsMadeTime; // Time when decisions were made
+let animationStartTime; // Time when animation started
 
 const players = [
   new Player(1, [139, 0, 0]), // Dark red for player 1
@@ -26,9 +29,11 @@ function setState(newState) {
     turnStartTime = millis();
   } else if (newState === GameState.THINKING) {
     handleAIDecision();
-    setState(GameState.ANIMATING); // Transition to ANIMATING state after AI decisions
+    setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
+  } else if (newState === GameState.DECISIONS_MADE) {
+    decisionsMadeTime = millis();
   } else if (newState === GameState.ANIMATING) {
-    // For now, do nothing special in the ANIMATING state
+    animationStartTime = millis();
   }
 }
 
@@ -55,6 +60,9 @@ function drawGameState() {
       break;
     case GameState.THINKING:
       // For now, do nothing special in the THINKING state
+      break;
+    case GameState.DECISIONS_MADE:
+      drawDecisionsMadeState();
       break;
     case GameState.ANIMATING:
       drawAnimatingState();
@@ -107,6 +115,17 @@ function drawGameOverState() {
   text('Game Over', width / 2, height / 2);
 }
 
+function drawDecisionsMadeState() {
+  // Draw the state after decisions are made
+  drawGrid();
+  drawUnits();
+
+  // Check if 2 seconds have passed since decisions were made
+  if (millis() - decisionsMadeTime > 2000) {
+    setState(GameState.ANIMATING);
+  }
+}
+
 function drawGameStatePopup() {
   rectMode(CORNER); // Ensure rectMode is set to CORNER
   fill(0, 0, 0, 150); // Semi-transparent black background
@@ -126,8 +145,6 @@ function drawGameStatePopup() {
   // Display the speed multiplier
   text(`Speed: ${speedMultiplier.toFixed(3)}x`, 20, 110);
 }
-
-
 
 function switchPlayer() {
   players[currentPlayerIndex].movesLeft--;
@@ -176,7 +193,7 @@ function handleAIDecision() {
     };
   }
 
-  setState(GameState.ANIMATING); // Transition to ANIMATING state after AI decisions
+  setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
 }
 
 function startNewTurn() {
@@ -196,6 +213,11 @@ function drawAnimatingState() {
   // For now, do nothing special in the ANIMATING state
   drawGrid();
   drawUnits();
+
+  // Check if 2 seconds have passed since animation started
+  if (millis() - animationStartTime > 2000) {
+    progressGameState();
+  }
 }
 
 function progressGameState() {
