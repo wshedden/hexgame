@@ -6,7 +6,8 @@ const GameState = {
   GAME_OVER: 'game_over',
   THINKING: 'thinking', // New state for AI thinking
   DECISIONS_MADE: 'decisions_made', // New state for decisions made
-  ANIMATING: 'animating' // New state for animations
+  ANIMATING: 'animating',
+  ANIMATION_COMPLETE: 'animation_complete'
 };
 
 let currentState = GameState.INIT;
@@ -26,9 +27,10 @@ const players = [
 function setState(newState) {
   currentState = newState;
   if (newState === GameState.PLAYING) {
-    turnStartTime = millis();
+    setState(GameState.THINKING);
+    startNewTurn();
   } else if (newState === GameState.THINKING) {
-    handleAIDecision();
+    handleAIDecision(currentPlayerIndex);
     setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
   } else if (newState === GameState.DECISIONS_MADE) {
     decisionsMadeTime = millis();
@@ -147,48 +149,32 @@ function drawGameStatePopup() {
 }
 
 function switchPlayer() {
-  players[currentPlayerIndex].movesLeft--;
-
-  if (players[currentPlayerIndex].movesLeft > 0) {
-    return;
-  }
-
-  players[currentPlayerIndex].resetMoves();
-
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-  players[currentPlayerIndex].resetBattles();
-
-  if (currentPlayerIndex === 0 && players[0].isHuman) {
-    return;
-  }
-
-  handleAIDecision({ enablePrinting: false }); // Disable printing for AI decisions
 }
 
-function handleAIDecision() {
-  players[currentPlayerIndex].decisionReasoning = ''; // Clear previous reasoning
+function handleAIDecision(playerIndex) {
+  players[playerIndex].decisionReasoning = ''; // Clear previous reasoning
 
   let maxAttempts = 10; // Maximum number of attempts to make decisions
   let attempts = 0;
+  let successfulMoves = 0;
 
-  while (players[currentPlayerIndex].movesLeft > 0 && attempts < maxAttempts) {
-    players[currentPlayerIndex].makeDecision();
+  while (players[playerIndex].movesLeft > 0 && attempts < maxAttempts && successfulMoves < 3) {
+    if (players[playerIndex].makeDecision()) {
+      successfulMoves++;
+    }
     attempts++;
   }
 
   if (attempts >= maxAttempts) {
-    // print(`Player ${players[currentPlayerIndex].id} reached the maximum number of decision attempts.`);
-  }
-
-  if (currentPlayerIndex === 0) {
-    turnNumber++; // Increment turn number when all players have taken their turn
+    // print(`Player ${players[playerIndex].id} reached the maximum number of decision attempts.`);
   }
 
   // Update the AI Decision Reasoning panel
   const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
   if (aiPanel) {
     aiPanel.contentFunction = () => {
-      const lines = players[currentPlayerIndex].decisionReasoning.split('\n');
+      const lines = players[playerIndex].decisionReasoning.split('\n');
       return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
     };
   }
@@ -198,6 +184,13 @@ function handleAIDecision() {
 
 function startNewTurn() {
   switchPlayer();
+  players[currentPlayerIndex].resetMoves();
+  players[currentPlayerIndex].resetBattles();
+
+  // Increment the turn number if we're back to player 1
+  if (currentPlayerIndex === 0) {
+    turnNumber++;
+  }
   turnStartTime = millis();
 }
 
@@ -216,20 +209,18 @@ function drawAnimatingState() {
 
   // Check if 2 seconds have passed since animation started
   if (millis() - animationStartTime > 2000) {
+    setState(GameState.ANIMATION_COMPLETE);
     progressGameState();
   }
 }
 
 function progressGameState() {
   if (currentState === GameState.ANIMATING) {
-    // Transition to the next state after ANIMATING
-    if (currentPlayerIndex === players.length - 1) {
-      // If the last player has finished their turn, start a new turn
-      startNewTurn();
-    } else {
-      // Otherwise, switch to the next player
-      switchPlayer();
-    }
+    // Do nothing special in the ANIMATING state
+  } else if (currentState === GameState.ANIMATION_COMPLETE) {
+    // Transition to the next state after ANIMATION_COMPLETE
+    switchPlayer();
+    startNewTurn();
     setState(GameState.PLAYING);
   }
 }
