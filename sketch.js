@@ -1,7 +1,7 @@
 let selectedHex = null;
 let selectedUnitType = 'settler'; // Default to 'settler'
 let panelManager;
-let aiPanelVisible = true; // Track the7 visibility of the AI panel
+let aiPanelVisible = true; // Track the visibility of the AI panel
 let toggleButton; // Declare the toggle button
 let toggleFailedOutputButton; // Declare the toggle failed output button
 let showFailedOutput = true; // Track the visibility of failed AI decision output
