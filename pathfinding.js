@@ -29,6 +29,12 @@ function aStar(startHex, endHex, hexGrid) {
                 return;
             }
 
+            // Use the validation function to check if the neighbour is valid
+            if (!isValidHexForPathfinding(neighbour)) {
+                print(`Neighbour (${neighbour.q}, ${neighbour.r}) is not valid for pathfinding`);
+                return;
+            }
+
             print(`Evaluating neighbour: (${neighbour.q}, ${neighbour.r})`);
             const tentativeGScore = gScore.get(current) + neighbour.movementCost;
 
@@ -43,9 +49,10 @@ function aStar(startHex, endHex, hexGrid) {
             }
         });
 
-        print(`Open set: ${openSet.map(hex => `(${hex.q}, ${hex.r})`).join(', ')}`);
-        print(`gScore: ${Array.from(gScore.entries()).map(([hex, score]) => `(${hex.q}, ${hex.r}): ${score}`).join(', ')}`);
-        print(`fScore: ${Array.from(fScore.entries()).map(([hex, score]) => `(${hex.q}, ${hex.r}): ${score}`).join(', ')}`);
+        // Commented out the printing of the open set
+        // print(`Open set: ${openSet.map(hex => `(${hex.q}, ${hex.r})`).join(', ')}`);
+        // print(`gScore: ${Array.from(gScore.entries()).map(([hex, score]) => `(${hex.q}, ${hex.r}): ${score}`).join(', ')}`);
+        // print(`fScore: ${Array.from(fScore.entries()).map(([hex, score]) => `(${hex.q}, ${hex.r}): ${score}`).join(', ')}`);
     }
 
     print("No path found");
@@ -63,6 +70,11 @@ function reconstructPath(cameFrom, current) {
 
 function heuristic(a, b) {
     return Math.abs(a.q - b.q) + Math.abs(a.r - b.r); // Manhattan distance for axial coordinates
+}
+
+function isValidHexForPathfinding(hex) {
+    // Initially, check if the hex type is water
+    return hex.type !== 'water';
 }
 
 function mousePressed() {
