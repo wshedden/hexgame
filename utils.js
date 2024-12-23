@@ -80,3 +80,22 @@ function registerTerrainType(type, colourValue) {
 function getOutlineColour() {
   return color(128, 0, 128); // Nice purple color
 }
+
+function getTerrainColor(type, fertility, noiseValue) {
+  switch (type) {
+    case 'grass':
+      return lerpColor(color(100, 200, 100), color(50, 150, 50), fertility); // Example colors for grass
+    case 'desert':
+      return lerpColor(color(207, 169, 56), color(255, 255, 224), fertility * 4); // Lerp from dark tan to light yellow
+    case 'mountain':
+      return lerpColor(color(64, 64, 64), color(192, 192, 192), fertility); // Lerp from dark grey to light grey
+    case 'forest':
+      return lerpColor(color(34, 139, 34), color(0, 100, 0), fertility); // Example colors for forest
+    case 'snow':
+      return lerpColor(color(255, 250, 250), color(200, 200, 200), 1 - fertility); // Lerp from white to light grey, grey for more fertile
+    case 'water':
+      return lerpColor(color(0, 0, 139), color(100, 150, 255), noiseValue * 2); // Lerp from dark blue to brighter blue based on noise value
+    default:
+      return color(200); // Default color
+  }
+}

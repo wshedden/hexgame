@@ -106,14 +106,6 @@ function placeUnitOnHex(hex, unit) {
   return true;
 }
 
-function drawUnit(x, y, unit, size) {
-  push();
-  translate(x, y);
-  fill(unit.colour);
-  ellipse(0, 0, size, size);
-  pop();
-}
-
 function moveUnit(player, fromHex, toHex, options = {}) {
   if (fromHex.units.length === 0) {
     return false;
