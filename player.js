@@ -107,6 +107,22 @@ function placeUnitOnHex(hex, unit) {
 }
 
 function moveUnit(player, fromHex, toHex, options = {}) {
+  if (!canMoveUnit(fromHex, toHex)) {
+    return false;
+  }
+
+  let unitToMove = random(fromHex.units);
+
+  if (!moveUnitToHex(unitToMove, fromHex, toHex)) {
+    return false;
+  }
+
+  updatePlayerOccupiedHexes(player, fromHex, toHex);
+
+  return true;
+}
+
+function canMoveUnit(fromHex, toHex) {
   if (fromHex.isInBattle() || fromHex.units.length === 0) {
     return false;
   }
@@ -115,21 +131,25 @@ function moveUnit(player, fromHex, toHex, options = {}) {
     return false;
   }
 
-  let unitToMove = random(fromHex.units);
+  return true;
+}
 
-  if (unitToMove.movement <= 0) {
+function moveUnitToHex(unit, fromHex, toHex) {
+  if (unit.movement <= 0) {
     return false;
   }
 
-  toHex.units.push(unitToMove);
-  fromHex.units.splice(fromHex.units.indexOf(unitToMove), 1);
+  toHex.units.push(unit);
+  fromHex.units.splice(fromHex.units.indexOf(unit), 1);
 
+  return true;
+}
+
+function updatePlayerOccupiedHexes(player, fromHex, toHex) {
   if (fromHex.units.length === 0) {
     player.occupiedHexes.delete(fromHex);
   }
   player.occupiedHexes.add(toHex);
-
-  return true;
 }
 
 function createUnit(player, unitType) {
