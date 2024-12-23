@@ -156,4 +156,13 @@ class PanelManager {
             });
         }
     }
+
+    resetPanelPositions() {
+        this.panels.forEach(panel => {
+            panel.x = 0;
+            panel.y = 0;
+        });
+        this.organisePanels(); // Reorganise panels after resetting positions
+        this.savePanelPositions(); // Save the reset positions
+    }
 }

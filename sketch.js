@@ -35,13 +35,20 @@ function setup() {
   toggleFailedOutputButton.mousePressed(toggleFailedOutput);
   toggleFailedOutputButton.style('background-color', buttonColor1);
 
-  // New button
   const progressButton = createButton('Progress Game State');
   progressButton.id('progressButton');
   progressButton.class('toggle-button');
-  progressButton.position(width - 150, 90); // Position below the toggle failed output button
+  progressButton.position(width - 150, 90);
   progressButton.style('background-color', '#6c757d');
   progressButton.mousePressed(progressGameState);
+
+  // New button to reset panel positions
+  const resetButton = createButton('Reset Panel Positions');
+  resetButton.id('resetButton');
+  resetButton.class('toggle-button');
+  resetButton.position(width - 150, 130); // Position below the progress button
+  resetButton.style('background-color', '#6c757d');
+  resetButton.mousePressed(() => panelManager.resetPanelPositions());
 }
 
 function draw() {
