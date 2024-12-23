@@ -9,9 +9,10 @@ class Battle {
     this.units.forEach(unitSet => {
       unitSet.forEach(unit => {
         unit.battle = this;
-      });
+      });   
     });
   }
+
 
   start() {
     if (this.enablePrinting) {

@@ -70,24 +70,26 @@ class AIPlayer {
   }
 
   moveUnitAlongPath(unit, hex, path) {
-    let nextHex = path[1];
-    if (this.player.moveUnit(hex, nextHex)) {
-      // Check if the next hex has enemy units
-      if (nextHex.hasEnemyUnits(this.player.id)) {
-        this.startBattle(nextHex);
-      }
-
-      path = path.slice(1);
-      if (path.length === 1) {
-        this.player.paths.delete(unit);
-      } else {
-        this.player.paths.set(unit, path);
-      }
-      this.player.movesLeft--;
+  let nextHex = path[1];
+  if (this.player.moveUnit(hex, nextHex)) {
+    // Check if the next hex has enemy units
+    if (nextHex.hasEnemyUnits(this.player.id)) {
+      this.startBattle(nextHex);
+      this.player.paths.delete(unit); // Remove the path completely if a battle is started
       return true;
     }
-    return false;
+
+    path = path.slice(1);
+    if (path.length === 1) {
+      this.player.paths.delete(unit);
+    } else {
+      this.player.paths.set(unit, path);
+    }
+    this.player.movesLeft--;
+    return true;
   }
+  return false;
+}
 
   startBattle(hex) {
     // Create an array of sets for each player
@@ -106,10 +108,17 @@ class AIPlayer {
       this.player.paths.delete(unit);
     });
 
+
     // Update player.battleHexes for us
     this.player.battleHexes.add(hex.getKey());
     // Now find the enemy player and update their battleHexes
     const enemyPlayer = players.find(player => player.id !== this.player.id);
+
+    // Remove enemy unit paths
+    enemyUnits.forEach(unit => {
+      enemyPlayer.paths.delete(unit);
+    });
+
     enemyPlayer.battleHexes.add(hex.getKey());
     this.player.decisionReasoning += `⚔️ Battle started at (${hex.q}, ${hex.r}) between player units and enemy units\n`; // Battle emoji
   }
@@ -121,7 +130,7 @@ class AIPlayer {
 
       if (newPath.length > 0) {
         this.player.paths.set(unit, newPath);
-        this.player.decisionReasoning += `➡️ Path found for unit from (${hex.q}, ${hex.r}) to (${randomHex.q}, ${randomHex.r})\n`; // Pathfinding emoji
+        this.player.decisionReasoning += `➡️ Path found from (${hex.q}, ${hex.r}) to (${randomHex.q}, ${randomHex.r})\n`; // Pathfinding emoji
         this.player.movesLeft--;
         return true;
       } else {

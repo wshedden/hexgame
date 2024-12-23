@@ -13,7 +13,7 @@ class Hex {
     this.claimedBy = claimedBy;
     this.fertility = fertility;
     this.colour = getTerrainColor(type, fertility);
-    this.claimedColour = null; // New attribute
+    this.claimedColour = null;
     this.movementCost = 1; // Example value, adjust as needed
     this.battle = null; // Track the battle the hex is involved in
   }
