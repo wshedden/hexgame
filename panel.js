@@ -133,7 +133,8 @@ function generatePlayerPanelContent(player) {
     let lines = [
         `🔷 Claimed Hexes: ${claimedHexesArray.length}`,
         `💰 Money: ${player.money}`, // Display money
-        `🔢 Unit Limit: ${player.unitLimit}` // Display unit limit
+        `🔢 Unit Limit: ${player.unitLimit}`, // Display unit limit
+        `🛤️ Paths: ${player.paths.size}` // Display the number of paths
     ];
 
     for (let i = 0; i < claimedHexesArray.length; i++) {

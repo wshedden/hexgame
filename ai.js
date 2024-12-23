@@ -6,16 +6,17 @@ function makeDecision(player) {
     const cheapestUnitCost = Math.min(...Object.values(UNIT_COSTS));
 
     // Check if the player has enough money to place the cheapest unit
-    if (player.money < cheapestUnitCost) {
-        // If not enough money, only handle unit movement
+    if (player.money < cheapestUnitCost && !hasMovableUnits(player)) {
+        // If not enough money and no movable units, pass the turn
+        player.decisionReasoning += '🚫 No valid moves or placements available, passing turn\n'; // Pass emoji
+        return false;
+    }
+
+    // If enough money, decide between unit movement and placement
+    if (turnNumber > 2 && Math.random() < 0.5) {
         handleUnitMovement(player);
     } else {
-        // If enough money, decide between unit movement and placement
-        if (turnNumber > 2 && Math.random() < 0.5) {
-            handleUnitMovement(player);
-        } else {
-            handleUnitPlacement(player);
-        }
+        handleUnitPlacement(player);
     }
 
     // Append the decision reasoning to the initial reasoning
@@ -25,6 +26,12 @@ function makeDecision(player) {
     if (player.decisionReasoning.length > player.maxReasoningLength) {
         player.decisionReasoning = player.decisionReasoning.slice(-player.maxReasoningLength);
     }
+
+    return true;
+}
+
+function hasMovableUnits(player) {
+    return Array.from(player.occupiedHexes).some(hex => hex.getMovableUnits().length > 0);
 }
 
 function handleUnitMovement(player) {
@@ -41,24 +48,33 @@ function handleUnitMovement(player) {
             if (path && path.length > 1) {
                 let nextHex = path[1]; // Get the next hex in the path
                 if (moveUnit(player, hex, nextHex)) {
-                    player.paths.set(unitToMove, path.slice(1)); // Update the path by removing the first entry
+                    path = path.slice(1); // Update the path by removing the first entry
+                    if (path.length === 1) {
+                        player.paths.delete(unitToMove); // Remove the path if the unit has reached the final destination
+                    } else {
+                        player.paths.set(unitToMove, path); // Update the path
+                    }
                     player.movesLeft--; // Decrement movesLeft only if the move is successful
                     moved = true;
                     break;
                 }
             } else {
                 // If no path or path is too short, find a new path
-                let randomHex = random(Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit));
-                let newPath = aStar(hex, randomHex, hexGrid);
+                if (player.paths.size < 3) { // Check if the player has fewer than 3 paths
+                    let randomHex = random(Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit));
+                    let newPath = aStar(hex, randomHex, hexGrid);
 
-                if (newPath.length > 0) {
-                    player.paths.set(unitToMove, newPath);
-                    player.decisionReasoning += `➡️ Path found for unit from (${hex.q}, ${hex.r}) to (${randomHex.q}, ${randomHex.r})\n`; // Pathfinding emoji
-                    player.movesLeft--; // Decrement movesLeft only if the path is found
-                    moved = true;
-                    break;
+                    if (newPath.length > 0) {
+                        player.paths.set(unitToMove, newPath);
+                        player.decisionReasoning += `➡️ Path found for unit from (${hex.q}, ${hex.r}) to (${randomHex.q}, ${randomHex.r})\n`; // Pathfinding emoji
+                        player.movesLeft--; // Decrement movesLeft only if the path is found
+                        moved = true;
+                        break;
+                    } else {
+                        player.decisionReasoning += `❌ No path: (${hex.q}, ${hex.r}) -> (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
+                    }
                 } else {
-                    player.decisionReasoning += `❌ No path: (${hex.q}, ${hex.r}) -> (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
+                    player.decisionReasoning += `❌ Maximum number of paths reached\n`; // Failure emoji
                 }
             }
         }
