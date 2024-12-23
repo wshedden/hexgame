@@ -17,4 +17,17 @@ class Unit {
   }
 }
 
-// Remove drawing functions from unit.js
+function getUnitEmoji(unitType) {
+  switch (unitType) {
+    case 'soldier':
+      return '⚔️'; // Sword emoji for soldier
+    case 'farmer':
+      return '🌾'; // Sheaf of rice emoji for farmer
+    case 'settler':
+      return '🏠'; // House emoji for settler
+    case 'builder':
+      return '🔨'; // Hammer emoji for builder
+    default:
+      return '❓'; // Question mark emoji for unknown unit type
+  }
+}
