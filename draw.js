@@ -4,7 +4,7 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
   stroke(getOutlineColour()); // Use the purple outline colour
   strokeWeight(1); // Set stroke weight
 
-  // Use the fertility-based color but if it's claimed then lerp it with the claimed colour
+  // Use the fertility-based colour but if it's claimed then lerp it with the claimed colour
   if (claimedBy) {
     // Get player colour and convert it to p5.Color object
     let playerColour = color(players[claimedBy - 1].colour[0], players[claimedBy - 1].colour[1], players[claimedBy - 1].colour[2]);
@@ -13,7 +13,7 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
     fill(colour);
   }
 
-  // Determine the stroke color
+  // Determine the stroke colour
   if (claimedBy) {
     stroke(players[claimedBy - 1].colour);
     strokeWeight(4);
@@ -46,7 +46,7 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
 }
 
 function getOutlineColour() {
-  return color(128, 0, 128); // Nice purple color
+  return color(128, 0, 128); // Nice purple colour
 }
 
 function getTerrainColour(type) {
@@ -154,13 +154,13 @@ function drawUnit(x, y, unit, size) {
   push();
   translate(x, y);
 
-  // Lerp the unit color with the player color
+  // Lerp the unit colour with the player colour
   let playerColour = color(players[unit.id - 1].colour[0], players[unit.id - 1].colour[1], players[unit.id - 1].colour[2]);
   let unitColour = lerpColor(unit.colour, playerColour, 0.8);
 
   // Set the fill and stroke
   fill(unitColour);
-  stroke(lerpColor(playerColour, color(0), 0.5)); // Darker version of the player color
+  stroke(lerpColor(playerColour, color(0), 0.5)); // Darker version of the player colour
   strokeWeight(2);
 
   // Draw the correct shape for the unit type
@@ -224,8 +224,8 @@ function animateUnitMovement(attackerHex, defenderHex, duration = 1000) {
 function drawUnitPath(path, playerColour) {
   if (path.length > 1) {
     push();
-    translate(width / 2, height / 2); // Translate the origin to the center of the canvas
-    stroke(playerColour); // Use the player's color for the path
+    translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
+    stroke(playerColour); // Use the player's colour for the path
     strokeWeight(3);
     noFill();
     beginShape();
@@ -268,9 +268,9 @@ function drawArrowhead(x1, y1, x2, y2, playerColour) {
 function drawPath() {
   if (path.length > 1) {
     push();
-    translate(width / 2, height / 2); // Translate the origin to the center of the canvas
-    const greenColor = color(0, 255, 0); // Green color for the path
-    stroke(greenColor);
+    translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
+    const greenColour = color(0, 255, 0); // Green colour for the path
+    stroke(greenColour);
     strokeWeight(3);
     noFill();
     beginShape();
@@ -285,7 +285,7 @@ function drawPath() {
     let secondLastHex = path[path.length - 2];
     let { x: x1, y: y1 } = hexToPixel(secondLastHex);
     let { x: x2, y: y2 } = hexToPixel(lastHex);
-    drawArrowhead(x1, y1, x2, y2, [0, 255, 0]); // Pass green color as an array
+    drawArrowhead(x1, y1, x2, y2, [0, 255, 0]); // Pass green colour as an array
 
     pop();
   }

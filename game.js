@@ -14,7 +14,7 @@ let currentState = GameState.INIT;
 let currentPlayerIndex = 0;
 let turnDuration = 500;
 let turnStartTime;
-let turnNumber = 1; // Initialize turn number
+let turnNumber = 1; // Initialise turn number
 let speedMultiplier = 1.0;
 let decisionsMadeTime; // Time when decisions were made
 let animationStartTime; // Time when animation started
