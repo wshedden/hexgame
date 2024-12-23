@@ -12,10 +12,12 @@ class AIPlayer {
       return false;
     }
 
-    if (turnNumber > 2 && Math.random() < 0.5) {
+    if (this.canAffordCheapestUnit()) {
+      this.handleUnitPlacement();
+    } else if (this.hasMovableUnits()) {
       this.handleUnitMovement();
     } else {
-      this.handleUnitPlacement();
+      this.passTurn();
     }
 
     this.finaliseDecisionReasoning();
@@ -89,13 +91,20 @@ class AIPlayer {
 
   startBattle(hex) {
     // Create an array of sets for each player
-    const playerUnits = new Set(hex.units.filter(unit => unit.player === this.player.id));
-    const enemyUnits = new Set(hex.units.filter(unit => unit.player !== this.player.id));
+    const playerUnits = new Set(hex.units.filter(unit => unit.id === this.player.id));
+    const enemyUnits = new Set(hex.units.filter(unit => unit.id !== this.player.id));
 
     // Create a Battle instance with the hex and units
     const units = [playerUnits, enemyUnits];
     const battle = new Battle(hex, units, { enablePrinting: true });
     battle.start();
+
+    // Remove paths for units involved in the battle
+    playerUnits.forEach(unit => {
+        // Print paths for debugging
+        print(`Path for unit ${unit.type} at (${unit.q}, ${unit.r}): ${this.player.paths.get(unit)}`);
+      this.player.paths.delete(unit);
+    });
 
     // Update player battles
     this.player.battleHexes.add(hex.getKey());

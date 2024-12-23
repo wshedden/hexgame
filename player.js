@@ -87,6 +87,8 @@ function placeUnitOnHex(hex, unit) {
     return false;
   }
   hex.occupiedBy = unit.id;
+  unit.q = hex.q; // Set unit's q coordinate
+  unit.r = hex.r; // Set unit's r coordinate
   let player = players.find(p => p.id === unit.id);
   if (player) {
     player.occupiedHexes.add(hex);
