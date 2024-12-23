@@ -1,5 +1,3 @@
-// battle.js
-
 class Battle {
   constructor(attackerHex, defenderHex, options = {}) {
     this.attackerHex = attackerHex;
@@ -7,6 +5,12 @@ class Battle {
     this.attacker = attackerHex.units[0]; // Assuming the first unit is the attacker
     this.defender = defenderHex.units[0]; // Assuming the first unit is the defender
     this.enablePrinting = options.enablePrinting || false;
+
+    // Set battle references
+    this.attackerHex.battle = this;
+    this.defenderHex.battle = this;
+    this.attacker.battle = this;
+    this.defender.battle = this;
   }
 
   start() {
@@ -41,6 +45,8 @@ class Battle {
         print(`Player ${this.attacker.id} wins the battle!`);
       }
       this.defenderHex.units.splice(this.defenderHex.units.indexOf(this.defender), 1); // Remove the defender unit
+      this.defenderHex.battle = null;
+      this.defender.battle = null;
     }
 
     if (this.attacker.health <= 0) {
@@ -48,6 +54,8 @@ class Battle {
         print(`Player ${this.defender.id} wins the battle!`);
       }
       this.attackerHex.units.splice(this.attackerHex.units.indexOf(this.attacker), 1); // Remove the attacker unit
+      this.attackerHex.battle = null;
+      this.attacker.battle = null;
     }
   }
 }

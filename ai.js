@@ -96,7 +96,7 @@ class AIPlayer {
         this.player.decisionReasoning += `❌ No path: (${hex.q}, ${hex.r}) -> (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
       }
     } else {
-      this.player.decisionReasoning += `❌ Maximum number of paths reached\n`; // Failure emoji
+      this.player.decisionReasoning += `❌ Path limit\n`; // Failure emoji
     }
     return false;
   }

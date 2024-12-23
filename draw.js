@@ -1,23 +1,9 @@
-function drawHex(x, y, size, type, textValue, claimedBy, colour) {
+function drawHex(x, y, size, type, textValue, claimedBy, colour, battle) {
   push();
   translate(x, y);
   stroke(getOutlineColour()); // Use the purple outline colour
-  strokeWeight(1); // Set stroke weight
-
-  // Use the fertility-based colour but if it's claimed then lerp it with the claimed colour
-  if (claimedBy) {
-    // Get player colour and convert it to p5.Color object
-    let playerColour = color(players[claimedBy - 1].colour[0], players[claimedBy - 1].colour[1], players[claimedBy - 1].colour[2]);
-    fill(lerpColor(colour, playerColour, 0.6));
-  } else {
-    fill(colour);
-  }
-
-  // Determine the stroke colour
-  if (claimedBy) {
-    stroke(players[claimedBy - 1].colour);
-    strokeWeight(4);
-  }
+  strokeWeight(battle ? 6 : 1); // Thicken the stroke weight if there's a battle
+  fill(claimedBy ? lerpColor(colour, color(players[claimedBy - 1].colour), 0.6) : colour);
 
   beginShape();
   for (let i = 0; i < 6; i++) {
@@ -31,7 +17,7 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour) {
   // Draw thick outline if claimed
   if (claimedBy) {
     strokeWeight(4);
-    stroke(players[claimedBy-1].colour);
+    stroke(players[claimedBy - 1].colour);
     noFill();
     beginShape();
     for (let i = 0; i < 6; i++) {
@@ -66,7 +52,7 @@ function drawGrid() {
   translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
   hexGrid.forEach((hex) => {
     let { x, y } = hexToPixel(hex);
-    drawHex(x, y, 30, hex.type, hex.text, hex.claimedBy, hex.colour); // Pass the colour attribute
+    drawHex(x, y, 30, hex.type, hex.text, hex.claimedBy, hex.colour, hex.battle); // Pass the battle attribute
   });
 
   // Highlight the selected hex and its neighbours

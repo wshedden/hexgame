@@ -6,6 +6,7 @@ class Unit {
     this.attack = attack;
     this.defence = defence;
     this.movement = movement; // Add movement attribute
+    this.battle = null; // Track the battle the unit is involved in
     if (type === 'settler') {
       this.colour = lerpColor(color(0, 255, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Interpolated colour for settlers
     } else if (type === 'farmer') {
