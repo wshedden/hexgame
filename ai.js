@@ -147,7 +147,7 @@ class AIPlayer {
       let unitType = this.decideUnitType();
       let newUnit = createUnit(this.player, unitType);
       let emoji = getUnitEmoji(unitType); // Use getUnitEmoji from unit.js
-      if (placeUnit(randomHex.q, randomHex.r, newUnit)) {
+      if (purchaseUnit(randomHex.q, randomHex.r, newUnit)) {
         this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Success emoji
         this.player.movesLeft--;
       } else {

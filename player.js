@@ -50,7 +50,7 @@ class Player {
   }
 }
 
-function placeUnit(q, r, unit) {
+function purchaseUnit(q, r, unit) {
   let hex = getHex(q, r);
   if (!hex || !claimableTiles.has(hex.getKey())) {
     return false;
@@ -72,7 +72,7 @@ function placeUnit(q, r, unit) {
   let neighbours = getHexNeighbours(hex);
   let isAdjacentToOccupiedHex = neighbours.some(neighbour => neighbour.occupiedBy === unit.id);
 
-  if (isAdjacentToOccupiedHex) {
+  if (isAdjacentToOccupiedHex && (!hex.occupiedBy || hex.occupiedBy === unit.id)) {
     if (placeUnitOnHex(hex, unit)) {
       player.money -= UNIT_COSTS[unit.type]; // Deduct the cost from the player's money
       return true;
