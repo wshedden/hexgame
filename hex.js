@@ -63,4 +63,18 @@ class Hex {
   getMovableUnits() {
     return this.units.filter(unit => unit.type !== 'settler');
   }
+
+  hasEnemyUnits(player) {
+    return this.units.some(unit => unit.player !== player);
+  }
+
+  startBattle() {
+    this.battle = true;
+    print(`Battle started at hex (${this.q}, ${this.r})`);
+  }
+
+  endBattle() {
+    this.battle = false;
+    print(`Battle ended at hex (${this.q}, ${this.r})`);
+  }
 }

@@ -1,21 +1,21 @@
 class Battle {
-  constructor(attackerHex, defenderHex, options = {}) {
-    this.attackerHex = attackerHex;
-    this.defenderHex = defenderHex;
-    this.attacker = attackerHex.units[0]; // Assuming the first unit is the attacker
-    this.defender = defenderHex.units[0]; // Assuming the first unit is the defender
+  constructor(battleHex, units, options = {}) {
+    this.battleHex = battleHex;
+    this.units = units || []; // Ensure units is an array
     this.enablePrinting = options.enablePrinting || false;
 
     // Set battle references
-    this.attackerHex.battle = this;
-    this.defenderHex.battle = this;
-    this.attacker.battle = this;
-    this.defender.battle = this;
+    this.battleHex.startBattle();
+    this.units.forEach(unitSet => {
+      unitSet.forEach(unit => {
+        unit.battle = this;
+      });
+    });
   }
 
   start() {
     if (this.enablePrinting) {
-      print(`Battle started between Player ${this.attacker.id} and Player ${this.defender.id}`);
+      print(`Battle started at hex (${this.battleHex.q}, ${this.battleHex.r})`);
     }
     this.resolve();
   }
@@ -26,36 +26,30 @@ class Battle {
     let defenceMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
 
     // Apply defensive bonus if defender is on a mountain tile
-    let defenceBonus = this.defenderHex.type === 'mountain' ? 1.5 : 1.0;
+    let defenceBonus = this.battleHex.type === 'mountain' ? 1.5 : 1.0;
 
-    let damageToDefender = Math.max(0, Math.floor(this.attacker.attack * attackMultiplier - this.defender.defence * defenceMultiplier * defenceBonus));
-    let damageToAttacker = Math.max(0, Math.floor(this.defender.attack * defenceMultiplier - this.attacker.defence * attackMultiplier));
+    this.units.forEach(unitSet => {
+      unitSet.forEach(unit => {
+        let opponentSet = this.units.find(set => set !== unitSet);
+        opponentSet.forEach(opponent => {
+          let damageToOpponent = Math.max(0, Math.floor(unit.attack * attackMultiplier - opponent.defence * defenceMultiplier * defenceBonus));
+          opponent.health -= damageToOpponent;
 
-    // Apply damage
-    this.defender.health -= damageToDefender;
-    this.attacker.health -= damageToAttacker;
+          if (this.enablePrinting) {
+            print(`${unit.type} dealt ${damageToOpponent} damage to ${opponent.type}`);
+          }
 
-    if (this.enablePrinting) {
-      print(`Attacker dealt ${damageToDefender} damage, Defender dealt ${damageToAttacker} damage`);
-    }
-
-    // Check for unit deaths
-    if (this.defender.health <= 0) {
-      if (this.enablePrinting) {
-        print(`Player ${this.attacker.id} wins the battle!`);
-      }
-      this.defenderHex.units.splice(this.defenderHex.units.indexOf(this.defender), 1); // Remove the defender unit
-      this.defenderHex.battle = null;
-      this.defender.battle = null;
-    }
-
-    if (this.attacker.health <= 0) {
-      if (this.enablePrinting) {
-        print(`Player ${this.defender.id} wins the battle!`);
-      }
-      this.attackerHex.units.splice(this.attackerHex.units.indexOf(this.attacker), 1); // Remove the attacker unit
-      this.attackerHex.battle = null;
-      this.attacker.battle = null;
-    }
+          // Check for unit deaths
+          if (opponent.health <= 0) {
+            if (this.enablePrinting) {
+              print(`${unit.type} wins the battle against ${opponent.type}!`);
+            }
+            this.battleHex.units.splice(this.battleHex.units.indexOf(opponent), 1); // Remove the opponent unit
+            this.battleHex.endBattle();
+            opponent.battle = null;
+          }
+        });
+      });
+    });
   }
 }

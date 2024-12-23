@@ -7,7 +7,7 @@ class AIPlayer {
   makeDecision() {
     this.player.decisionReasoning += '🛠️ '; // Emoji for decision-making
 
-    if (!this.canAffordCheapestUnit() && !this.hasMovableUnits()) {
+    if (!this.canAffordCheapestUnit() && !this.hasMovableUnits() && this.player.movesLeft === 0) {
       this.passTurn();
       return false;
     }
@@ -68,19 +68,41 @@ class AIPlayer {
   }
 
   moveUnitAlongPath(unit, hex, path) {
-    let nextHex = path[1];
-    if (moveUnit(this.player, hex, nextHex)) {
-      path = path.slice(1);
-      if (path.length === 1) {
-        this.player.paths.delete(unit);
-      } else {
-        this.player.paths.set(unit, path);
-      }
-      this.player.movesLeft--;
-      return true;
+  let nextHex = path[1];
+  if (moveUnit(this.player, hex, nextHex)) {
+    // Check if the next hex has enemy units
+    if (nextHex.hasEnemyUnits(this.player)) {
+      const enemyUnit = nextHex.units.find(unit => unit.player !== this.player);
+      this.startBattle(unit, enemyUnit, nextHex);
     }
-    return false;
+
+    path = path.slice(1);
+    if (path.length === 1) {
+      this.player.paths.delete(unit);
+    } else {
+      this.player.paths.set(unit, path);
+    }
+    this.player.movesLeft--;
+    return true;
   }
+  return false;
+}
+
+  startBattle(attackingUnit, defendingUnit, hex) {
+  // Create an array of sets for each player
+  const units = [
+    new Set(hex.units.filter(unit => unit.player === attackingUnit.player)), // Set of attacking units
+    new Set(hex.units.filter(unit => unit.player === defendingUnit.player))  // Set of defending units
+  ];
+
+  // Create a Battle instance with the hex and units
+  const battle = new Battle(hex, units, { enablePrinting: true });
+//   battle.start();
+
+  // Update player battles
+  this.player.battleHexes.add(hex.getKey());
+  this.player.decisionReasoning += `⚔️ Battle started at (${hex.q}, ${hex.r}) between ${attackingUnit.type} and ${defendingUnit.type}\n`; // Battle emoji
+}
 
   findNewPathForUnit(unit, hex) {
     if (this.player.paths.size < 3) {
@@ -96,7 +118,7 @@ class AIPlayer {
         this.player.decisionReasoning += `❌ No path: (${hex.q}, ${hex.r}) -> (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
       }
     } else {
-      this.player.decisionReasoning += `❌ Path limit\n`; // Failure emoji
+    //   this.player.decisionReasoning += `❌ Path limit\n`; // Failure emoji
     }
     return false;
   }
