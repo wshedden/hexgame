@@ -129,12 +129,12 @@ function moveUnit(player, fromHex, toHex, options = {}) {
     return false;
   }
 
-  if (toHex.units.length > 0 && toHex.units[0].id !== unitToMove.id) {
-    let battle = new Battle(fromHex, toHex, options);
-    battle.start();
-    player.movesLeft--; // Decrement movesLeft only if the battle is initiated
-    return true;
-  }
+  // if (toHex.units.length > 0 && toHex.units[0].id !== unitToMove.id) {
+  //   let battle = new Battle(fromHex, toHex, options);
+  //   battle.start();
+  //   player.movesLeft--; // Decrement movesLeft only if the battle is initiated
+  //   return true;
+  // }
 
   toHex.units.push(unitToMove);
   fromHex.units.splice(fromHex.units.indexOf(unitToMove), 1);
