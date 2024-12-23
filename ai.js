@@ -71,9 +71,8 @@ class AIPlayer {
   let nextHex = path[1];
   if (moveUnit(this.player, hex, nextHex)) {
     // Check if the next hex has enemy units
-    if (nextHex.hasEnemyUnits(this.player)) {
-      const enemyUnit = nextHex.units.find(unit => unit.player !== this.player);
-      this.startBattle(unit, enemyUnit, nextHex);
+    if (nextHex.hasEnemyUnits(this.player.id)) {
+      this.startBattle(nextHex);
     }
 
     path = path.slice(1);
@@ -88,20 +87,19 @@ class AIPlayer {
   return false;
 }
 
-  startBattle(attackingUnit, defendingUnit, hex) {
+  startBattle(hex) {
   // Create an array of sets for each player
-  const units = [
-    new Set(hex.units.filter(unit => unit.player === attackingUnit.player)), // Set of attacking units
-    new Set(hex.units.filter(unit => unit.player === defendingUnit.player))  // Set of defending units
-  ];
+  const playerUnits = new Set(hex.units.filter(unit => unit.player === this.player.id));
+  const enemyUnits = new Set(hex.units.filter(unit => unit.player !== this.player.id));
 
   // Create a Battle instance with the hex and units
+  const units = [playerUnits, enemyUnits];
   const battle = new Battle(hex, units, { enablePrinting: true });
-//   battle.start();
+  battle.start();
 
   // Update player battles
   this.player.battleHexes.add(hex.getKey());
-  this.player.decisionReasoning += `⚔️ Battle started at (${hex.q}, ${hex.r}) between ${attackingUnit.type} and ${defendingUnit.type}\n`; // Battle emoji
+  this.player.decisionReasoning += `⚔️ Battle started at (${hex.q}, ${hex.r}) between player units and enemy units\n`; // Battle emoji
 }
 
   findNewPathForUnit(unit, hex) {

@@ -63,9 +63,9 @@ class Hex {
   getMovableUnits() {
     return this.units.filter(unit => unit.type !== 'settler');
   }
-
-  hasEnemyUnits(player) {
-    return this.units.some(unit => unit.player !== player);
+    
+  hasEnemyUnits(playerId) {
+    return this.units.some(unit => unit.id !== playerId);
   }
 
   startBattle() {
