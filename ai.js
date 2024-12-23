@@ -5,16 +5,16 @@ class AIPlayer {
   }
 
   makeDecision() {
-    this.player.decisionReasoning += '🛠️ '; // Emoji for decision-making
+    this.player.decisionReasoning += '🛠️ ';
 
-    if (!this.canAffordCheapestUnit() && !this.hasMovableUnits() && this.player.movesLeft === 0) {
+    if (!this.player.canAffordCheapestUnit() && !this.player.hasMovableUnits() && this.player.movesLeft === 0) {
       this.passTurn();
       return false;
     }
 
-    if (this.canAffordCheapestUnit()) {
+    if (this.player.canAffordCheapestUnit()) {
       this.handleUnitPlacement();
-    } else if (this.hasMovableUnits()) {
+    } else if (this.player.hasMovableUnits()) {
       this.handleUnitMovement();
     } else {
       this.passTurn();
@@ -24,17 +24,8 @@ class AIPlayer {
     return true;
   }
 
-  canAffordCheapestUnit() {
-    const cheapestUnitCost = Math.min(...Object.values(UNIT_COSTS));
-    return this.player.money >= cheapestUnitCost;
-  }
-
-  hasMovableUnits() {
-    return Array.from(this.player.occupiedHexes).some(hex => hex.getMovableUnits().length > 0);
-  }
-
   passTurn() {
-    this.player.decisionReasoning += '🚫 No valid moves or placements available, passing turn\n'; // Pass emoji
+    this.player.decisionReasoning += '🚫 No valid moves or placements available, passing turn\n';
   }
 
   finaliseDecisionReasoning() {
@@ -55,9 +46,9 @@ class AIPlayer {
         let path = this.player.paths.get(unitToMove);
 
         if (path && path.length > 1) {
-          moved = this.moveUnitAlongPath(unitToMove, hex, path);
+          moved = this.player.moveUnitAlongPath(unitToMove, hex, path);
         } else {
-          moved = this.findNewPathForUnit(unitToMove, hex);
+          moved = this.player.findNewPathForUnit(unitToMove, hex);
         }
 
         if (moved) break;
@@ -65,86 +56,13 @@ class AIPlayer {
     }
 
     if (!moved) {
-      this.player.decisionReasoning += '❌ No moves\n'; // Failure emoji
+      this.player.decisionReasoning += '❌ No moves\n';
     }
-  }
-
-  moveUnitAlongPath(unit, hex, path) {
-  let nextHex = path[1];
-  if (this.player.moveUnit(hex, nextHex)) {
-    // Check if the next hex has enemy units
-    if (nextHex.hasEnemyUnits(this.player.id)) {
-      this.startBattle(nextHex);
-      this.player.paths.delete(unit); // Remove the path completely if a battle is started
-      return true;
-    }
-
-    path = path.slice(1);
-    if (path.length === 1) {
-      this.player.paths.delete(unit);
-    } else {
-      this.player.paths.set(unit, path);
-    }
-    this.player.movesLeft--;
-    return true;
-  }
-  return false;
-}
-
-  startBattle(hex) {
-    // Create an array of sets for each player
-    const playerUnits = new Set(hex.units.filter(unit => unit.id === this.player.id));
-    const enemyUnits = new Set(hex.units.filter(unit => unit.id !== this.player.id));
-
-    // Create a Battle instance with the hex and units
-    const units = [playerUnits, enemyUnits];
-    const battle = new Battle(hex, units, { enablePrinting: true });
-    battle.start();
-
-    // Remove paths for units involved in the battle
-    playerUnits.forEach(unit => {
-        // Print paths for debugging
-        // print(`Path for unit ${unit.type} at (${unit.q}, ${unit.r}): ${this.player.paths.get(unit)}`);
-      this.player.paths.delete(unit);
-    });
-
-
-    // Update player.battleHexes for us
-    this.player.battleHexes.add(hex.getKey());
-    // Now find the enemy player and update their battleHexes
-    const enemyPlayer = players.find(player => player.id !== this.player.id);
-
-    // Remove enemy unit paths
-    enemyUnits.forEach(unit => {
-      enemyPlayer.paths.delete(unit);
-    });
-
-    enemyPlayer.battleHexes.add(hex.getKey());
-    this.player.decisionReasoning += `⚔️ Battle started at (${hex.q}, ${hex.r}) between player units and enemy units\n`; // Battle emoji
-  }
-
-  findNewPathForUnit(unit, hex) {
-    if (this.player.paths.size < 3) {
-      let randomHex = random(Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit));
-      let newPath = aStar(hex, randomHex, hexGrid);
-
-      if (newPath.length > 0) {
-        this.player.paths.set(unit, newPath);
-        this.player.decisionReasoning += `➡️ Path found from (${hex.q}, ${hex.r}) to (${randomHex.q}, ${randomHex.r})\n`; // Pathfinding emoji
-        this.player.movesLeft--;
-        return true;
-      } else {
-        this.player.decisionReasoning += `❌ No path: (${hex.q}, ${hex.r}) -> (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
-      }
-    } else {
-      //   this.player.decisionReasoning += `❌ Path limit\n`; // Failure emoji
-    }
-    return false;
   }
 
   handleUnitPlacement() {
-    if (!this.canAffordCheapestUnit()) {
-      this.player.decisionReasoning += '❌ Not enough money to place any unit\n'; // Failure emoji
+    if (!this.player.canAffordCheapestUnit()) {
+      this.player.decisionReasoning += '❌ Not enough money to place any unit\n';
       return;
     }
 
@@ -154,16 +72,15 @@ class AIPlayer {
     if (hexesToConsider.length > 0) {
       let randomHex = random(hexesToConsider);
       let unitType = this.decideUnitType();
-      let newUnit = createUnit(this.player, unitType);
-      let emoji = getUnitEmoji(unitType); // Use getUnitEmoji from unit.js
-      if (purchaseUnit(randomHex.q, randomHex.r, newUnit)) {
-        this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Success emoji
+      let emoji = getUnitEmoji(unitType);
+      if (this.player.placeUnit(randomHex, unitType)) {
+        this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
         this.player.movesLeft--;
       } else {
-        this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`; // Failure emoji
+        this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
       }
     } else {
-      this.player.decisionReasoning += '❌ No hexes available for unit placement\n'; // Failure emoji
+      this.player.decisionReasoning += '❌ No hexes available for unit placement\n';
     }
   }
 

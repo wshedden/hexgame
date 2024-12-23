@@ -48,6 +48,78 @@ class Player {
   moveUnit(fromHex, toHex) {
     return moveUnit(this, fromHex, toHex);
   }
+
+  canAffordCheapestUnit() {
+    const cheapestUnitCost = Math.min(...Object.values(UNIT_COSTS));
+    return this.money >= cheapestUnitCost;
+  }
+
+  hasMovableUnits() {
+    return Array.from(this.occupiedHexes).some(hex => hex.getMovableUnits().length > 0);
+  }
+
+  placeUnit(hex, unitType) {
+    let newUnit = createUnit(this, unitType);
+    if (purchaseUnit(hex.q, hex.r, newUnit)) {
+      this.money -= UNIT_COSTS[unitType];
+      return true;
+    }
+    return false;
+  }
+
+  findNewPathForUnit(unit, hex) {
+    if (this.paths.size < 3) {
+      let randomHex = random(Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit));
+      let newPath = aStar(hex, randomHex, hexGrid);
+
+      if (newPath.length > 0) {
+        this.paths.set(unit, newPath);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  moveUnitAlongPath(unit, hex, path) {
+    let nextHex = path[1];
+    if (this.moveUnit(hex, nextHex)) {
+      if (nextHex.hasEnemyUnits(this.id)) {
+        this.startBattle(nextHex);
+        this.paths.delete(unit);
+        return true;
+      }
+
+      path = path.slice(1);
+      if (path.length === 1) {
+        this.paths.delete(unit);
+      } else {
+        this.paths.set(unit, path);
+      }
+      this.movesLeft--;
+      return true;
+    }
+    return false;
+  }
+
+  startBattle(hex) {
+    const playerUnits = new Set(hex.units.filter(unit => unit.id === this.id));
+    const enemyUnits = new Set(hex.units.filter(unit => unit.id !== this.id));
+
+    const units = [playerUnits, enemyUnits];
+    const battle = new Battle(hex, units, { enablePrinting: true });
+    battle.start();
+
+    playerUnits.forEach(unit => {
+      this.paths.delete(unit);
+    });
+
+    this.battleHexes.add(hex.getKey());
+    const enemyPlayer = players.find(player => player.id !== this.id);
+    enemyUnits.forEach(unit => {
+      enemyPlayer.paths.delete(unit);
+    });
+    enemyPlayer.battleHexes.add(hex.getKey());
+  }
 }
 
 function purchaseUnit(q, r, unit) {
