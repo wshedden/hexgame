@@ -20,8 +20,8 @@ let decisionsMadeTime; // Time when decisions were made
 let animationStartTime; // Time when animation started
 
 // New variables for adjustable delays
-let decisionDelay = 20; // 1 second delay for decisions made
-let animationDelay = 200; // 1 second delay for animation
+let decisionDelay = 1000; // 1 second delay for decisions made
+let animationDelay = 1000; // 1 second delay for animation
 
 const players = [
   new Player(1, [139, 0, 0]), // Dark red for player 1
@@ -35,6 +35,7 @@ function setState(newState) {
     startNewTurn();
   } else if (newState === GameState.THINKING) {
     handleAIDecision(currentPlayerIndex);
+    print(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].movesLeft} moves left.`);
     // progressAllBattles();
     setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
   } else if (newState === GameState.DECISIONS_MADE) {
@@ -188,12 +189,11 @@ function handleAIDecision(playerIndex) {
 }
 
 function startNewTurn() {
-  switchPlayer();
   players[currentPlayerIndex].resetMoves();
   players[currentPlayerIndex].resetBattles();
 
-  // Increment the turn number if we're back to player 1
-  if (currentPlayerIndex === 0) {
+  // Increment the turn number if we're on player 1
+  if (currentPlayerIndex === 1) {
     turnNumber++;
   }
   turnStartTime = millis();
@@ -224,8 +224,8 @@ function progressGameState() {
     // Do nothing special in the ANIMATING state
   } else if (currentState === GameState.ANIMATION_COMPLETE) {
     // Transition to the next state after ANIMATION_COMPLETE
-    switchPlayer();
     startNewTurn();
+    switchPlayer();
     setState(GameState.PLAYING);
   }
 }
