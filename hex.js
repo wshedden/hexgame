@@ -61,6 +61,9 @@ class Hex {
   }
 
   getMovableUnits() {
+    if (this.isInBattle()) {
+      return []; // No units can move if the hex is in battle
+    }
     return this.units.filter(unit => unit.type !== 'settler');
   }
     
@@ -76,5 +79,9 @@ class Hex {
   endBattle() {
     this.battle = false;
     print(`Battle ended at hex (${this.q}, ${this.r})`);
+  }
+
+  isInBattle() {
+    return this.battle;
   }
 }

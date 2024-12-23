@@ -43,7 +43,7 @@ class AIPlayer {
   }
 
   handleUnitMovement() {
-    let unitHexes = Array.from(this.player.occupiedHexes);
+    let unitHexes = Array.from(this.player.occupiedHexes).filter(hex => !hex.isInBattle());
     let moved = false;
 
     for (let hex of unitHexes) {

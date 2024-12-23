@@ -29,12 +29,6 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour, battle) {
     endShape(CLOSE);
   }
 
-  // Draw battle indicator
-  if (battle) {
-    fill(255, 0, 0, 150); // Semi-transparent red
-    ellipse(0, 0, size * 0.5, size * 0.5); // Draw a red circle in the center
-  }
-
   pop();
 }
 

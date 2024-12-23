@@ -45,10 +45,19 @@ class Battle {
               print(`${unit.type} wins the battle against ${opponent.type}!`);
             }
             this.battleHex.units.splice(this.battleHex.units.indexOf(opponent), 1); // Remove the opponent unit
-            this.battleHex.endBattle();
+            this.endBattle();
             opponent.battle = null;
           }
         });
+      });
+    });
+  }
+
+  endBattle() {
+    this.battleHex.endBattle();
+    this.units.forEach(unitSet => {
+      unitSet.forEach(unit => {
+        unit.battle = null;
       });
     });
   }
