@@ -65,7 +65,7 @@ class AIPlayer {
     }
 
     if (!moved) {
-      this.player.decisionReasoning += '❌ No units to move or no valid paths found\n'; // Failure emoji
+      this.player.decisionReasoning += '❌ No moves\n'; // Failure emoji
     }
   }
 
@@ -102,12 +102,15 @@ class AIPlayer {
     // Remove paths for units involved in the battle
     playerUnits.forEach(unit => {
         // Print paths for debugging
-        print(`Path for unit ${unit.type} at (${unit.q}, ${unit.r}): ${this.player.paths.get(unit)}`);
+        // print(`Path for unit ${unit.type} at (${unit.q}, ${unit.r}): ${this.player.paths.get(unit)}`);
       this.player.paths.delete(unit);
     });
 
-    // Update player battles
+    // Update player.battleHexes for us
     this.player.battleHexes.add(hex.getKey());
+    // Now find the enemy player and update their battleHexes
+    const enemyPlayer = players.find(player => player.id !== this.player.id);
+    enemyPlayer.battleHexes.add(hex.getKey());
     this.player.decisionReasoning += `⚔️ Battle started at (${hex.q}, ${hex.r}) between player units and enemy units\n`; // Battle emoji
   }
 

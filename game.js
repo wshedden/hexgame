@@ -35,6 +35,7 @@ function setState(newState) {
     startNewTurn();
   } else if (newState === GameState.THINKING) {
     handleAIDecision(currentPlayerIndex);
+    // progressAllBattles();
     setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
   } else if (newState === GameState.DECISIONS_MADE) {
     decisionsMadeTime = millis();
@@ -227,4 +228,23 @@ function progressGameState() {
     startNewTurn();
     setState(GameState.PLAYING);
   }
+}
+
+function progressAllBattles() {
+  // Go through all battle hexes and progress the battles
+  // Make sure to not double count hexes, as all players involved
+  // have the hex in their battleHexes set. so combine the sets
+  let allBattleHexes = new Set();
+
+  players.forEach(player => {
+    player.battleHexes.forEach(hex => {
+      allBattleHexes.add(hex);
+    });
+  });
+
+  allBattleHexes.forEach(hex => {
+    if (hex.battle) { // Ensure it's a battle hex before progressing
+      hex.battle.progressBattle();
+    }
+  });
 }

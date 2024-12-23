@@ -17,15 +17,13 @@ class Battle {
     if (this.enablePrinting) {
       print(`Battle started at hex (${this.battleHex.q}, ${this.battleHex.r})`);
     }
-    this.resolve();
+    // this.progressBattle();
   }
 
-  resolve() {
-    // Calculate damage and resolve the battle
+  progressBattle() {
+    // Calculate damage for each unit
     let attackMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
     let defenceMultiplier = random(0.8, 1.2); // Random multiplier between 0.8 and 1.2
-
-    // Apply defensive bonus if defender is on a mountain tile
     let defenceBonus = this.battleHex.type === 'mountain' ? 1.5 : 1.0;
 
     this.units.forEach(unitSet => {
@@ -45,12 +43,20 @@ class Battle {
               print(`${unit.type} wins the battle against ${opponent.type}!`);
             }
             this.battleHex.units.splice(this.battleHex.units.indexOf(opponent), 1); // Remove the opponent unit
-            this.endBattle();
             opponent.battle = null;
           }
         });
       });
     });
+
+    // Check if the battle has ended
+    if (this.isBattleOver()) {
+    //   this.endBattle();
+    }
+  }
+
+  isBattleOver() {
+    return this.units.some(unitSet => Array.from(unitSet).every(unit => unit.health <= 0));
   }
 
   endBattle() {
