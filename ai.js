@@ -1,7 +1,6 @@
 class AIPlayer {
   constructor(player) {
     this.player = player;
-    this.initialReasoning = player.decisionReasoning;
   }
 
   makeDecision() {
@@ -32,7 +31,6 @@ class AIPlayer {
   }
 
   finaliseDecisionReasoning() {
-    this.player.decisionReasoning = this.initialReasoning + this.player.decisionReasoning;
     if (this.player.decisionReasoning.length > this.player.maxReasoningLength) {
       this.player.decisionReasoning = this.player.decisionReasoning.slice(-this.player.maxReasoningLength);
     }
