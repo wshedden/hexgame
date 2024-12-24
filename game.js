@@ -163,17 +163,17 @@ function handleAIDecision(playerIndex) {
 
   let maxAttempts = 10; // Maximum number of attempts to make decisions
   let attempts = 0;
-  let successfulMoves = 0;
 
-  while (players[playerIndex].actionPoints > 0 && attempts < maxAttempts && successfulMoves < 3) {
+  while (players[playerIndex].actionPoints > 0 && attempts < maxAttempts) {
     if (players[playerIndex].makeDecision()) {
-      successfulMoves++;
+      
     }
     attempts++;
   }
 
   if (attempts >= maxAttempts) {
-    // print(`Player ${players[playerIndex].id} reached the maximum number of decision attempts.`);
+    // Add to ai panel
+    players[playerIndex].decisionReasoning += '❌ Max attempts reached\n';
   }
 
   // Update the AI Decision Reasoning panel

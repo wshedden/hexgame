@@ -6,6 +6,8 @@ const UNIT_COSTS = {
   builder: 50    // Reduced from 250
 };
 
+const MAX_ACTIONS_PER_TURN = 4; // Maximum number of actions per turn
+
 class Player {
   constructor(id, colour) {
     this.id = id;
@@ -16,7 +18,7 @@ class Player {
     this.battlesLeft = 3; // Example: Allow 3 battles per turn
     this.humanControlled = false;
     this.decisionReasoning = ''; // Store reasoning behind decisions
-    this.actionPoints = 2;
+    this.actionPoints = MAX_ACTIONS_PER_TURN; // New attribute: action points
     this.maxReasoningLength = 1000; // Maximum length for decisionReasoning
     this.money = 1000; // New attribute: money
     this.unitLimit = 10; // New attribute: unit limit
@@ -25,7 +27,7 @@ class Player {
   }
 
   resetMoves() {
-    this.actionPoints = 2;
+    this.actionPoints = MAX_ACTIONS_PER_TURN; // Reset the action points at the start of each turn
   }
 
   makeDecision() {
