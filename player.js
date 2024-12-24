@@ -200,6 +200,7 @@ function placeUnitOnHex(hex, unit) {
   return true;
 }
 
+
 function moveUnit(player, fromHex, toHex, options = {}) {
   if (!canMoveUnit(fromHex, toHex)) {
     return false;
@@ -211,9 +212,14 @@ function moveUnit(player, fromHex, toHex, options = {}) {
     return false;
   }
 
-  // Create and add the animation
-  let animation = new UnitMovementAnimation(unitToMove, fromHex, toHex, 1000); // 1000ms duration
-  animations.push(animation);
+  // Create the animation
+  let animation = new UnitMovementAnimation(unitToMove, fromHex, toHex, 1000, () => {
+    // Callback to trigger the next animation in the queue
+    animationManager.processNextAnimation(unitToMove);
+  });
+
+  // Add the animation to the unit's queue
+  animationManager.addAnimation(unitToMove, animation);
 
   updatePlayerOccupiedHexes(player, fromHex, toHex);
 

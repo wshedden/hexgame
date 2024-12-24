@@ -10,6 +10,7 @@ let buttonColor2 = '#dc3545'; // Red color
 let pathfindingMode = true;
 let path = []; // Store the path found by A* algorithm
 let progressBar; // Progress bar for animations
+const animationManager = new AnimationManager();
 
 function setup() {
   createCanvas(1800, 900);

@@ -1,7 +1,8 @@
 class UnitMovementAnimation extends Animation {
-  constructor(unit, startHex, endHex, duration) {
+  constructor(unit, startHex, endHex, duration, onComplete) {
     super(startHex, endHex, duration);
     this.unit = unit;
+    this.onComplete = onComplete;
   }
 
   draw(progress) {
@@ -20,5 +21,12 @@ class UnitMovementAnimation extends Animation {
     ellipse(currentX, currentY, this.unit.size, this.unit.size);
 
     pop();
+  }
+
+  update() {
+    super.update();
+    if (this.isComplete() && this.onComplete) {
+      this.onComplete();
+    }
   }
 }
