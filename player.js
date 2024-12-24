@@ -68,7 +68,7 @@ class Player {
     this.decisionReasoning += `✅ ${getUnitEmoji(unitType)} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;
     if (unitType === 'farmer') {
       this.farmers.add(newUnit); // Add farmer to the set
-      print(`Farmer added at (${hex.q}, ${hex.r}). Total farmers: ${this.farmers.size}`);
+      // print(`Farmer added at (${hex.q}, ${hex.r}). Total farmers: ${this.farmers.size}`);
     }
     return true;
   }
@@ -132,7 +132,7 @@ class Player {
   }
 
   buildBuilding(unit, hex) {
-    print(`Attempting to build a building at (${hex.q}, ${hex.r})`);
+    // print(`Attempting to build a building at (${hex.q}, ${hex.r})`);
     if (unit.build(hex)) {
       this.actionPoints--;
       this.decisionReasoning += `🏗️ ${getUnitEmoji(unit.type)} built ${hex.building.type} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;

@@ -142,28 +142,28 @@ class AIPlayer {
   }
 
   createRandomFarm() {
-    print(`Number of farmers available: ${this.player.farmers.size}`);
+    // print(`Number of farmers available: ${this.player.farmers.size}`);
     if (this.player.farmers.size === 0) {
       this.player.decisionReasoning += '❌ No farmers available to build a farm\n';
-      print('No farmers available to build a farm');
+      // print('No farmers available to build a farm');
       return false;
     }
 
     let farmersArray = Array.from(this.player.farmers);
-    print(`Farmers array: ${farmersArray.map(farmer => `(${farmer.q}, ${farmer.r})`).join(', ')}`);
+    // print(`Farmers array: ${farmersArray.map(farmer => `(${farmer.q}, ${farmer.r})`).join(', ')}`);
     let randomFarmer = random(farmersArray);
     let farmerHex = hexGrid.get(`${randomFarmer.q},${randomFarmer.r}`);
 
-    print(`Attempting to build a farm with farmer at (${randomFarmer.q}, ${randomFarmer.r})`);
+    // print(`Attempting to build a farm with farmer at (${randomFarmer.q}, ${randomFarmer.r})`);
 
     if (this.player.buildBuilding(randomFarmer, farmerHex)) {
       this.player.farmers.delete(randomFarmer); // Remove the farmer from the set
       this.player.decisionReasoning += `✅ 🌾 Farmer built a farm at (${farmerHex.q}, ${farmerHex.r}) 🚶 ${this.player.actionPoints}\n`;
-      print(`Farm successfully built at (${farmerHex.q}, ${farmerHex.r})`);
+      // print(`Farm successfully built at (${farmerHex.q}, ${farmerHex.r})`);
       return true;
     } else {
       this.player.decisionReasoning += `❌ Failed to build a farm at (${farmerHex.q}, ${farmerHex.r})\n`;
-      print(`Failed to build a farm at (${farmerHex.q}, ${farmerHex.r})`);
+      // print(`Failed to build a farm at (${farmerHex.q}, ${farmerHex.r})`);
       return false;
     }
   }

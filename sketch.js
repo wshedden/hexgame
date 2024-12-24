@@ -49,6 +49,10 @@ function setup() {
   resetButton.position(width - 150, 130); // Position below the progress button
   resetButton.style('background-color', '#6c757d');
   resetButton.mousePressed(() => panelManager.resetPanelPositions());
+
+  // Add progress bar animation
+  let progressBar = new ProgressBarAnimation(0, width - 20, 10000); // 10 seconds duration
+  animations.push(progressBar);
 }
 
 function draw() {
