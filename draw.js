@@ -14,6 +14,11 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour, battle, buildin
   }
   endShape(CLOSE);
 
+  // Draw farm texture if the hex contains a farm
+  if (building && building.type === 'Farm') {
+    drawFarmTexture(x, y, size, building.crops);
+  }
+
   // Draw thick outline if claimed
   if (claimedBy) {
     strokeWeight(4);
@@ -27,11 +32,6 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour, battle, buildin
       vertex(vx, vy);
     }
     endShape(CLOSE);
-  }
-
-  // Draw farm texture if the hex contains a farm
-  if (building && building.type === 'Farm') {
-    drawFarmTexture(x, y, size);
   }
 
   pop();
@@ -283,13 +283,13 @@ function drawPath() {
   }
 }
 
-function drawFarmTexture(x, y, size) {
+function drawFarmTexture(x, y, size, crops) {
   push();
   // translate(x, y);
-  for (let i = 0; i < 6; i++) {
-    let angle = TWO_PI / 6 * i;
-    let vx = size * cos(angle);
-    let vy = size * sin(angle);
+  for (let i = 0; i < crops; i++) {
+    let angle = TWO_PI / crops * i;
+    let vx = (size - 5) * cos(angle); // Move circles inside by 5 pixels
+    let vy = (size - 5) * sin(angle); // Move circles inside by 5 pixels
     fill(255, 215, 0, 150); // Golden color with some transparency
     ellipse(vx, vy, size / 3, size / 3); // Draw small circles to create a texture
   }
@@ -303,4 +303,24 @@ function drawFarmTexture(x, y, size) {
   }
   endShape(CLOSE);
   pop();
+}
+
+function draw() {
+  background(20); // Set the background to a dark color
+  drawGameState();
+  // Draw panels
+  panelManager.updatePanels();
+  toggleFailedOutputButton.style('background-color', showFailedOutput ? buttonColor1 : buttonColor2);
+
+  if (currentState === GameState.PAUSED) {
+    drawPausedState();
+  }
+
+  drawPath(); // Draw the path if in pathfinding mode
+
+  // Draw AI paths
+  drawAIPaths();
+
+  // Draw units on top of everything else
+  drawUnits();
 }
