@@ -9,6 +9,7 @@ let buttonColor1 = '#28a745'; // Green color
 let buttonColor2 = '#dc3545'; // Red color
 let pathfindingMode = true;
 let path = []; // Store the path found by A* algorithm
+let progressBar; // Progress bar for animations
 
 function setup() {
   createCanvas(1800, 900);
@@ -51,9 +52,8 @@ function setup() {
   resetButton.mousePressed(() => panelManager.resetPanelPositions());
 
   // Add progress bar animation
-  let progressBar = new ProgressBarAnimation(0, width - 20, 10000); // 10 seconds duration
+  progressBar = new ProgressBarAnimation(0, 200, 10000); // 200 pixels width, 10 seconds duration
   animations.push(progressBar);
-  print(animations);
 }
 
 function draw() {
@@ -74,6 +74,15 @@ function draw() {
 
   // Update and draw animations
   handleAnimations();
+
+  // Update progress bar based on the current state duration
+  if (currentState === GameState.DECISIONS_MADE) {
+    let progress = (millis() - decisionsMadeTime) / decisionDelay;
+    progressBar.setProgress(progress);
+  } else if (currentState === GameState.ANIMATING) {
+    let progress = (millis() - animationStartTime) / animationDelay;
+    progressBar.setProgress(progress);
+  }
 
   // Draw units on top of everything else
   drawUnits();

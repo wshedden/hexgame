@@ -35,13 +35,15 @@ function setState(newState) {
     startNewTurn();
   } else if (newState === GameState.THINKING) {
     handleAIDecision(currentPlayerIndex);
-    // print(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].actionPoints} moves left.`);
-    // progressAllBattles();
     setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
   } else if (newState === GameState.DECISIONS_MADE) {
     decisionsMadeTime = millis();
+    progressBar.setDuration(decisionDelay); // Set progress bar duration for decisions made
+    progressBar.setText(`Player ${players[currentPlayerIndex].id} done thinking`);
   } else if (newState === GameState.ANIMATING) {
     animationStartTime = millis();
+    progressBar.setDuration(animationDelay); // Set progress bar duration for animation
+    progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
   }
 }
 
