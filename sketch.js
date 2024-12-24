@@ -66,6 +66,12 @@ function draw() {
 
   // Draw AI paths
   drawAIPaths();
+
+  // Update and draw animations
+  handleAnimations();
+
+  // Draw units on top of everything else
+  drawUnits();
 }
 
 function initialiseTerrainColours() {

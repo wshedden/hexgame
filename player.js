@@ -211,6 +211,10 @@ function moveUnit(player, fromHex, toHex, options = {}) {
     return false;
   }
 
+  // Create and add the animation
+  let animation = new UnitMovementAnimation(unitToMove, fromHex, toHex, 1000); // 1000ms duration
+  animations.push(animation);
+
   updatePlayerOccupiedHexes(player, fromHex, toHex);
 
   return true;
