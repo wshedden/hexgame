@@ -21,7 +21,7 @@ class AIPlayer {
     let isFirstTurn = (turnNumber === 1);
     if (isFirstTurn) {
       this.handleFirstTurnUnitPlacement();
-    } else if (this.player.canAffordCheapestUnit()) {
+    } else if (this.player.canAffordCheapestUnit() && random(1) < 0.5) {
       this.handleUnitPlacement();
     } else if (this.player.hasMovableUnits()) {
       this.handleUnitMovement();

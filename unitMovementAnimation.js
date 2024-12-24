@@ -17,9 +17,7 @@ class UnitMovementAnimation extends Animation {
     translate(width / 2, height / 2);
 
     // Draw the unit as a circle at the interpolated position
-    fill(this.unit.colour);
-    noStroke();
-    ellipse(currentX, currentY, this.unit.size, this.unit.size);
+    drawUnit(currentX, currentY, this.unit, this.unit.size);
 
     pop();
   }
