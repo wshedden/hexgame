@@ -125,6 +125,15 @@ class Player {
     });
     enemyPlayer.battleHexes.add(hex.getKey());
   }
+
+  buildBuilding(unit, hex) {
+    if (unit.build(hex)) {
+      this.decisionReasoning += `🏗️ ${getUnitEmoji(unit.type)} built ${hex.building.type} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;
+      this.actionPoints--;
+      return true;
+    }
+    return false;
+  }
 }
 
 function purchaseUnit(q, r, unit) {
@@ -236,12 +245,12 @@ function createUnit(player, unitType) {
     case 'soldier':
       return new Unit(player.id, unitType, 50, 10, 5, player.colour, 1); // Example values for soldier
     case 'farmer':
-      return new Unit(player.id, unitType, 30, 5, 2, player.colour, 1); // Example values for farmer
+      return new Unit(player.id, unitType, 30, 5, 2, player.colour, 1, Farm); // Example values for farmer with build capability
     case 'settler':
       return new Unit(player.id, unitType, 20, 0, 1, player.colour, 0); // Example values for settler with 0 movement
     case 'builder':
       return new Unit(player.id, unitType, 40, 0, 3, player.colour, 1); // Example values for builder
     default:
-      return new Unit(player.id, 'farmer', 30, 5, 2, player.colour, 1); // Default to farmer
+      return new Unit(player.id, 'farmer', 30, 5, 2, player.colour, 1, Farm); // Default to farmer with build capability
   }
 }

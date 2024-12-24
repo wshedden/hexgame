@@ -1,5 +1,5 @@
 class Unit {
-  constructor(id, type, health, attack, defence, playerColour, movement) {
+  constructor(id, type, health, attack, defence, playerColour, movement, canBuild = null) {
     this.id = id;
     this.type = type;
     this.health = health;
@@ -9,6 +9,7 @@ class Unit {
     this.battle = null; // Track the battle the unit is involved in
     this.q = -1; // Initialize hex q coordinate to -1
     this.r = -1; // Initialize hex r coordinate to -1
+    this.canBuild = canBuild; // Add canBuild attribute
     if (type === 'settler') {
       this.colour = lerpColor(color(0, 255, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Interpolated colour for settlers
     } else if (type === 'farmer') {
@@ -17,6 +18,15 @@ class Unit {
       this.colour = color(playerColour[0], playerColour[1], playerColour[2]);
     }
     this.size = 20; // Default size
+  }
+
+  build(hex) {
+    if (this.canBuild && hex.building === null) {
+      let building = new this.canBuild(this.id, hex.q, hex.r);
+      hex.building = building;
+      return true;
+    }
+    return false;
   }
 }
 
