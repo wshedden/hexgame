@@ -12,7 +12,10 @@ class AIPlayer {
       return false;
     }
 
-    if (this.player.canAffordCheapestUnit()) {
+    let isFirstTurn = (turnNumber === 1);
+    if (isFirstTurn) {
+      this.handleFirstTurnUnitPlacement();
+    } else if (this.player.canAffordCheapestUnit()) {
       this.handleUnitPlacement();
     } else if (this.player.hasMovableUnits()) {
       this.handleUnitMovement();
@@ -66,8 +69,7 @@ class AIPlayer {
       return;
     }
 
-    let isFirstTurn = (turnNumber === 1);
-    let hexesToConsider = this.getHexesToConsiderForUnitPlacement(isFirstTurn);
+    let hexesToConsider = this.getHexesToConsiderForUnitPlacement(false);
 
     if (hexesToConsider.length > 0) {
       let randomHex = random(hexesToConsider);
@@ -81,6 +83,24 @@ class AIPlayer {
       }
     } else {
       this.player.decisionReasoning += '❌ No hexes available for unit placement\n';
+    }
+  }
+
+  handleFirstTurnUnitPlacement() {
+    let hexesToConsider = this.getHexesToConsiderForUnitPlacement(true);
+
+    if (hexesToConsider.length > 0) {
+      let randomHex = random(hexesToConsider);
+      let unitType = 'settler';
+      let emoji = getUnitEmoji(unitType);
+      if (this.player.placeUnit(randomHex, unitType)) {
+        this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
+        this.player.actionPoints--;
+      } else {
+        this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
+      }
+    } else {
+      this.player.decisionReasoning += '❌ No hexes available for settler placement\n';
     }
   }
 
