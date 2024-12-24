@@ -85,6 +85,8 @@ class Player {
   moveUnitAlongPath(unit, hex, path) {
     let nextHex = path[1];
     if (this.moveUnit(hex, nextHex)) {
+      this.decisionReasoning += `(${hex.q}, ${hex.r}) ➡️ (${nextHex.q}, ${nextHex.r})\n`;
+
       if (nextHex.hasEnemyUnits(this.id)) {
         this.startBattle(nextHex);
         this.paths.delete(unit);

@@ -4,8 +4,6 @@ class AIPlayer {
   }
 
   makeDecision() {
-    this.player.decisionReasoning += '🛠️ ';
-
     if (!this.player.canAffordCheapestUnit() && !this.player.hasMovableUnits() && this.player.actionPoints === 0) {
       this.passTurn();
       return false;
