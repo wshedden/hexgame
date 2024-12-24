@@ -4,6 +4,7 @@ class UnitMovementAnimation extends Animation {
     this.unit = unit;
     this.onComplete = onComplete;
     this.unit.isAnimating = true; // Set isAnimating to true when the animation starts
+    print(`Starting animation for unit ${unit.id} from (${startHex.q}, ${startHex.r}) to (${endHex.q}, ${endHex.r}) with duration ${duration}ms`);
   }
 
   draw(progress) {
@@ -24,8 +25,10 @@ class UnitMovementAnimation extends Animation {
 
   update() {
     super.update();
+    // print(`Animation progress for unit ${this.unit.id}: ${this.progress * 100}%`);
     if (this.isComplete()) {
       this.unit.isAnimating = false; // Set isAnimating to false when the animation completes
+    //   print(`Animation complete for unit ${this.unit.id}`);
       if (this.onComplete) {
         this.onComplete();
       }

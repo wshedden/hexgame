@@ -7,6 +7,7 @@ class ProgressBarAnimation extends Animation {
   setDuration(duration) {
     this.duration = duration;
     this.startTime = millis(); // Reset the start time
+    print(`Progress bar duration set to ${duration}ms`);
   }
 
   setText(text) {

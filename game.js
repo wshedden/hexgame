@@ -38,18 +38,18 @@ function setState(newState) {
     setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
   } else if (newState === GameState.DECISIONS_MADE) {
     decisionsMadeTime = millis();
-    progressBar.setDuration(decisionDelay); // Set progress bar duration for decisions made
+    progressBar.setDuration(1000); // Set progress bar duration for decisions made
     progressBar.setText(`Player ${players[currentPlayerIndex].id} done thinking`);
   } else if (newState === GameState.ANIMATING) {
-    animationStartTime = millis();
-    progressBar.setDuration(animationDelay); // Set progress bar duration for animation
-    progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
+    // progressBar.setDuration(animationDelay); // Set progress bar duration for animation
+    // progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
   }
 }
 
 function getState() {
   return currentState;
 }
+
 
 function drawGameState() {
   switch (currentState) {
@@ -130,10 +130,31 @@ function drawDecisionsMadeState() {
   drawGrid();
   drawUnits();
 
-  // Check if 2 seconds have passed since decisions were made
+  // Check if 2 seconds have passed since decisions were made, then animate
   if (millis() - decisionsMadeTime > decisionDelay) {
     setState(GameState.ANIMATING);
+    addAllAnimations(); // Add all animations to the queue
+    animationStartTime = millis();
   }
+}
+
+function addAllAnimations() {
+  // Assuming animations is an array of animation objects
+  let numberOfAnimations = animations.length;
+  print(`Adding ${numberOfAnimations} animations to the queue`);
+  animationDelay = numberOfAnimations * 500 + 1000; // Set the animation delay based on the number of animations
+
+  // Set the progress bar duration for the total animations
+  progressBar.setDuration(animationDelay);
+  progressBar.setText(`Animating ${numberOfAnimations} actions...`);
+
+  // If there's at least one animation, set the start time
+  if (numberOfAnimations > 0) {
+    animations[0].start = millis();
+  }
+
+  // Set the animation start time
+  animationStartTime = millis();
 }
 
 function drawGameStatePopup() {
@@ -215,10 +236,29 @@ function drawAnimatingState() {
   drawUnits();
 
   // Check if 2 seconds have passed since animation started
-  if (millis() - animationStartTime > animationDelay) {
+  // if (millis() - animationStartTime > animationDelay) {
+  //   setState(GameState.ANIMATION_COMPLETE);
+  //   progressGameState();
+  // }
+
+  if(animations.length === 0) {
     setState(GameState.ANIMATION_COMPLETE);
     progressGameState();
+    return;
   }
+  // If first animation is done, remove it from the queue
+  if (animations[0].isComplete()) {
+    animations.shift(); // Remove the first animation
+    // Set animation start time to current time
+    animations[0].start = millis();
+  }
+
+  // Update first animation
+  animations[0].update();
+
+
+
+
 }
 
 function progressGameState() {
