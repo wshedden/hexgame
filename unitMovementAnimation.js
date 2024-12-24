@@ -9,7 +9,16 @@ class UnitMovementAnimation extends Animation {
     let endPos = hexToPixel(this.end);
     let currentX = lerp(startPos.x, endPos.x, progress);
     let currentY = lerp(startPos.y, endPos.y, progress);
-    // Draw the unit at the interpolated position
-    drawUnit(currentX, currentY, this.unit, this.unit.size);
+
+    // Translate the drawing by width/2 and height/2
+    push();
+    translate(width / 2, height / 2);
+
+    // Draw the unit as a circle at the interpolated position
+    fill(this.unit.colour);
+    noStroke();
+    ellipse(currentX, currentY, this.unit.size, this.unit.size);
+
+    pop();
   }
 }

@@ -161,58 +161,6 @@ function drawUnit(x, y, unit, size) {
   pop();
 }
 
-function animateUnitMovement(attackerHex, defenderHex, duration = 1000) {
-  let startTime = millis();
-  let startPos = hexToPixel(attackerHex);
-  let endPos = hexToPixel(defenderHex);
-
-  function updateAnimation() {
-    let currentTime = millis();
-    let elapsedTime = currentTime - startTime;
-    let progress = min(elapsedTime / duration, 1);
-
-    let currentX = lerp(startPos.x, endPos.x, progress);
-    let currentY = lerp(startPos.y, endPos.y, progress);
-
-    // Clear the previous frame
-    background(20);
-
-    // Draw the grid and units
-    drawGrid();
-    drawUnits();
-
-    // Draw the moving unit
-    push();
-    translate(currentX, currentY);
-    fill(attackerHex.unit.colour);
-    if (attackerHex.unit.id === 1) {
-      ellipse(0, 0, 20, 20); // Circle for Player 1
-    } else if (attackerHex.unit.id === 2) {
-      beginShape(); // Triangle for Player 2
-      for (let i = 0; i < 3; i++) {
-        let angle = TWO_PI / 3 * i - HALF_PI;
-        let vx = 20 * cos(angle);
-        let vy = 20 * sin(angle);
-        vertex(vx, vy);
-      }
-      endShape(CLOSE);
-    }
-    pop();
-
-    if (progress < 1) {
-      requestAnimationFrame(updateAnimation);
-    } else {
-      // Move the unit to the defender's hex
-      defenderHex.unit = attackerHex.unit;
-      defenderHex.occupiedBy = attackerHex.unit.id;
-      attackerHex.unit = null;
-      attackerHex.occupiedBy = null;
-    }
-  }
-
-  updateAnimation();
-}
-
 function drawUnitPath(path, playerColour) {
   if (path.length > 1) {
     push();
