@@ -104,7 +104,7 @@ class AIPlayer {
 
   getHexesToConsiderForUnitPlacement(isFirstTurn) {
     if (isFirstTurn) {
-      return Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit);
+      return Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => hex.units.length === 0);
     } else {
       return Array.from(this.player.claimedAdjacentHexes).map(key => hexGrid.get(key)).filter(hex => !hex.unit && claimableTiles.has(hex.getKey()));
     }
