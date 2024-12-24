@@ -53,6 +53,7 @@ function setup() {
   // Add progress bar animation
   let progressBar = new ProgressBarAnimation(0, width - 20, 10000); // 10 seconds duration
   animations.push(progressBar);
+  print(animations);
 }
 
 function draw() {
