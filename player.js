@@ -20,7 +20,7 @@ class Player {
     this.decisionReasoning = ''; // Store reasoning behind decisions
     this.actionPoints = MAX_ACTIONS_PER_TURN; // New attribute: action points
     this.maxReasoningLength = 1000; // Maximum length for decisionReasoning
-    this.money = 1000; // New attribute: money
+    this.money = 5000; // New attribute: money
     this.unitLimit = 10; // New attribute: unit limit
     this.battleHexes = new Set(); // New attribute: hexes where battles are occurring
     this.paths = new Map(); // New attribute: paths for units

@@ -142,6 +142,7 @@ function drawHexUnits(x, y, units) {
     drawUnit(x + offsetX, y + offsetY, unit, unitSize);
   });
 }
+
 function drawUnit(x, y, unit, size) {
   push();
   translate(x, y);
@@ -156,7 +157,7 @@ function drawUnit(x, y, unit, size) {
   strokeWeight(2);
 
   // Draw the correct shape for the unit type
-  drawUnitShape(unit.type, size);
+  drawUnitShape(unit.type, unit.isAnimating ? 18 : size); // Set size to 18 if the unit is animating
 
   pop();
 }
