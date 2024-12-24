@@ -35,7 +35,7 @@ function setState(newState) {
     startNewTurn();
   } else if (newState === GameState.THINKING) {
     handleAIDecision(currentPlayerIndex);
-    print(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].movesLeft} moves left.`);
+    print(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].actionPoints} moves left.`);
     // progressAllBattles();
     setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
   } else if (newState === GameState.DECISIONS_MADE) {
@@ -165,7 +165,7 @@ function handleAIDecision(playerIndex) {
   let attempts = 0;
   let successfulMoves = 0;
 
-  while (players[playerIndex].movesLeft > 0 && attempts < maxAttempts && successfulMoves < 3) {
+  while (players[playerIndex].actionPoints > 0 && attempts < maxAttempts && successfulMoves < 3) {
     if (players[playerIndex].makeDecision()) {
       successfulMoves++;
     }

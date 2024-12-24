@@ -16,7 +16,7 @@ class Player {
     this.battlesLeft = 3; // Example: Allow 3 battles per turn
     this.humanControlled = false;
     this.decisionReasoning = ''; // Store reasoning behind decisions
-    this.movesLeft = 2;
+    this.actionPoints = 2;
     this.maxReasoningLength = 1000; // Maximum length for decisionReasoning
     this.money = 1000; // New attribute: money
     this.unitLimit = 10; // New attribute: unit limit
@@ -25,7 +25,7 @@ class Player {
   }
 
   resetMoves() {
-    this.movesLeft = 2;
+    this.actionPoints = 2;
   }
 
   makeDecision() {
@@ -95,7 +95,7 @@ class Player {
       } else {
         this.paths.set(unit, path);
       }
-      this.movesLeft--;
+      this.actionPoints--;
       return true;
     }
     return false;

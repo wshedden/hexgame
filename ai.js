@@ -7,7 +7,7 @@ class AIPlayer {
   makeDecision() {
     this.player.decisionReasoning += '🛠️ ';
 
-    if (!this.player.canAffordCheapestUnit() && !this.player.hasMovableUnits() && this.player.movesLeft === 0) {
+    if (!this.player.canAffordCheapestUnit() && !this.player.hasMovableUnits() && this.player.actionPoints === 0) {
       this.passTurn();
       return false;
     }
@@ -75,7 +75,7 @@ class AIPlayer {
       let emoji = getUnitEmoji(unitType);
       if (this.player.placeUnit(randomHex, unitType)) {
         this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
-        this.player.movesLeft--;
+        this.player.actionPoints--;
       } else {
         this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
       }
