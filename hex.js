@@ -65,7 +65,7 @@ class Hex {
     if (this.isInBattle()) {
       return []; // No units can move if the hex is in battle
     }
-    return this.units.filter(unit => unit.type !== 'settler' && !(unit.type === 'farmer' && this.building && this.building.type === 'Farm'));
+    return this.units.filter(unit => unit.type !== 'settler' && unit.movement > 0);
   }
     
   hasEnemyUnits(playerId) {

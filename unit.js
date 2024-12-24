@@ -24,6 +24,9 @@ class Unit {
     if (this.canBuild && hex.building === null) {
       let building = new this.canBuild(this.id, hex.q, hex.r);
       hex.building = building;
+      if (this.type === 'farmer') {
+        this.movement = 0; // Set movement to 0 after building a farm
+      }
       return true;
     }
     return false;
