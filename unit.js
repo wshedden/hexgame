@@ -10,6 +10,7 @@ class Unit {
     this.q = -1; // Initialize hex q coordinate to -1
     this.r = -1; // Initialize hex r coordinate to -1
     this.canBuild = canBuild; // Add canBuild attribute
+    this.isAnimating = false; // Add isAnimating attribute
     if (type === 'settler') {
       this.colour = lerpColor(color(0, 255, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Interpolated colour for settlers
     } else if (type === 'farmer') {

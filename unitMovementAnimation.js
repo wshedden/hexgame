@@ -3,6 +3,7 @@ class UnitMovementAnimation extends Animation {
     super(startHex, endHex, duration);
     this.unit = unit;
     this.onComplete = onComplete;
+    this.unit.isAnimating = true; // Set isAnimating to true when the animation starts
   }
 
   draw(progress) {
@@ -25,8 +26,11 @@ class UnitMovementAnimation extends Animation {
 
   update() {
     super.update();
-    if (this.isComplete() && this.onComplete) {
-      this.onComplete();
+    if (this.isComplete()) {
+      this.unit.isAnimating = false; // Set isAnimating to false when the animation completes
+      if (this.onComplete) {
+        this.onComplete();
+      }
     }
   }
 }
