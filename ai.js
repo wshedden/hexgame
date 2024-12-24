@@ -157,7 +157,7 @@ class AIPlayer {
     print(`Attempting to build a farm with farmer at (${randomFarmer.q}, ${randomFarmer.r})`);
 
     if (this.player.buildBuilding(randomFarmer, farmerHex)) {
-      // this.player.farmers.delete(randomFarmer); // Remove the farmer from the set
+      this.player.farmers.delete(randomFarmer); // Remove the farmer from the set
       this.player.decisionReasoning += `✅ 🌾 Farmer built a farm at (${farmerHex.q}, ${farmerHex.r}) 🚶 ${this.player.actionPoints}\n`;
       print(`Farm successfully built at (${farmerHex.q}, ${farmerHex.r})`);
       return true;

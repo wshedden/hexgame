@@ -1,4 +1,4 @@
-function drawHex(x, y, size, type, textValue, claimedBy, colour, battle) {
+function drawHex(x, y, size, type, textValue, claimedBy, colour, battle, building) {
   push();
   translate(x, y);
   stroke(getOutlineColour()); // Use the purple outline colour
@@ -29,6 +29,11 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour, battle) {
     endShape(CLOSE);
   }
 
+  // Draw farm texture if the hex contains a farm
+  if (building && building.type === 'Farm') {
+    drawFarmTexture(x, y, size);
+  }
+
   pop();
 }
 
@@ -53,7 +58,7 @@ function drawGrid() {
   translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
   hexGrid.forEach((hex) => {
     let { x, y } = hexToPixel(hex);
-    drawHex(x, y, 30, hex.type, hex.text, hex.claimedBy, hex.colour, hex.battle); // Pass the battle attribute
+    drawHex(x, y, 30, hex.type, hex.text, hex.claimedBy, hex.colour, hex.battle, hex.building); // Pass the building attribute
   });
 
   // Highlight the selected hex and its neighbours
@@ -276,4 +281,26 @@ function drawPath() {
 
     pop();
   }
+}
+
+function drawFarmTexture(x, y, size) {
+  push();
+  // translate(x, y);
+  for (let i = 0; i < 6; i++) {
+    let angle = TWO_PI / 6 * i;
+    let vx = size * cos(angle);
+    let vy = size * sin(angle);
+    fill(255, 215, 0, 150); // Golden color with some transparency
+    ellipse(vx, vy, size / 3, size / 3); // Draw small circles to create a texture
+  }
+  noStroke();
+  beginShape();
+  for (let i = 0; i < 6; i++) {
+    let angle = TWO_PI / 6 * i;
+    let vx = size * cos(angle);
+    let vy = size * sin(angle);
+    vertex(vx, vy);
+  }
+  endShape(CLOSE);
+  pop();
 }
