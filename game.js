@@ -35,7 +35,7 @@ function setState(newState) {
     startNewTurn();
   } else if (newState === GameState.THINKING) {
     handleAIDecision(currentPlayerIndex);
-    print(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].actionPoints} moves left.`);
+    // print(`Player ${players[currentPlayerIndex].id} has ${players[currentPlayerIndex].actionPoints} moves left.`);
     // progressAllBattles();
     setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
   } else if (newState === GameState.DECISIONS_MADE) {

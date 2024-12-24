@@ -113,6 +113,10 @@ class PanelManager {
                 `👑 ${selectedHex.claimedBy ? `Player ${selectedHex.claimedBy}` : 'Unclaimed'}`
             ];
 
+            if (selectedHex.building) {
+                content.push(`🏢 Building: ${selectedHex.building.type}`);
+            }
+
             if (selectedHex.units.length > 0) {
                 selectedHex.units.forEach((unit, i) => {
                     let unitEmoji = getUnitEmoji(unit.type);

@@ -24,6 +24,7 @@ class Player {
     this.unitLimit = 10; // New attribute: unit limit
     this.battleHexes = new Set(); // New attribute: hexes where battles are occurring
     this.paths = new Map(); // New attribute: paths for units
+    this.farmers = new Set(); // New attribute: set of farmers
   }
 
   resetMoves() {
@@ -65,6 +66,9 @@ class Player {
     if (purchaseUnit(hex.q, hex.r, newUnit)) {
       this.money -= UNIT_COSTS[unitType];
       this.decisionReasoning += `✅ ${getUnitEmoji(unitType)} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;
+      if (unitType === 'farmer') {
+        this.farmers.add(newUnit); // Add farmer to the set
+      }
       return true;
     }
     return false;

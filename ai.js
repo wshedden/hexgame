@@ -10,6 +10,14 @@ class AIPlayer {
       return false;
     }
 
+    if(this.player.farmers.size === 0 && this.player.actionPoints > 0 && this.player.money >= 100) {
+      if(random(1) < 0.5) {
+        this.createRandomFarm();
+        this.finaliseDecisionReasoning();
+        return true;
+      }
+    }
+
     let isFirstTurn = (turnNumber === 1);
     if (isFirstTurn) {
       this.handleFirstTurnUnitPlacement();
@@ -131,6 +139,26 @@ class AIPlayer {
       }
     }
     return unitType;
+  }
+
+  createRandomFarm() {
+    if (this.player.farmers.size === 0) {
+      this.player.decisionReasoning += '❌ No farmers available to build a farm\n';
+      return false;
+    }
+
+    let farmersArray = Array.from(this.player.farmers);
+    let randomFarmer = random(farmersArray);
+    let farmerHex = hexGrid.get(`${randomFarmer.q},${randomFarmer.r}`);
+
+    if (this.player.buildBuilding(randomFarmer, farmerHex)) {
+      this.player.farmers.delete(randomFarmer); // Remove the farmer from the set
+      this.player.decisionReasoning += `✅ 🌾 Farmer built a farm at (${farmerHex.q}, ${farmerHex.r}) 🚶 ${this.player.actionPoints}\n`;
+      return true;
+    } else {
+      this.player.decisionReasoning += `❌ Failed to build a farm at (${farmerHex.q}, ${farmerHex.r})\n`;
+      return false;
+    }
   }
 }
 
