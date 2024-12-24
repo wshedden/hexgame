@@ -16,6 +16,7 @@ class Hex {
     this.claimedColour = null;
     this.movementCost = 1; // Example value, adjust as needed
     this.battle = null; // Track the battle the hex is involved in
+    this.building = null; // Track the building on the hex
   }
 
   setColourByFertility() {
