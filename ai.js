@@ -1,6 +1,7 @@
 class AIPlayer {
   constructor(player) {
     this.player = player;
+    this.attemptedActions = new Set(); // Track attempted actions
   }
 
   makeDecision() {
@@ -50,7 +51,10 @@ class AIPlayer {
           moved = this.player.findNewPathForUnit(unitToMove, hex);
         }
 
-        if (moved) break;
+        if (moved) {
+          this.attemptedActions.add(`move:${unitToMove.id}:${hex.q},${hex.r}`);
+          break;
+        }
       }
     }
 
@@ -74,6 +78,7 @@ class AIPlayer {
       if (this.player.placeUnit(randomHex, unitType)) {
         this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
         this.player.actionPoints--;
+        this.attemptedActions.add(`place:${unitType}:${randomHex.q},${randomHex.r}`);
       } else {
         this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
       }
@@ -92,6 +97,7 @@ class AIPlayer {
       if (this.player.placeUnit(randomHex, unitType)) {
         this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
         this.player.actionPoints--;
+        this.attemptedActions.add(`place:${unitType}:${randomHex.q},${randomHex.r}`);
       } else {
         this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
       }
