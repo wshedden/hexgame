@@ -76,8 +76,8 @@ class AIPlayer {
       let unitType = this.decideUnitType();
       let emoji = getUnitEmoji(unitType);
       if (this.player.placeUnit(randomHex, unitType)) {
-        this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
         this.player.actionPoints--;
+        this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r}) ${emoji} ${this.player.actionPoints}\n`;
         this.attemptedActions.add(`place:${unitType}:${randomHex.q},${randomHex.r}`);
       } else {
         this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
@@ -95,8 +95,8 @@ class AIPlayer {
       let unitType = 'settler';
       let emoji = getUnitEmoji(unitType);
       if (this.player.placeUnit(randomHex, unitType)) {
-        this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
         this.player.actionPoints--;
+        this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r}) ${emoji} ${this.player.actionPoints}\n`;
         this.attemptedActions.add(`place:${unitType}:${randomHex.q},${randomHex.r}`);
       } else {
         this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;

@@ -60,10 +60,11 @@ class Player {
     return Array.from(this.occupiedHexes).some(hex => hex.getMovableUnits().length > 0);
   }
 
-  placeUnit(hex, unitType) {
+    placeUnit(hex, unitType) {
     let newUnit = createUnit(this, unitType);
     if (purchaseUnit(hex.q, hex.r, newUnit)) {
       this.money -= UNIT_COSTS[unitType];
+      this.decisionReasoning += `✅ ${getUnitEmoji(unitType)} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;
       return true;
     }
     return false;
@@ -82,28 +83,28 @@ class Player {
     return false;
   }
 
-  moveUnitAlongPath(unit, hex, path) {
-    let nextHex = path[1];
-    if (this.moveUnit(hex, nextHex)) {
-      this.decisionReasoning += `(${hex.q}, ${hex.r}) ➡️ (${nextHex.q}, ${nextHex.r})\n`;
-
-      if (nextHex.hasEnemyUnits(this.id)) {
-        this.startBattle(nextHex);
-        this.paths.delete(unit);
+    moveUnitAlongPath(unit, hex, path) {
+      let nextHex = path[1];
+      if (this.moveUnit(hex, nextHex)) {
+        this.decisionReasoning += `(${hex.q}, ${hex.r}) ➡️ (${nextHex.q}, ${nextHex.r}) 🚶 ${this.actionPoints - 1}\n`;
+    
+        if (nextHex.hasEnemyUnits(this.id)) {
+          this.startBattle(nextHex);
+          this.paths.delete(unit);
+          return true;
+        }
+    
+        path = path.slice(1);
+        if (path.length === 1) {
+          this.paths.delete(unit);
+        } else {
+          this.paths.set(unit, path);
+        }
+        this.actionPoints--;
         return true;
       }
-
-      path = path.slice(1);
-      if (path.length === 1) {
-        this.paths.delete(unit);
-      } else {
-        this.paths.set(unit, path);
-      }
-      this.actionPoints--;
-      return true;
+      return false;
     }
-    return false;
-  }
 
   startBattle(hex) {
     const playerUnits = new Set(hex.units.filter(unit => unit.id === this.id));
