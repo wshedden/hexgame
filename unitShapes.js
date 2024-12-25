@@ -53,14 +53,6 @@ function drawDefaultShape(size) {
   ellipse(0, 0, size, size); // Default to circle
 }
 
-function drawUnit(x, y, unit, size) {
-  push();
-  translate(x, y);
-  fill(unit.colour);
-  ellipse(0, 0, size, size);
-  pop();
-}
-
 function drawUnitPath(path, playerColour) {
   if (path.length > 1) {
     push();

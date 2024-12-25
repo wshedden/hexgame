@@ -22,7 +22,7 @@ class Animation {
       if (this.onComplete) {
         this.onComplete();
       }
-      if (this.type === 'unitMovement') {
+      if (this.type === 'unitMovement' || this.type === 'unitPlacement') {
         this.unit.isAnimating = false;
       }
     }
@@ -37,7 +37,14 @@ class Animation {
       push();
       translate(width/2, height/2);
       drawUnit(currentX, currentY, this.unit, 18);
-      pop ();
+      pop();
+    } else if (this.type === 'unitPlacement') {
+      let pos = hexToPixel(this.start);
+      let size = lerp(30, 40, progress); // Increase size from 30 to 40
+      push();
+      translate(width/2, height/2);
+      drawUnit(pos.x, pos.y, this.unit, size);
+      pop();
     } else if (this.type === 'progressBar') {
       let barWidth = lerp(this.start, this.end, progress);
       let playerColor = color(players[currentPlayerIndex].colour[0], players[currentPlayerIndex].colour[1], players[currentPlayerIndex].colour[2]);
@@ -98,8 +105,18 @@ class AnimationManager {
   }
 
   handleAnimations() {
-    this.animations.forEach(animation => animation.update());
-    this.animations = this.animations.filter(animation => !animation.isComplete());
+    // this.animations.forEach(animation => animation.update());
+    // this.animations = this.animations.filter(animation => !animation.isComplete());
+    // Instead let's execute them sequentially
+    if (this.animations.length > 0) {
+      let animation = this.animations[0];
+      animation.update();
+      if (animation.isComplete()) {
+        // this.logAnimationDetails(animation, 'Completed');
+        this.animations.shift();
+        this.processNextAnimation(animation.unit);
+      }
+    }
   }
 
   animationsComplete() {

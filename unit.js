@@ -64,7 +64,7 @@ function moveUnit(player, fromHex, toHex, options = {}) {
   // Create the animation
   let animation = new Animation('unitMovement', unitToMove, fromHex, toHex, duration, () => {
     // Callback to trigger the next animation in the queue
-    animationManager.processNextAnimation(unitToMove);
+    // animationManager.processNextAnimation(unitToMove);
   });
 
   // Add the animation to the unit's queue
