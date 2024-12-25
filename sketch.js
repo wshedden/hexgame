@@ -223,7 +223,7 @@ function toggleFailedOutput() {
 function drawAIPaths() {
   players.forEach(player => {
     player.paths.forEach((path, unit) => {
-      // drawUnitPath(path, player.colour);
+      drawUnitPath(path, player.colour);
     });
   });
 }

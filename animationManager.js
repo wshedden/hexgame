@@ -22,6 +22,9 @@ class Animation {
       if (this.onComplete) {
         this.onComplete();
       }
+      if (this.type === 'unitMovement') {
+        this.unit.isAnimating = false;
+      }
     }
   }
 
@@ -69,6 +72,7 @@ class AnimationManager {
   }
 
   addAnimation(unit, animation) {
+    unit.isAnimating = true;
     if (!this.unitAnimationQueues.has(unit)) {
       this.unitAnimationQueues.set(unit, []);
     }
