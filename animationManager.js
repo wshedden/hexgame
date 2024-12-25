@@ -30,42 +30,56 @@ class Animation {
 
   draw(progress) {
     if (this.type === 'unitMovement') {
-      let startPos = hexToPixel(this.start);
-      let endPos = hexToPixel(this.end);
-      let currentX = lerp(startPos.x, endPos.x, progress);
-      let currentY = lerp(startPos.y, endPos.y, progress);
-      push();
-      translate(width / 2, height / 2);
-      drawUnit(currentX, currentY, this.unit, 18);
-      pop();
+      this.drawUnitMovement(progress);
     } else if (this.type === 'unitPlacement') {
-      let pos = hexToPixel(this.start);
-      let size = lerp(30, 40, progress); // Increase size from 30 to 40
-      push();
-      translate(width / 2, height / 2);
-      stroke(255, 215, 0); // Gold color for highlighting
-      strokeWeight(4);
-      drawUnit(pos.x, pos.y, this.unit, size);
-      pop();
+      this.drawUnitPlacement(progress);
     } else if (this.type === 'progressBar') {
-      let barWidth = lerp(this.start, this.end, progress);
-      let playerColor = color(players[currentPlayerIndex].colour[0], players[currentPlayerIndex].colour[1], players[currentPlayerIndex].colour[2]);
-      let hexGridEndX = 1500;
-      let canvasWidth = width;
-      let barX = hexGridEndX + (canvasWidth - hexGridEndX - this.end) / 2;
-      let barY = height - 30 - 300;
-      stroke(255);
-      strokeWeight(2);
-      fill(0, 0, 0, 150);
-      rect(barX, barY, this.end, 20, 10);
-      noStroke();
-      fill(playerColor);
-      rect(barX, barY, barWidth, 20, 10);
-      fill(255);
-      textSize(16);
-      textAlign(CENTER, BOTTOM);
-      text(this.text, barX + this.end / 2, barY - 5);
+      this.drawProgressBar(progress);
     }
+  }
+
+  drawUnitMovement(progress) {
+    let startPos = hexToPixel(this.start);
+    let endPos = hexToPixel(this.end);
+    let currentX = lerp(startPos.x, endPos.x, progress);
+    let currentY = lerp(startPos.y, endPos.y, progress);
+    push();
+    translate(width / 2, height / 2);
+    drawUnit(currentX, currentY, this.unit, 18);
+    pop();
+  }
+
+  drawUnitPlacement(progress) {
+    let pos = hexToPixel(this.start);
+    let size = lerp(30, 40, progress); // Increase size from 30 to 40
+    push();
+    translate(width / 2, height / 2);
+    stroke(255, 215, 0); // Gold color for highlighting
+    strokeWeight(4);
+    fill(255, 223, 0, 100); // Semi-transparent gold fill
+    ellipse(pos.x, pos.y, size + 10, size + 10); // Golden outline
+    drawUnit(pos.x, pos.y, this.unit, size);
+    pop();
+  }
+
+  drawProgressBar(progress) {
+    let barWidth = lerp(this.start, this.end, progress);
+    let playerColor = color(players[currentPlayerIndex].colour[0], players[currentPlayerIndex].colour[1], players[currentPlayerIndex].colour[2]);
+    let hexGridEndX = 1500;
+    let canvasWidth = width;
+    let barX = hexGridEndX + (canvasWidth - hexGridEndX - this.end) / 2;
+    let barY = height - 30 - 300;
+    stroke(255);
+    strokeWeight(2);
+    fill(0, 0, 0, 150);
+    rect(barX, barY, this.end, 20, 10);
+    noStroke();
+    fill(playerColor);
+    rect(barX, barY, barWidth, 20, 10);
+    fill(255);
+    textSize(16);
+    textAlign(CENTER, BOTTOM);
+    text(this.text, barX + this.end / 2, barY - 5);
   }
 
   isComplete() {
@@ -139,31 +153,7 @@ class ProgressBarAnimation extends Animation {
   }
 
   draw(progress) {
-    let barWidth = lerp(this.start, this.end, progress);
-    let playerColor = color(players[currentPlayerIndex].colour[0], players[currentPlayerIndex].colour[1], players[currentPlayerIndex].colour[2]);
-
-    // Calculate the position and size of the progress bar
-    let hexGridEndX = 1500; // Example value, adjust based on actual hex grid end
-    let canvasWidth = width;
-    let barX = hexGridEndX + (canvasWidth - hexGridEndX - this.end) / 2;
-    let barY = height - 30 - 300;
-
-    // Draw the border
-    stroke(255); // White border
-    strokeWeight(2);
-    fill(0, 0, 0, 150); // Semi-transparent black background
-    rect(barX, barY, this.end, 20, 10); // Border with rounded corners
-
-    // Draw the progress bar
-    noStroke();
-    fill(playerColor);
-    rect(barX, barY, barWidth, 20, 10); // Progress bar with rounded corners
-
-    // Draw the text above the progress bar
-    fill(255);
-    textSize(16);
-    textAlign(CENTER, BOTTOM);
-    text(this.text, barX + this.end / 2, barY - 5);
+    this.drawProgressBar(progress);
   }
 
   setProgress(progress) {
