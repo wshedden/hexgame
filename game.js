@@ -205,11 +205,20 @@ function drawAnimatingState() {
   drawGrid();
   drawUnits();
 
-  animationManager.handleAnimations(); // Centralise animation updates
+  animationManager.handleAnimations();
 
   if (animationManager.animationsComplete() && millis() - animationStartTime > animationManager.totalAnimationDuration) {
+    // Reset animationsLeft for all units
+    players.forEach(player => {
+      player.occupiedHexes.forEach(hex => {
+        hex.units.forEach(unit => {
+          unit.animationsLeft = 0;
+        });
+      });
+    });
+
     setState(GameState.ANIMATION_COMPLETE);
-    animationManager.totalAnimationDuration = BASE_ANIMATION_DURATION; // Reset total animation duration
+    animationManager.totalAnimationDuration = BASE_ANIMATION_DURATION;
     progressGameState();
     return;
   }

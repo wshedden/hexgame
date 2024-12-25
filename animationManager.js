@@ -95,10 +95,10 @@ class AnimationManager {
 
   addAnimation(unit, animation) {
     unit.isAnimating = true;
-    animation.isAnimating = true; // Set isAnimating to true
+    unit.animationsLeft += 1; // Increment animationsLeft
+    animation.isAnimating = true;
     this.animations.push(animation);
     this.totalAnimationDuration += animation.duration;
-    // this.logAnimationDetails(animation, 'Created');
   }
 
   handleAnimations() {
@@ -106,6 +106,7 @@ class AnimationManager {
       let animation = this.animations[0];
       animation.update();
       if (animation.isComplete()) {
+        animation.unit.animationsLeft -= 1; // Decrement animationsLeft
         this.animations.shift();
         this.handleNextAnimation();
       }
@@ -115,25 +116,13 @@ class AnimationManager {
   handleNextAnimation() {
     if (this.animations.length > 0) {
       let nextAnimation = this.animations[0];
-      nextAnimation.startTime = millis(); // Set startTime when the animation begins
-      nextAnimation.isAnimating = true; // Set isAnimating to true for the next animation
-      // this.logAnimationDetails(nextAnimation, 'Started');
+      nextAnimation.startTime = millis();
+      nextAnimation.isAnimating = true;
     }
   }
 
   animationsComplete() {
     return this.animations.length === 0;
-  }
-
-  logAnimationDetails(animation, event) {
-    const { type, start, end, duration, startTime, unit } = animation;
-    const currentTime = millis();
-    console.log(`[${currentTime}] ${event}: ${type}`);
-    console.log(`  From: (${start.q}, ${start.r}) To: (${end.q}, ${end.r})`);
-    console.log(`  Duration: ${duration}ms (started at ${startTime}ms)`);
-    if (unit) {
-      console.log(`  Unit: ID=${unit.id}, Type=${unit.type}, Position=(${unit.q},${unit.r})`);
-    }
   }
 }
 

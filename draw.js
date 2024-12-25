@@ -118,7 +118,7 @@ function drawUnits() {
   hexGrid.forEach((hex) => {
     if (hex.units.length > 0) {
       let { x, y } = hexToPixel(hex);
-      drawHexUnits(x, y, hex.units.filter(unit => !unit.isAnimating)); // Only draw units that are not animating
+      drawHexUnits(x, y, hex.units.filter(unit => !unit.isAnimating && unit.animationsLeft === 0)); // Only draw units that are not animating and have no animations left
     }
   });
   pop();
