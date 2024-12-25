@@ -11,6 +11,7 @@ class Animation {
     this.progress = 0;
     this.onComplete = onComplete;
     this.complete = false;
+    this.isAnimating = false;
   }
 
   update() {

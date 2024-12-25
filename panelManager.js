@@ -59,6 +59,11 @@ class PanelManager {
                 panel.y = index * maxPanelHeight + 200; // Move down by 200 pixels
                 panel.width = width;
                 panel.height = maxPanelHeight;
+            } else if (panel.header === 'Animation Queue') {
+                panel.x = this.canvasWidth - width; // Position to the right
+                panel.y = index * maxPanelHeight;
+                panel.width = width;
+                panel.height = maxPanelHeight;
             } else {
                 panel.x = side === 'left' ? 0 : this.hexGridEndX;
                 panel.y = index * maxPanelHeight;
@@ -139,8 +144,27 @@ class PanelManager {
         this.createPanel('Player 1 Hexes', () => generatePlayerPanelContent(players[0]));
         this.createPanel('Player 2 Hexes', () => generatePlayerPanelContent(players[1]));
         this.createPanel('AI Decision Reasoning', () => players[currentPlayerIndex].decisionReasoning.split('\n'));
+        this.createPanel('Animation Queue', () => this.generateAnimationQueueContent());
 
         this.organisePanels(); // Organise panels after registering them
+    }
+
+    generateAnimationQueueContent() {
+        const content = [];
+        animationManager.unitAnimationQueues.forEach((queue, unit) => {
+            queue.forEach((animation, index) => {
+                content.push(`  Animation ${index + 1}:`);
+                content.push(`    Type: ${animation.type}`);
+                content.push(`    Path: (${animation.start.q}, ${animation.start.r}) ➡️ (${animation.end.q}, ${animation.end.r})`);
+                content.push(`    Duration: ${animation.duration}ms`);
+                if (animation.isAnimating) {
+                    content.push(`    Progress: ${(animation.progress * 100).toFixed(2)}%`);
+                } else {
+                    content.push(`    🚫 Not started`);
+                }
+            });
+        });
+        return content;
     }
 
     savePanelPositions() {
