@@ -1,4 +1,4 @@
-BASE_ANIMATION_DURATION = 1000; // 1 second
+BASE_ANIMATION_DURATION = 20;
 
 class Animation {
   constructor(type, unit, start, end, duration, onComplete) {
@@ -7,7 +7,6 @@ class Animation {
     this.start = start;
     this.end = end;
     this.duration = duration;
-    this.startTime = millis();
     this.progress = 0;
     this.onComplete = onComplete;
     this.complete = false;
@@ -18,6 +17,7 @@ class Animation {
     let elapsedTime = millis() - this.startTime;
     this.progress = min(elapsedTime / this.duration, 1);
     this.draw(this.progress);
+    print("Progress: " + this.progress);
     if (this.progress === 1) {
       this.complete = true;
       if (this.onComplete) {
@@ -36,14 +36,16 @@ class Animation {
       let currentX = lerp(startPos.x, endPos.x, progress);
       let currentY = lerp(startPos.y, endPos.y, progress);
       push();
-      translate(width/2, height/2);
+      translate(width / 2, height / 2);
       drawUnit(currentX, currentY, this.unit, 18);
       pop();
     } else if (this.type === 'unitPlacement') {
       let pos = hexToPixel(this.start);
       let size = lerp(30, 40, progress); // Increase size from 30 to 40
       push();
-      translate(width/2, height/2);
+      translate(width / 2, height / 2);
+      stroke(255, 215, 0); // Gold color for highlighting
+      strokeWeight(4);
       drawUnit(pos.x, pos.y, this.unit, size);
       pop();
     } else if (this.type === 'progressBar') {
@@ -74,53 +76,42 @@ class Animation {
 
 class AnimationManager {
   constructor() {
-    this.unitAnimationQueues = new Map();
     this.animations = [];
     this.totalAnimationDuration = 0;
   }
 
   addAnimation(unit, animation) {
     unit.isAnimating = true;
-    if (!this.unitAnimationQueues.has(unit)) {
-      this.unitAnimationQueues.set(unit, []);
-    }
-    this.unitAnimationQueues.get(unit).push(animation);
+    animation.isAnimating = true; // Set isAnimating to true
+    this.animations.push(animation);
+    this.totalAnimationDuration += animation.duration;
     this.logAnimationDetails(animation, 'Created');
-
-    if (this.unitAnimationQueues.get(unit).length === 1) {
-      this.animations.push(animation);
-      this.totalAnimationDuration += animation.duration;
-      this.logAnimationDetails(animation, 'Started');
-    }
-  }
-
-  processNextAnimation(unit) {
-    const queue = this.unitAnimationQueues.get(unit);
-    if (queue) {
-      queue.shift(); // Remove the completed animation
-      if (queue.length > 0) {
-        this.animations.push(queue[0]); // Start the next animation
-        this.logAnimationDetails(queue[0], 'Started');
-      }
-    }
   }
 
   handleAnimations() {
-    // this.animations.forEach(animation => animation.update());
-    // this.animations = this.animations.filter(animation => !animation.isComplete());
-    // Instead let's execute them sequentially
     if (this.animations.length > 0) {
       let animation = this.animations[0];
       animation.update();
       if (animation.isComplete()) {
-        // this.logAnimationDetails(animation, 'Completed');
+        print("Completed animation");
         this.animations.shift();
-        this.processNextAnimation(animation.unit);
+        this.handleNextAnimation();
       }
     }
   }
 
+  handleNextAnimation() {
+    if (this.animations.length > 0) {
+      let nextAnimation = this.animations[0];
+      nextAnimation.startTime = millis(); // Set startTime when the animation begins
+      nextAnimation.isAnimating = true; // Set isAnimating to true for the next animation
+      // this.logAnimationDetails(nextAnimation, 'Started');
+    }
+  }
+
   animationsComplete() {
+    print("Animations complete?");
+    print("Animations length: " + this.animations.length);
     return this.animations.length === 0;
   }
 

@@ -91,7 +91,7 @@ function drawPlayingState() {
   drawGrid();
   drawUnits();
 
-  print("Playing state");
+  // print("Playing state");
 }
 
 function drawPlayingState_human() {
@@ -182,6 +182,7 @@ function handleAIDecision(playerIndex) {
 }
 
 function startNewTurn() {
+  this.totalAnimationDuration = BASE_ANIMATION_DURATION; // Reset total animation duration
   players[currentPlayerIndex].resetMoves();
   players[currentPlayerIndex].resetBattles();
 

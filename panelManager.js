@@ -151,21 +151,23 @@ class PanelManager {
 
     generateAnimationQueueContent() {
         const content = [];
-        animationManager.unitAnimationQueues.forEach((queue, unit) => {
-            queue.forEach((animation, index) => {
-                content.push(`  Animation ${index + 1}:`);
-                content.push(`    Type: ${animation.type}`);
-                content.push(`    Path: (${animation.start.q}, ${animation.start.r}) ➡️ (${animation.end.q}, ${animation.end.r})`);
-                content.push(`    Duration: ${animation.duration}ms`);
-                if (animation.isAnimating) {
-                    content.push(`    Progress: ${(animation.progress * 100).toFixed(2)}%`);
-                } else {
-                    content.push(`    🚫 Not started`);
-                }
-            });
-        });
+        if (animationManager.animations.length === 0) {
+          content.push("No animations in queue");
+        } else {
+          animationManager.animations.forEach((animation, index) => {
+            content.push(`  Animation ${index + 1}:`);
+            content.push(`    Type: ${animation.type}`);
+            content.push(`    Path: (${animation.start.q}, ${animation.start.r}) ➡️ (${animation.end.q}, ${animation.end.r})`);
+            content.push(`    Duration: ${animation.duration}ms`);
+            if (animation.isAnimating) {
+              content.push(`    Progress: ${(animation.progress * 100).toFixed(2)}%`);
+            } else {
+              content.push(`    🚫 Not started`);
+            }
+          });
+        }
         return content;
-    }
+      }
 
     savePanelPositions() {
         const positions = this.panels.map(panel => ({ header: panel.header, x: panel.x, y: panel.y }));
