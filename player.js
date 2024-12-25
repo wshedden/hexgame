@@ -201,8 +201,7 @@ function placeUnitOnHex(hex, unit) {
   // Create and add the unit placement animation
   let duration = 1000; // 1 second duration
   let animation = new Animation('unitPlacement', unit, hex, hex, duration, () => {
-    // Callback to trigger the next animation in the queue
-    animationManager.processNextAnimation(unit);
+    // NO CALLBACK
   });
   animationManager.addAnimation(unit, animation);
 
