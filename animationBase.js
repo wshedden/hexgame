@@ -14,6 +14,10 @@ class Animation {
       let elapsedTime = millis() - this.startTime;
       this.progress = min(elapsedTime / this.duration, 1);
     }
+
+    if(this.progress === 0) {
+        logAnimationDetails(this, 'Started');
+    }
     // console.log('Updating animation with progress:', this.progress); // Commented out
     this.draw(this.progress);
     if (this.progress === 1) {

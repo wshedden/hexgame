@@ -98,8 +98,8 @@ class PanelManager {
             `State: ${currentState}`,
             `Player: ${players[currentPlayerIndex].id}`,
             `Turn: ${turnNumber}`,
-            `Time Left: ${(Math.max(0, turnDuration * (1 / speedMultiplier) - (millis() - turnStartTime)) / 1000).toFixed(1)}s`,
-            `Speed: ${speedMultiplier.toFixed(3)}x`,
+            // `Time Left: ${(Math.max(0, turnDuration * (1 / speedMultiplier) - (millis() - turnStartTime)) / 1000).toFixed(1)}s`,
+            // `Speed: ${speedMultiplier.toFixed(3)}x`,
             `Pathfinding: ${pathfindingMode ? '✅' : '❌'}` // Add pathfinding status here
         ]);
 

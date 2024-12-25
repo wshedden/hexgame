@@ -12,7 +12,6 @@ const GameState = {
 
 let currentState = GameState.INIT;
 let currentPlayerIndex = 0;
-let turnDuration = 500;
 let turnStartTime;
 let turnNumber = 1; // Initialise turn number
 let speedMultiplier = 1.0;
@@ -21,7 +20,6 @@ let animationStartTime; // Time when animation started
 
 // New variables for adjustable delays
 let decisionDelay = 1000; // 1 second delay for decisions made
-let animationDelay = 1000; // 1 second delay for animation
 
 const players = [
   new Player(1, [139, 0, 0]), // Dark red for player 1
@@ -41,8 +39,10 @@ function setState(newState) {
     progressBar.setDuration(1000); // Set progress bar duration for decisions made
     progressBar.setText(`Player ${players[currentPlayerIndex].id} done thinking`);
   } else if (newState === GameState.ANIMATING) {
-    // progressBar.setDuration(animationDelay); // Set progress bar duration for animation
-    // progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
+    animationStartTime = millis(); // Set the start time for the ANIMATING state
+    progressBar.setDuration(totalAnimationDuration); // Set progress bar duration for animation
+    progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
+    console.log(`Progress bar duration: ${totalAnimationDuration}ms, Total animation duration: ${totalAnimationDuration}ms`);
   }
 }
 
@@ -93,13 +93,7 @@ function drawPlayingState() {
   drawGrid();
   drawUnits();
 
-  // Adjust the turn duration based on the speed multiplier
-  let adjustedTurnDuration = turnDuration * (1 / speedMultiplier);
-
-  // Check if the turn duration has elapsed
-  if (millis() - turnStartTime > adjustedTurnDuration) {
-    startNewTurn();
-  }
+  print("Playing state");
 }
 
 function drawPlayingState_human() {
@@ -133,28 +127,7 @@ function drawDecisionsMadeState() {
   // Check if 2 seconds have passed since decisions were made, then animate
   if (millis() - decisionsMadeTime > decisionDelay) {
     setState(GameState.ANIMATING);
-    addAllAnimations(); // Add all animations to the queue
-    animationStartTime = millis();
   }
-}
-
-function addAllAnimations() {
-  // Assuming animations is an array of animation objects
-  let numberOfAnimations = animations.length;
-  print(`Adding ${numberOfAnimations} animations to the queue`);
-  animationDelay = numberOfAnimations * 500 + 1000; // Set the animation delay based on the number of animations
-
-  // Set the progress bar duration for the total animations
-  progressBar.setDuration(animationDelay);
-  progressBar.setText(`Animating ${numberOfAnimations} actions...`);
-
-  // If there's at least one animation, set the start time
-  if (numberOfAnimations > 0) {
-    animations[0].start = millis();
-  }
-
-  // Set the animation start time
-  animationStartTime = millis();
 }
 
 function drawGameStatePopup() {
@@ -169,12 +142,11 @@ function drawGameStatePopup() {
   text(`Turn: ${turnNumber}`, 20, 70); // Display the current turn number
 
   // Calculate the remaining time for the current turn
-  let adjustedTurnDuration = turnDuration * (1 / speedMultiplier);
-  let remainingTime = Math.max(0, adjustedTurnDuration - (millis() - turnStartTime));
-  text(`Time Left: ${(remainingTime / 1000).toFixed(1)}s`, 20, 90);
+  // let remainingTime = Math.max(0, adjustedTurnDuration - (millis() - turnStartTime));
+  // text(`Time Left: ${(remainingTime / 1000).toFixed(1)}s`, 20, 90);
 
   // Display the speed multiplier
-  text(`Speed: ${speedMultiplier.toFixed(3)}x`, 20, 110);
+  // text(`Speed: ${speedMultiplier.toFixed(3)}x`, 20, 110);
 }
 
 function switchPlayer() {
@@ -231,34 +203,17 @@ function handleHumanInput() {
 }
 
 function drawAnimatingState() {
-  // For now, do nothing special in the ANIMATING state
   drawGrid();
   drawUnits();
 
-  // Check if 2 seconds have passed since animation started
-  // if (millis() - animationStartTime > animationDelay) {
-  //   setState(GameState.ANIMATION_COMPLETE);
-  //   progressGameState();
-  // }
+  handleAnimations(); // Centralise animation updates
 
-  if(animations.length === 0) {
+  if (animations.length === 0) {
     setState(GameState.ANIMATION_COMPLETE);
+    totalAnimationDuration = BASE_ANIMATION_DURATION; // Reset total animation duration
     progressGameState();
     return;
   }
-  // If first animation is done, remove it from the queue
-  if (animations[0].isComplete()) {
-    animations.shift(); // Remove the first animation
-    // Set animation start time to current time
-    animations[0].start = millis();
-  }
-
-  // Update first animation
-  animations[0].update();
-
-
-
-
 }
 
 function progressGameState() {
