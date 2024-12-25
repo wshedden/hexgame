@@ -201,7 +201,6 @@ function placeUnitOnHex(hex, unit) {
 }
 
 function moveUnit(player, fromHex, toHex, options = {}) {
-
   if (!canMoveUnit(fromHex, toHex)) {
     return false;
   }
@@ -214,7 +213,7 @@ function moveUnit(player, fromHex, toHex, options = {}) {
 
   let duration = 3000; // Per unit of movement
   // Create the animation
-  let animation = new UnitMovementAnimation(unitToMove, fromHex, toHex, duration, () => {
+  let animation = new Animation('unitMovement', unitToMove, fromHex, toHex, duration, () => {
     // Callback to trigger the next animation in the queue
     animationManager.processNextAnimation(unitToMove);
   });

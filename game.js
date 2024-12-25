@@ -40,16 +40,14 @@ function setState(newState) {
     progressBar.setText(`Player ${players[currentPlayerIndex].id} done thinking`);
   } else if (newState === GameState.ANIMATING) {
     animationStartTime = millis(); // Set the start time for the ANIMATING state
-    progressBar.setDuration(totalAnimationDuration); // Set progress bar duration for animation
+    progressBar.setDuration(animationManager.totalAnimationDuration); // Set progress bar duration for animation
     progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
-    console.log(`Progress bar duration: ${totalAnimationDuration}ms, Total animation duration: ${totalAnimationDuration}ms`);
   }
 }
 
 function getState() {
   return currentState;
 }
-
 
 function drawGameState() {
   switch (currentState) {
@@ -206,11 +204,11 @@ function drawAnimatingState() {
   drawGrid();
   drawUnits();
 
-  handleAnimations(); // Centralise animation updates
+  animationManager.handleAnimations(); // Centralise animation updates
 
-  if (animations.length === 0) {
+  if (animationManager.animationsComplete() && millis() - animationStartTime > animationManager.totalAnimationDuration) {
     setState(GameState.ANIMATION_COMPLETE);
-    totalAnimationDuration = BASE_ANIMATION_DURATION; // Reset total animation duration
+    animationManager.totalAnimationDuration = BASE_ANIMATION_DURATION; // Reset total animation duration
     progressGameState();
     return;
   }

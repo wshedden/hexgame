@@ -48,3 +48,29 @@ function getUnitEmoji(unitType) {
       return '❓'; // Question mark emoji for unknown unit type
   }
 }
+
+function moveUnit(player, fromHex, toHex, options = {}) {
+  if (!canMoveUnit(fromHex, toHex)) {
+    return false;
+  }
+
+  let unitToMove = random(fromHex.units);
+
+  if (!moveUnitToHex(unitToMove, fromHex, toHex)) {
+    return false;
+  }
+
+  let duration = 3000; // Per unit of movement
+  // Create the animation
+  let animation = new Animation('unitMovement', unitToMove, fromHex, toHex, duration, () => {
+    // Callback to trigger the next animation in the queue
+    animationManager.processNextAnimation(unitToMove);
+  });
+
+  // Add the animation to the unit's queue
+  animationManager.addAnimation(unitToMove, animation);
+
+  updatePlayerOccupiedHexes(player, fromHex, toHex);
+
+  return true;
+}
