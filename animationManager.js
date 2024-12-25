@@ -17,7 +17,6 @@ class Animation {
     let elapsedTime = millis() - this.startTime;
     this.progress = min(elapsedTime / this.duration, 1);
     this.draw(this.progress);
-    print("Progress: " + this.progress);
     if (this.progress === 1) {
       this.complete = true;
       if (this.onComplete) {
@@ -85,7 +84,7 @@ class AnimationManager {
     animation.isAnimating = true; // Set isAnimating to true
     this.animations.push(animation);
     this.totalAnimationDuration += animation.duration;
-    this.logAnimationDetails(animation, 'Created');
+    // this.logAnimationDetails(animation, 'Created');
   }
 
   handleAnimations() {
@@ -93,7 +92,6 @@ class AnimationManager {
       let animation = this.animations[0];
       animation.update();
       if (animation.isComplete()) {
-        print("Completed animation");
         this.animations.shift();
         this.handleNextAnimation();
       }
@@ -110,8 +108,6 @@ class AnimationManager {
   }
 
   animationsComplete() {
-    print("Animations complete?");
-    print("Animations length: " + this.animations.length);
     return this.animations.length === 0;
   }
 
