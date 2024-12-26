@@ -5,8 +5,8 @@ let terrainColours = {};
 let claimableTiles = new Set();
 let offsetX = 0;
 let offsetY = 0;
-let scaleFactor = 0.5;
-let delayMultiplier = 0.05;
+let scaleFactor = 0.35;
+let delayMultiplier = 0.01;
 
 function initialiseGrid(radius) {
   for (let q = -radius; q <= radius; q++) {
@@ -34,7 +34,7 @@ function hexToPixel(hex) {
 }
 
 function pixelToHex(x, y) {
-  let size = 30;
+  let size = 30 * scaleFactor; // Hex size
   let q = (2/3 * x) / size;
   let r = (-1/3 * x + sqrt(3)/3 * y) / size;
   return roundHex(q, r);

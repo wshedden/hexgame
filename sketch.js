@@ -11,12 +11,12 @@ let pathfindingMode = true;
 let path = []; // Store the path found by A* algorithm
 let progressBar; // Progress bar for animations
 const animationManager = new AnimationManager();
-
+e1
 function setup() {
   offsetX = 900;
   offsetY = 450;
   createCanvas(1800, 900);
-  initialiseGrid(16);
+  initialiseGrid(24);
   initialiseTerrainColours();
   generateTerrain();
   setState(GameState.INIT);
