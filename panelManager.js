@@ -158,7 +158,7 @@ class PanelManager {
             animationManager.animations.forEach((animation, index) => {
                 content.push(`  Animation ${index + 1}:`);
                 content.push(`    Type: ${animation.type}`);
-                content.push(`    Path: (${animation.start.q}, ${animation.start.r}) ➡️ (${animation.end.q}, ${animation.end.r})`);
+                content.push(`    Hex: (${animation.hex.q}, ${animation.hex.r})`);
                 content.push(`    Duration: ${animation.duration}ms`);
                 if (animation.isAnimating) {
                     content.push(`    Progress: ${(animation.progress * 100).toFixed(2)}%`);

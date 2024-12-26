@@ -1,16 +1,15 @@
 BASE_ANIMATION_DURATION = 20;
 
 class Animation {
-  constructor(type, unit, start, end, duration, path = []) {
+  constructor(type, unit, hex, duration, path = []) {
     this.type = type;
     this.unit = unit;
-    this.start = start;
-    this.end = end;
+    this.hex = hex;
     this.duration = duration;
     this.progress = 0;
     this.path = path; // Store the path
     this.onComplete = type === 'unitMovement' ? () => {
-      this.end.addUnit(this.unit);
+      this.hex.addUnit(this.unit);
     } : null;
 
     this.complete = false;
@@ -43,8 +42,8 @@ class Animation {
   }
 
   drawUnitMovement(progress) {
-    let startPos = hexToPixel(this.start);
-    let endPos = hexToPixel(this.end);
+    let startPos = hexToPixel(this.unit.hex);
+    let endPos = hexToPixel(this.hex);
     let currentX = lerp(startPos.x, endPos.x, progress);
     let currentY = lerp(startPos.y, endPos.y, progress);
 
@@ -74,33 +73,13 @@ class Animation {
   }
 
   drawUnitPlacement(progress) {
-    let pos = hexToPixel(this.start);
+    let pos = hexToPixel(this.hex);
     let size = lerp(30, 40, progress); // Increase size from 30 to 40
     stroke(255, 215, 0); // Gold color for highlighting
     strokeWeight(4);
     fill(255, 223, 0, 100); // Semi-transparent gold fill
     ellipse(pos.x, pos.y, size + 10, size + 10); // Golden outline
     drawUnit(pos.x, pos.y, this.unit, this.unit.size);
-  }
-
-  drawProgressBar(progress) {
-    let barWidth = lerp(this.start, this.end, progress);
-    let playerColor = color(players[currentPlayerIndex].colour[0], players[currentPlayerIndex].colour[1], players[currentPlayerIndex].colour[2]);
-    let hexGridEndX = 1500;
-    let canvasWidth = width;
-    let barX = hexGridEndX + (canvasWidth - hexGridEndX - this.end) / 2;
-    let barY = height - 30 - 300;
-    stroke(255);
-    strokeWeight(2);
-    fill(0, 0, 0, 150);
-    rect(barX, barY, this.end, 20, 10);
-    noStroke();
-    fill(playerColor);
-    rect(barX, barY, barWidth, 20, 10);
-    fill(255);
-    textSize(16);
-    textAlign(CENTER, BOTTOM);
-    text(this.text, barX + this.end / 2, barY - 5);
   }
 
   isComplete() {
@@ -110,7 +89,9 @@ class Animation {
   initialise() {
     this.startTime = millis();
     if (this.type === "unitMovement") {
-      this.start.removeUnit(this.unit);      
+      this.unit.hex.removeUnit(this.unit);    
+    } else if (this.type === "unitPlacement") {
+      this.unit.hex = this.hex;
     }
   }
 }
@@ -176,5 +157,25 @@ class ProgressBarAnimation extends Animation {
 
   setProgress(progress) {
     this.progress = progress;
+  }
+
+  drawProgressBar(progress) {
+    let barWidth = lerp(this.start, this.end, progress);
+    let playerColor = color(players[currentPlayerIndex].colour[0], players[currentPlayerIndex].colour[1], players[currentPlayerIndex].colour[2]);
+    let hexGridEndX = 1500;
+    let canvasWidth = width;
+    let barX = hexGridEndX + (canvasWidth - hexGridEndX - this.end) / 2;
+    let barY = height - 30 - 300;
+    stroke(255);
+    strokeWeight(2);
+    fill(0, 0, 0, 150);
+    rect(barX, barY, this.end, 20, 10);
+    noStroke();
+    fill(playerColor);
+    rect(barX, barY, barWidth, 20, 10);
+    fill(255);
+    textSize(16);
+    textAlign(CENTER, BOTTOM);
+    text(this.text, barX + this.end / 2, barY - 5);
   }
 }

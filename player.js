@@ -190,7 +190,7 @@ function placeUnitOnHex(hex, unit) {
 
   // Create and add the unit placement animation
   let duration = 1000 * delayMultiplier; // 1 second duration
-  let animation = new Animation('unitPlacement', unit, hex, hex, duration);
+  let animation = new Animation('unitPlacement', unit, hex, duration);
   animationManager.addAnimation(unit, animation);
 
   return true;

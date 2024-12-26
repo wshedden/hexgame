@@ -13,6 +13,7 @@ class Unit {
     this.isAnimating = false; // Add isAnimating attribute
     this.animationsLeft = 0; // New attribute
     this.allAnimationComplete = true;
+    this.hex = null;
 
     if (type === 'settler') {
       this.colour = lerpColor(color(0, 255, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Interpolated colour for settlers
@@ -66,7 +67,7 @@ function moveRandomUnit(player, fromHex, toHex, options = {}) {
   let duration = 1000 * delayMultiplier; // Per unit of movement
   let path = player.paths.get(unitToMove); // Get the path for the unit
   // Create the animation
-  let animation = new Animation('unitMovement', unitToMove, fromHex, toHex, duration, path);
+  let animation = new Animation('unitMovement', unitToMove, toHex, duration, path);
 
   // Add the animation to the unit's queue
   animationManager.addAnimation(unitToMove, animation);
