@@ -126,30 +126,29 @@ class Panel {
     }
 }
 
-
 function generatePlayerPanelContent(player) {
-  let claimedHexesArray = Array.from(player.claimedHexes);
+    let claimedHexesArray = Array.from(player.claimedHexes);
 
-  let lines = [
-    `🔷 Claimed Hexes: ${claimedHexesArray.length}`,
-    `💰 Money: ${player.money}`, // Display money
-    `🔢 Unit Limit: ${player.unitLimit}`, // Display unit limit
-    `🛤️ Paths: ${player.paths.size}`, // Display the number of paths
-    `⚔️ Battles: ${player.battleHexes.size}` // Display the number of battles
-  ];
+    let lines = [
+        `🔷 Claimed Hexes: ${claimedHexesArray.length}`,
+        `💰 Money: ${player.money}`, // Display money
+        `🔢 Unit Limit: ${player.unitLimit}`, // Display unit limit
+        `🛤️ Paths: ${player.paths.size}`, // Display the number of paths
+        `⚔️ Battles: ${player.battleHexes.size}` // Display the number of battles
+    ];
 
-  for (let i = 0; i < claimedHexesArray.length; i++) {
-    let hex = claimedHexesArray[i];
-    lines.push(`📍 ${hex.q}, ${hex.r}`);
-    hex.units.forEach((unit, i) => {
-      let unitEmoji = getUnitEmoji(unit.type);
-      let unitTypeCapitalized = unit.type.charAt(0).toUpperCase() + unit.type.slice(1);
-      let playerSymbol = unit.playerId === 1 ? '🔴' : '🔵'; // Red circle for Player 1, Blue circle for Player 2
-    lines.push(
-      `${playerSymbol} ${unitEmoji} ${unitTypeCapitalized} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement} 🆔 ${unit.id}`
-    );
-    });
-  }
+    for (let i = 0; i < claimedHexesArray.length; i++) {
+        let hex = claimedHexesArray[i];
+        lines.push(`📍 ${hex.q}, ${hex.r}`);
+        hex.units.forEach((unit, i) => {
+            let unitEmoji = getUnitEmoji(unit.type);
+            let unitTypeCapitalized = unit.type.charAt(0).toUpperCase() + unit.type.slice(1);
+            let playerSymbol = unit.playerId === 1 ? '🔴' : '🔵'; // Red circle for Player 1, Blue circle for Player 2
+            lines.push(
+                `${playerSymbol} ${unitEmoji} ${unitTypeCapitalized} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement} 🆔 ${unit.id}`
+            );
+        });
+    }
 
-  return lines;
+    return lines;
 }
