@@ -9,6 +9,7 @@ class Animation {
     this.progress = 0;
     this.path = path; // Store the path
     this.onComplete = type === 'unitMovement' ? () => {
+      this.unit.hex = this.hex;
       this.hex.addUnit(this.unit);
     } : null;
 
