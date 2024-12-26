@@ -24,6 +24,7 @@ class Player {
     this.battleHexes = new Set(); // New attribute: hexes where battles are occurring
     this.paths = new Map(); // New attribute: paths for units
     this.farmers = new Set(); // New attribute: set of farmers
+    this.numOfUnits = 0; // New attribute: number of units
   }
 
   resetMoves() {
@@ -54,6 +55,7 @@ class Player {
   placeUnit(hex, unitType) {
     let newUnit = createUnit(this, unitType);
     if (purchaseUnit(hex.q, hex.r, newUnit)) {
+      this.numOfUnits++;
       this.money -= UNIT_COSTS[unitType];
       this.decisionReasoning += `✅ ${getUnitEmoji(unitType)} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;
       if (unitType === 'farmer') {

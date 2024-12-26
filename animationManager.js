@@ -27,7 +27,6 @@ class Animation {
         this.onComplete();
       }
       if (this.type === 'unitMovement' || this.type === 'unitPlacement') {
-        // console.log(`Completed animation for unit ${this.unit.playerID} at (${this.hex.q}, ${this.hex.r})`);
         this.unit.isAnimating = false;
       }
     }

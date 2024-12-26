@@ -54,6 +54,7 @@ class AIPlayer {
   }
 
   handleUnitMovement() {
+    // TODO: BROKEN
     let unitHexes = Array.from(this.player.occupiedHexes).filter(hex => !hex.isInBattle());
     let moved = false;
 
@@ -87,7 +88,7 @@ class AIPlayer {
       return;
     }
   
-    if (this.player.occupiedHexes.size >= this.player.unitLimit) {
+    if (this.player.occupiedHexes.size >= this.player.unitLimit || this.player.numOfUnits >= this.player.unitLimit) {
       this.player.decisionReasoning += `❌ Unit limit of ${this.player.unitLimit} reached. Cannot place more units\n`;
       return;
     }
