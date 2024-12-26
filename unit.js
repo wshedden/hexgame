@@ -64,13 +64,12 @@ function moveRandomUnit(player, fromHex, toHex, options = {}) {
   }
 
   let duration = 1000 * delayMultiplier; // Per unit of movement
+  let path = player.paths.get(unitToMove); // Get the path for the unit
   // Create the animation
-  let animation = new Animation('unitMovement', unitToMove, fromHex, toHex, duration, () => {
-  });
+  let animation = new Animation('unitMovement', unitToMove, fromHex, toHex, duration, path);
 
   // Add the animation to the unit's queue
   animationManager.addAnimation(unitToMove, animation);
-
 
   updatePlayerOccupiedHexes(player, fromHex, toHex);
 

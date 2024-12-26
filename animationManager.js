@@ -1,13 +1,14 @@
 BASE_ANIMATION_DURATION = 20;
 
 class Animation {
-  constructor(type, unit, start, end, duration) {
+  constructor(type, unit, start, end, duration, path = []) {
     this.type = type;
     this.unit = unit;
     this.start = start;
     this.end = end;
     this.duration = duration;
     this.progress = 0;
+    this.path = path; // Store the path
     this.onComplete = type === 'unitMovement' ? () => {
       this.end.addUnit(this.unit);
     } : null;
@@ -46,6 +47,29 @@ class Animation {
     let endPos = hexToPixel(this.end);
     let currentX = lerp(startPos.x, endPos.x, progress);
     let currentY = lerp(startPos.y, endPos.y, progress);
+
+    // Draw the path
+    if (this.path.length > 1) {
+      push();
+      stroke(this.unit.colour);
+      strokeWeight(2);
+      noFill();
+      beginShape();
+      this.path.forEach(hex => {
+        let { x, y } = hexToPixel(hex);
+        vertex(x, y);
+      });
+      endShape();
+      // Draw the arrowhead at the final line segment
+      let lastHex = this.path[this.path.length - 1];
+      let secondLastHex = this.path[this.path.length - 2];
+      let { x: x1, y: y1 } = hexToPixel(secondLastHex);
+      let { x: x2, y: y2 } = hexToPixel(lastHex);
+      drawArrowhead(x1, y1, x2, y2, this.unit.colour);
+
+      pop();
+    }
+
     drawUnit(currentX, currentY, this.unit, 18);
   }
 
@@ -86,7 +110,7 @@ class Animation {
   initialise() {
     this.startTime = millis();
     if (this.type === "unitMovement") {
-      this.start.removeUnit(this.unit);
+      this.start.removeUnit(this.unit);      
     }
   }
 }
