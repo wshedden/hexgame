@@ -153,8 +153,10 @@ class AnimationManager {
 
 class ProgressBarAnimation extends Animation {
   constructor(start, end, duration) {
-    super('progressBar', null, start, end, duration, null);
+    super('progressBar', null, null, duration, null);
     this.text = ''; // Initialize text property
+    this.start = start;
+    this.end = end;
   }
 
   setDuration(duration) {
@@ -180,7 +182,7 @@ class ProgressBarAnimation extends Animation {
     let hexGridEndX = 1500;
     let canvasWidth = width;
     let barX = hexGridEndX + (canvasWidth - hexGridEndX - this.end) / 2;
-    let barY = height - 30 - 300;
+    let barY = height - 30 - 50;
     stroke(255);
     strokeWeight(2);
     fill(0, 0, 0, 150);
