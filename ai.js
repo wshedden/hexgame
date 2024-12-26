@@ -80,15 +80,20 @@ class AIPlayer {
       this.player.decisionReasoning += '❌ No moves\n';
     }
   }
-
+    
   handleUnitPlacement() {
     if (!this.player.canAffordCheapestUnit()) {
       this.player.decisionReasoning += '❌ Not enough money to place any unit\n';
       return;
     }
-
+  
+    if (this.player.occupiedHexes.size >= this.player.unitLimit) {
+      this.player.decisionReasoning += `❌ Unit limit of ${this.player.unitLimit} reached. Cannot place more units\n`;
+      return;
+    }
+  
     let hexesToConsider = this.getHexesToConsiderForUnitPlacement(false);
-
+  
     if (hexesToConsider.length > 0) {
       let randomHex = random(hexesToConsider);
       let unitType = this.decideUnitType();

@@ -66,6 +66,7 @@ class Player {
   }
 
   findNewPathForUnit(unit, hex) {
+    print("Finding new path for unit " + unit.id);
     if (this.paths.size < 3) {
       let randomHex = random(Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit));
       let newPath = aStar(hex, randomHex, hexGrid);
@@ -144,6 +145,11 @@ function purchaseUnit(q, r, unit) {
     return false;
   }
 
+  if (player.occupiedHexes.size >= player.unitLimit) {
+    print(`Player ${player.id} has reached the unit limit of ${player.unitLimit}. Cannot purchase more units.`);
+    return false;
+  }
+
   if (turnNumber === 1) {
     if (unit.type !== 'settler') {
       return false;
@@ -165,6 +171,7 @@ function purchaseUnit(q, r, unit) {
 }
 
 function placeUnitOnHex(hex, unit) {
+  // print("Attempting to place unit " + unit.id + " on hex " + hex.getKey());
   if (!hex.addUnit(unit)) {
     return false;
   }
