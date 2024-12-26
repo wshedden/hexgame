@@ -3,6 +3,8 @@ let hexGrid = new Map();
 let terrainColours = {};
 
 let claimableTiles = new Set();
+let offsetX = 0;
+let offsetY = 0;
 
 function initialiseGrid(radius) {
   for (let q = -radius; q <= radius; q++) {

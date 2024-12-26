@@ -51,7 +51,6 @@ function getTerrainColour(type) {
 
 function drawGrid() {
   push();
-  translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
   hexGrid.forEach((hex) => {
     let { x, y } = hexToPixel(hex);
     drawHex(x, y, 30, hex.type, hex.text, hex.claimedBy, hex.colour, hex.battle, hex.building); // Pass the building attribute
@@ -110,7 +109,6 @@ function getAttackableTiles(hex) {
 // Add the drawing functions from unit.js
 function drawUnits() {
   push();
-  translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
   hexGrid.forEach((hex) => {
     if (hex.units.length > 0) {
       let { x, y } = hexToPixel(hex);
@@ -161,7 +159,6 @@ function drawUnit(x, y, unit, size) {
 function drawUnitPath(path, playerColour) {
   if (path.length > 1) {
     push();
-    translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
     stroke(playerColour); // Use the player's colour for the path
     strokeWeight(3);
     noFill();
@@ -205,7 +202,6 @@ function drawArrowhead(x1, y1, x2, y2, playerColour) {
 function drawPath() {
   if (path.length > 1) {
     push();
-    translate(width / 2, height / 2); // Translate the origin to the centre of the canvas
     const greenColour = color(0, 255, 0); // Green colour for the path
     stroke(greenColour);
     strokeWeight(3);
@@ -252,10 +248,12 @@ function drawFarmTexture(x, y, size, crops) {
 
 function draw() {
   background(20); // Set the background to a dark color
+  push();
+  print(offsetX, offsetY);
+  translate(offsetX, offsetY); // Translate the origin based on the offset
   
   drawGameState();
   // Draw panels
-  panelManager.updatePanels();
   toggleFailedOutputButton.style('background-color', showFailedOutput ? buttonColor1 : buttonColor2);
 
   if (currentState === GameState.PAUSED) {
@@ -280,5 +278,9 @@ function draw() {
 
   // Draw units on top of everything else
   drawUnits();
+  pop();
+
+  panelManager.updatePanels();
+
 }
 

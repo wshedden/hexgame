@@ -83,7 +83,7 @@ function drawInitState() {
   fill(255);
   textSize(32);
   textAlign(CENTER, CENTER);
-  text('Press any key to start', width / 2, height / 2);
+  text('Press any key to start', 0, 0);
 }
 
 function drawPlayingState() {

@@ -43,23 +43,17 @@ class Animation {
     let endPos = hexToPixel(this.end);
     let currentX = lerp(startPos.x, endPos.x, progress);
     let currentY = lerp(startPos.y, endPos.y, progress);
-    push();
-    translate(width / 2, height / 2);
     drawUnit(currentX, currentY, this.unit, 18);
-    pop();
   }
 
   drawUnitPlacement(progress) {
     let pos = hexToPixel(this.start);
     let size = lerp(30, 40, progress); // Increase size from 30 to 40
-    push();
-    translate(width / 2, height / 2);
     stroke(255, 215, 0); // Gold color for highlighting
     strokeWeight(4);
     fill(255, 223, 0, 100); // Semi-transparent gold fill
     ellipse(pos.x, pos.y, size + 10, size + 10); // Golden outline
     drawUnit(pos.x, pos.y, this.unit, size);
-    pop();
   }
 
   drawProgressBar(progress) {

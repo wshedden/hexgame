@@ -13,6 +13,8 @@ let progressBar; // Progress bar for animations
 const animationManager = new AnimationManager();
 
 function setup() {
+  offsetX = 900;
+  offsetY = 450;
   createCanvas(1800, 900);
   initialiseGrid(7);
   initialiseTerrainColours();
@@ -65,6 +67,7 @@ function initialiseTerrainColours() {
   registerTerrainType('forest', color(34, 139, 34));
   registerTerrainType('snow', color(255, 250, 250));
 }
+
 function keyPressed() {
   if (currentState === GameState.INIT) {
     if (key === 't' || key === 'T') {
