@@ -249,9 +249,9 @@ function drawFarmTexture(x, y, size, crops) {
 function draw() {
   background(20); // Set the background to a dark color
   push();
-  print(offsetX, offsetY);
   translate(offsetX, offsetY); // Translate the origin based on the offset
-  
+  scale(scaleFactor); // Scale the canvas based on the scale factor
+
   drawGameState();
   // Draw panels
   toggleFailedOutputButton.style('background-color', showFailedOutput ? buttonColor1 : buttonColor2);
@@ -264,6 +264,10 @@ function draw() {
   // Draw AI paths
   drawAIPaths();
 
+  // Draw units on top of everything else
+  drawUnits();
+  pop();
+
   // Update progress bar based on the current state duration
   if (currentState === GameState.DECISIONS_MADE) {
     let progress = (millis() - decisionsMadeTime) / decisionDelay;
@@ -275,10 +279,6 @@ function draw() {
 
   // Draw the progress bar
   progressBar.draw(progressBar.progress);
-
-  // Draw units on top of everything else
-  drawUnits();
-  pop();
 
   panelManager.updatePanels();
 

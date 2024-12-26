@@ -16,7 +16,7 @@ function setup() {
   offsetX = 900;
   offsetY = 450;
   createCanvas(1800, 900);
-  initialiseGrid(7);
+  initialiseGrid(16);
   initialiseTerrainColours();
   generateTerrain();
   setState(GameState.INIT);
