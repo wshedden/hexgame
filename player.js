@@ -39,7 +39,7 @@ class Player {
   }
 
   moveUnit(fromHex, toHex) {
-    return moveUnit(this, fromHex, toHex);
+    return moveRandomUnit(this, fromHex, toHex);
   }
 
   canAffordCheapestUnit() {
@@ -190,9 +190,7 @@ function placeUnitOnHex(hex, unit) {
 
   // Create and add the unit placement animation
   let duration = 1000 * delayMultiplier; // 1 second duration
-  let animation = new Animation('unitPlacement', unit, hex, hex, duration, () => {
-    // NO CALLBACK
-  });
+  let animation = new Animation('unitPlacement', unit, hex, hex, duration);
   animationManager.addAnimation(unit, animation);
 
   return true;
@@ -215,8 +213,9 @@ function moveUnitToHex(unit, fromHex, toHex) {
     return false;
   }
 
-  toHex.units.push(unit);
-  fromHex.units.splice(fromHex.units.indexOf(unit), 1);
+  // toHex.units.push(unit);
+  // fromHex.units.splice(fromHex.units.indexOf(unit), 1);
+
 
   return true;
 }

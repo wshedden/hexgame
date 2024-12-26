@@ -13,7 +13,6 @@ class Unit {
     this.isAnimating = false; // Add isAnimating attribute
     this.animationsLeft = 0; // New attribute
     this.allAnimationComplete = true;
-    this.posBeforeAnimations = {q: -1, r: -1}; // New attribute
 
     if (type === 'settler') {
       this.colour = lerpColor(color(0, 255, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Interpolated colour for settlers
@@ -53,7 +52,7 @@ function getUnitEmoji(unitType) {
   }
 }
 
-function moveUnit(player, fromHex, toHex, options = {}) {
+function moveRandomUnit(player, fromHex, toHex, options = {}) {
   if (!canMoveUnit(fromHex, toHex)) {
     return false;
   }
@@ -67,12 +66,11 @@ function moveUnit(player, fromHex, toHex, options = {}) {
   let duration = 1000 * delayMultiplier; // Per unit of movement
   // Create the animation
   let animation = new Animation('unitMovement', unitToMove, fromHex, toHex, duration, () => {
-    // Set the unit's preAnimationPosition to toHex coords
-    unitToMove.posBeforeAnimations = { q: toHex.q, r: toHex.r };
   });
 
   // Add the animation to the unit's queue
   animationManager.addAnimation(unitToMove, animation);
+
 
   updatePlayerOccupiedHexes(player, fromHex, toHex);
 

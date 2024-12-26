@@ -1,21 +1,22 @@
 BASE_ANIMATION_DURATION = 20;
 
 class Animation {
-  constructor(type, unit, start, end, duration, onComplete) {
+  constructor(type, unit, start, end, duration) {
     this.type = type;
     this.unit = unit;
     this.start = start;
     this.end = end;
     this.duration = duration;
     this.progress = 0;
-    this.onComplete = onComplete;
+    this.onComplete = type === 'unitMovement' ? () => {
+      this.end.addUnit(this.unit);
+    } : null;
+
     this.complete = false;
     this.isAnimating = false;
   }
 
   update() {
-    // if(this.type === 'unitMovement') 
-    //   print(this.unit.posBeforeAnimations);
     let elapsedTime = millis() - this.startTime;
     this.progress = min(elapsedTime / this.duration, 1);
     this.draw(this.progress);
@@ -91,8 +92,7 @@ class AnimationManager {
     
   addAnimation(unit, animation) {
     unit.animationsLeft += 1; // Increment animationsLeft
-    if(animation.type === 'unitMovement') {
-      unit.posBeforeAnimations = { q: unit.q, r: unit.r }; // Set posBeforeAnimations
+    if(animation.type === 'unitMovement') {      
     }
     this.animations.push(animation);
     this.totalAnimationDuration += animation.duration;
