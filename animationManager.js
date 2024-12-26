@@ -55,22 +55,27 @@ class Animation {
 
     // Draw the path
     if (this.path.length > 1) {
+      let movesToShow = this.unit.animationsLeft;
+      let pathToShow = this.path.slice(0, movesToShow + 1); // Slice the path based on animationsLeft
+
       push();
       stroke(this.unit.colour);
       strokeWeight(2);
       noFill();
       beginShape();
-      this.path.forEach(hex => {
+      pathToShow.forEach(hex => {
         let { x, y } = hexToPixel(hex);
         vertex(x, y);
       });
       endShape();
       // Draw the arrowhead at the final line segment
-      let lastHex = this.path[this.path.length - 1];
-      let secondLastHex = this.path[this.path.length - 2];
-      let { x: x1, y: y1 } = hexToPixel(secondLastHex);
-      let { x: x2, y: y2 } = hexToPixel(lastHex);
-      drawArrowhead(x1, y1, x2, y2, this.unit.colour);
+      if (pathToShow.length > 1) {
+        let lastHex = pathToShow[pathToShow.length - 1];
+        let secondLastHex = pathToShow[pathToShow.length - 2];
+        let { x: x1, y: y1 } = hexToPixel(secondLastHex);
+        let { x: x2, y: y2 } = hexToPixel(lastHex);
+        drawArrowhead(x1, y1, x2, y2, this.unit.colour);
+      }
       pop();
     }
 
@@ -79,7 +84,7 @@ class Animation {
 
   drawUnitPlacement(progress) {
     let pos = hexToPixel(this.hex);
-    let size = lerp(30, 40, progress); // Increase size from 30 to 40
+    let size = lerp(1, 35, progress); // Increase size from 30 to 40
     stroke(255, 215, 0); // Gold color for highlighting
     strokeWeight(4);
     fill(255, 223, 0, 100); // Semi-transparent gold fill
@@ -184,4 +189,4 @@ class ProgressBarAnimation extends Animation {
     textAlign(CENTER, BOTTOM);
     text(this.text, barX + this.end / 2, barY - 5);
   }
-}
+}t4
