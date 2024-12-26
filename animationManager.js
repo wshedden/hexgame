@@ -63,9 +63,13 @@ class Animation {
       strokeWeight(2);
       noFill();
       beginShape();
-      pathToShow.forEach(hex => {
-        let { x, y } = hexToPixel(hex);
-        vertex(x, y);
+      // Start the path from the current position of the unit
+      vertex(currentX, currentY);
+      pathToShow.forEach((hex, index) => {
+        if (index > 0) { // Skip the first hex as we already added the current position
+          let { x, y } = hexToPixel(hex);
+          vertex(x, y);
+        }
       });
       endShape();
       // Draw the arrowhead at the final line segment
@@ -189,4 +193,4 @@ class ProgressBarAnimation extends Animation {
     textAlign(CENTER, BOTTOM);
     text(this.text, barX + this.end / 2, barY - 5);
   }
-}t4
+}
