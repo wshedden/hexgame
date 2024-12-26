@@ -44,7 +44,7 @@ class AIPlayer {
   }
 
   passTurn() {
-    this.player.decisionReasoning += '🚫 Passing 🚫';
+    this.player.decisionReasoning += '🚫 Passing 🚫\n';
   }
 
   finaliseDecisionReasoning() {
@@ -99,7 +99,7 @@ class AIPlayer {
       let randomHex = random(hexesToConsider);
       let unitType = this.decideUnitType();
       let emoji = getUnitEmoji(unitType);
-      if (this.player.placeUnit(randomHex, unitType)) {
+      if (this.player.placeNewUnit(randomHex, unitType)) {
         this.player.actionPoints--;
         this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r}) ${emoji} ${this.player.actionPoints}\n`;
         this.attemptedActions.add(`place:${unitType}:${randomHex.q},${randomHex.r}`);
@@ -118,7 +118,7 @@ class AIPlayer {
       let randomHex = random(hexesToConsider);
       let unitType = 'settler';
       let emoji = getUnitEmoji(unitType);
-      if (this.player.placeUnit(randomHex, unitType)) {
+      if (this.player.placeNewUnit(randomHex, unitType)) {
         this.player.actionPoints--;
         this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r}) ${emoji} ${this.player.actionPoints}\n`;
         this.attemptedActions.add(`place:${unitType}:${randomHex.q},${randomHex.r}`);

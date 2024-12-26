@@ -46,28 +46,3 @@ function getUnitEmoji(unitType) {
       return '❓'; // Question mark emoji for unknown unit type
   }
 }
-
-
-function moveRandomUnit(player, fromHex, toHex, options = {}) {
-  if (!canMoveUnit(fromHex, toHex)) {
-    return false;
-  }
-
-  let unitToMove = random(fromHex.units);
-
-  if (unitToMove.movement === 0) {
-    return false;
-  }
-
-  let duration = 1000 * delayMultiplier; // Per unit of movement
-  let path = player.paths.get(unitToMove); // Get the path for the unit
-  // Create the animation
-  let animation = new Animation('unitMovement', unitToMove, toHex, duration, path);
-
-  // Add the animation to the unit's queue
-  animationManager.addAnimation(unitToMove, animation);
-
-  updatePlayerOccupiedHexes(player, fromHex, toHex);
-
-  return true;
-}

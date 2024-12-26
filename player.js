@@ -38,9 +38,27 @@ class Player {
   initiateBattle() {
     
   }
-
-  moveUnit(fromHex, toHex) {
-    return moveRandomUnit(this, fromHex, toHex);
+    
+  moveUnit(unit, fromHex, toHex) {
+    if (!canMoveUnit(fromHex, toHex)) {
+      return false;
+    }
+  
+    if (unit.movement === 0) {
+      return false;
+    }
+  
+    let duration = 1000 * delayMultiplier; // Per unit of movement
+    let path = this.paths.get(unit); // Get the path for the unit
+    // Create the animation
+    let animation = new Animation('unitMovement', unit, toHex, duration, path);
+  
+    // Add the animation to the unit's queue
+    animationManager.addAnimation(unit, animation);
+  
+    updatePlayerOccupiedHexes(this, fromHex, toHex);
+  
+    return true;
   }
 
   canAffordCheapestUnit() {
@@ -52,7 +70,7 @@ class Player {
     return Array.from(this.occupiedHexes).some(hex => hex.getMovableUnits().length > 0);
   }
 
-  placeUnit(hex, unitType) {
+  placeNewUnit(hex, unitType) {
     let newUnit = createUnit(this, unitType);
     if (purchaseUnit(hex.q, hex.r, newUnit)) {
       this.numOfUnits++;
@@ -82,6 +100,7 @@ class Player {
   }
 
   moveUnitAlongPath(unit, hex, path) {
+    // TODO: should return false if the path is less than the minimum length
     let nextHex = path[1];
     if (this.moveUnit(hex, nextHex)) {
       this.decisionReasoning += `(${hex.q}, ${hex.r}) ➡️ (${nextHex.q}, ${nextHex.r}) 🚶 ${this.actionPoints - 1}\n`;
@@ -219,7 +238,7 @@ function canMoveUnit(fromHex, toHex) {
 
 
 function updatePlayerOccupiedHexes(player, fromHex, toHex) {
-  if (fromHex.units.length === 0) {
+  if (fromHex.units.length < 2) {
     player.occupiedHexes.delete(fromHex);
   }
   player.occupiedHexes.add(toHex);
@@ -238,4 +257,18 @@ function createUnit(player, unitType) {
     default:
       return new Unit(player.id, 'farmer', 30, 5, 2, player.colour, 1, Farm); // Default to farmer with build capability
   }
+}
+
+function moveRandomUnit(player, fromHex, toHex, options = {}) {
+  if (!canMoveUnit(fromHex, toHex)) {
+    return false;
+  }
+
+  let unitToMove = random(fromHex.units);
+
+  if (unitToMove.movement === 0) {
+    return false;
+  }
+
+  return player.moveUnit(unitToMove, fromHex, toHex);
 }

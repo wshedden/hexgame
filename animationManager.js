@@ -102,8 +102,7 @@ class Animation {
   initialise() {
     this.startTime = millis();
     if (this.type === "unitMovement") {
-      // console.log(`Starting movement animation for unit ${this.unit.playerID} from (${this.unit.q}, ${this.unit.r}) to (${this.hex.q}, ${this.hex.r})`);
-      // this.unit.hex.removeUnit(this.unit);    
+      // TODO: should we remove the unit here?
     } else if (this.type === "unitPlacement") {
       this.unit.hex = this.hex;
     }

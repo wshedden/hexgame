@@ -147,7 +147,7 @@ function mousePressed() {
         let unitType = selectedUnitType;
         let newUnit = new Unit(player.id, unitType, unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, player.color);
 
-        if (placeUnit(clickedHex.q, clickedHex.r, newUnit)) {
+        if (placeNewUnit(clickedHex.q, clickedHex.r, newUnit)) {
           switchPlayer();
           turnStartTime = millis();
           turnNumber++;
