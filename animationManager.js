@@ -66,7 +66,6 @@ class Animation {
       let { x: x1, y: y1 } = hexToPixel(secondLastHex);
       let { x: x2, y: y2 } = hexToPixel(lastHex);
       drawArrowhead(x1, y1, x2, y2, this.unit.colour);
-
       pop();
     }
 

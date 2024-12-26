@@ -14,14 +14,7 @@ class Unit {
     this.animationsLeft = 0; // New attribute
     this.allAnimationComplete = true;
     this.hex = null;
-
-    if (type === 'settler') {
-      this.colour = lerpColor(color(0, 255, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Interpolated colour for settlers
-    } else if (type === 'farmer') {
-      this.colour = lerpColor(color(255, 215, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Blended colour for farmers
-    } else {
-      this.colour = color(playerColour[0], playerColour[1], playerColour[2]);
-    }
+    this.colour = color(playerColour[0], playerColour[1], playerColour[2]); // Set unit.colour to player.colour
     this.size = 20; // Default size
   }
 
