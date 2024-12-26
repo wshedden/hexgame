@@ -103,9 +103,7 @@ class PanelManager {
             `State: ${currentState}`,
             `Player: ${players[currentPlayerIndex].id}`,
             `Turn: ${turnNumber}`,
-            // `Time Left: ${(Math.max(0, turnDuration * (1 / speedMultiplier) - (millis() - turnStartTime)) / 1000).toFixed(1)}s`,
-            // `Speed: ${speedMultiplier.toFixed(3)}x`,
-            `Pathfinding: ${pathfindingMode ? '✅' : '❌'}` // Add pathfinding status here
+            `Pathfinding: ${pathfindingMode ? '✅' : '❌'}`
         ]);
 
         this.createPanel('Hex Info', () => {
@@ -143,7 +141,10 @@ class PanelManager {
 
         this.createPanel('Player 1 Hexes', () => generatePlayerPanelContent(players[0]));
         this.createPanel('Player 2 Hexes', () => generatePlayerPanelContent(players[1]));
-        this.createPanel('AI Decision Reasoning', () => players[currentPlayerIndex].decisionReasoning.split('\n'));
+        this.createPanel('AI Decision Reasoning', () => {
+            const lines = players[currentPlayerIndex].decisionReasoning.split('\n');
+            return lines;
+        });
         this.createPanel('Animation Queue', () => this.generateAnimationQueueContent());
 
         this.organisePanels(); // Organise panels after registering them
@@ -152,22 +153,23 @@ class PanelManager {
     generateAnimationQueueContent() {
         const content = [];
         if (animationManager.animations.length === 0) {
-          content.push("No animations in queue");
+            content.push("No animations in queue");
         } else {
-          animationManager.animations.forEach((animation, index) => {
-            content.push(`  Animation ${index + 1}:`);
-            content.push(`    Type: ${animation.type}`);
-            content.push(`    Path: (${animation.start.q}, ${animation.start.r}) ➡️ (${animation.end.q}, ${animation.end.r})`);
-            content.push(`    Duration: ${animation.duration}ms`);
-            if (animation.isAnimating) {
-              content.push(`    Progress: ${(animation.progress * 100).toFixed(2)}%`);
-            } else {
-              content.push(`    🚫 Not started`);
-            }
-          });
+            animationManager.animations.forEach((animation, index) => {
+                content.push(`  Animation ${index + 1}:`);
+                content.push(`    Type: ${animation.type}`);
+                content.push(`    Path: (${animation.start.q}, ${animation.start.r}) ➡️ (${animation.end.q}, ${animation.end.r})`);
+                content.push(`    Duration: ${animation.duration}ms`);
+                if (animation.isAnimating) {
+                    content.push(`    Progress: ${(animation.progress * 100).toFixed(2)}%`);
+                } else {
+                    content.push(`    🚫 Not started`);
+                }
+                content.push(""); // Add a newline after each animation
+            });
         }
         return content;
-      }
+    }
 
     savePanelPositions() {
         const positions = this.panels.map(panel => ({ header: panel.header, x: panel.x, y: panel.y }));
