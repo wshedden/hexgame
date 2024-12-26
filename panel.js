@@ -135,7 +135,8 @@ function generatePlayerPanelContent(player) {
         `🔢 Unit Limit: ${player.unitLimit}`, // Display unit limit
         `🛤️ Paths: ${player.paths.size}`, // Display the number of paths
         `⚔️ Battles: ${player.battleHexes.size}`, // Display the number of battles
-        `👥 Units: ${player.numOfUnits}` // Display the number of units
+        `👥 Units: ${player.numOfUnits}`, // Display the number of units
+        `🏠 Occupied Hexes: ${player.occupiedHexes.size}` // Display the number of occupied hexes
     ];
 
     for (let i = 0; i < claimedHexesArray.length; i++) {

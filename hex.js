@@ -27,6 +27,14 @@ class Hex {
     }
   }
 
+  getBuilding() {
+    return this.building;
+  }
+
+  setBuilding(building) {
+    this.building = building;
+  }
+
   getKey() {
     return `${this.q},${this.r}`;
   }

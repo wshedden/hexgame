@@ -102,7 +102,8 @@ class Player {
   moveUnitAlongPath(unit, hex, path) {
     // TODO: should return false if the path is less than the minimum length
     let nextHex = path[1];
-    if (this.moveUnit(hex, nextHex)) {
+    print(`Moving unit ${unit.id} from (${hex.q}, ${hex.r}) to (${nextHex.q}, ${nextHex.r})`);
+    if (this.moveUnit(unit, hex, nextHex)) {
       this.decisionReasoning += `(${hex.q}, ${hex.r}) ➡️ (${nextHex.q}, ${nextHex.r}) 🚶 ${this.actionPoints - 1}\n`;
   
       if (nextHex.hasEnemyUnits(this.id)) {

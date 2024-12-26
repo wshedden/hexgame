@@ -22,7 +22,7 @@ class Unit {
   build(hex) {
     if (this.canBuild && hex.building === null) {
       let building = new this.canBuild(this.playerID, hex.q, hex.r);
-      hex.building = building;
+      hex.setBuilding(building);
       if (this.type === 'farmer') {
         this.movement = 0; // Set movement to 0 after building a farm
       }

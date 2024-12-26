@@ -65,6 +65,7 @@ class AIPlayer {
         let path = this.player.paths.get(unitToMove);
 
         if (path && path.length > 1) {
+          print(path);
           moved = this.player.moveUnitAlongPath(unitToMove, hex, path);
         } else {
           moved = this.player.findNewPathForUnit(unitToMove, hex);
