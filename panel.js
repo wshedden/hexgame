@@ -144,7 +144,7 @@ function generatePlayerPanelContent(player) {
         hex.units.forEach((unit, i) => {
             let unitEmoji = getUnitEmoji(unit.type);
             let unitTypeCapitalized = unit.type.charAt(0).toUpperCase() + unit.type.slice(1);
-            let playerSymbol = unit.id === 1 ? '🔴' : '🔵'; // Red circle for Player 1, Blue circle for Player 2
+            let playerSymbol = unit.playerId === 1 ? '🔴' : '🔵'; // Red circle for Player 1, Blue circle for Player 2
             lines.push(
                 `${playerSymbol} ${unitEmoji} ${unitTypeCapitalized} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement} 🎞️${unit.animationsLeft}`
             );

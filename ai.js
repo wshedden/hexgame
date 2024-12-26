@@ -70,7 +70,7 @@ class AIPlayer {
         }
 
         if (moved) {
-          this.attemptedActions.add(`move:${unitToMove.id}:${hex.q},${hex.r}`);
+          this.attemptedActions.add(`move:${unitToMove.playerId}:${hex.q},${hex.r}`);
           break;
         }
       }

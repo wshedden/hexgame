@@ -38,7 +38,7 @@ class Hex {
     }
     this.units.push(unit);
     if (unit.type == "settler") {
-      this.claimedBy = unit.id;
+      this.claimedBy = unit.playerId;
       this.claimedColour = color(255);
     }
     return true;
@@ -52,7 +52,7 @@ class Hex {
   }
 
   claim(player) {
-    this.claimedBy = player.id;
+    this.claimedBy = player.playerId;
     this.claimedColour = color(player.colour[0], player.colour[1], player.colour[2]); // Set the claimedColour
   }
 
@@ -69,7 +69,7 @@ class Hex {
   }
     
   hasEnemyUnits(playerId) {
-    return this.units.some(unit => unit.id !== playerId);
+    return this.units.some(unit => unit.playerId !== playerId);
   }
 
   startBattle() {

@@ -13,7 +13,6 @@ class Battle {
     });
   }
 
-
   start() {
     if (this.enablePrinting) {
       print(`Battle started at hex (${this.battleHex.q}, ${this.battleHex.r})`);

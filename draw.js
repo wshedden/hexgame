@@ -103,7 +103,7 @@ function drawHexHighlight(x, y) {
 function getAttackableTiles(hex) {
   if (!hex.unit) return [];
   let neighbours = getHexNeighbours(hex);
-  return neighbours.filter(neighbour => neighbour.unit && neighbour.unit.id !== hex.unit.id);
+  return neighbours.filter(neighbour => neighbour.unit && neighbour.unit.playerID !== hex.unit.playerID);
 }
 
 // Add the drawing functions from unit.js
@@ -140,7 +140,7 @@ function drawUnit(x, y, unit, size) {
   translate(x, y);
 
   // Lerp the unit colour with the player colour
-  let playerColour = color(players[unit.id - 1].colour[0], players[unit.id - 1].colour[1], players[unit.id - 1].colour[2]);
+  let playerColour = color(players[unit.playerID - 1].colour[0], players[unit.playerID - 1].colour[1], players[unit.playerID - 1].colour[2]);
   let unitColour = lerpColor(unit.colour, playerColour, 0.8);
 
   // Set the fill and stroke
@@ -284,4 +284,3 @@ function draw() {
   delayMultiplier = delaySlider.value;
 
 }
-

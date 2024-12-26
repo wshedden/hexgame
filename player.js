@@ -52,18 +52,18 @@ class Player {
   }
 
   placeUnit(hex, unitType) {
-  let newUnit = createUnit(this, unitType);
-  if (purchaseUnit(hex.q, hex.r, newUnit)) {
-    this.money -= UNIT_COSTS[unitType];
-    this.decisionReasoning += `✅ ${getUnitEmoji(unitType)} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;
-    if (unitType === 'farmer') {
-      this.farmers.add(newUnit); // Add farmer to the set
-      // print(`Farmer added at (${hex.q}, ${hex.r}). Total farmers: ${this.farmers.size}`);
+    let newUnit = createUnit(this, unitType);
+    if (purchaseUnit(hex.q, hex.r, newUnit)) {
+      this.money -= UNIT_COSTS[unitType];
+      this.decisionReasoning += `✅ ${getUnitEmoji(unitType)} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;
+      if (unitType === 'farmer') {
+        this.farmers.add(newUnit); // Add farmer to the set
+        // print(`Farmer added at (${hex.q}, ${hex.r}). Total farmers: ${this.farmers.size}`);
+      }
+      return true;
     }
-    return true;
+    return false;
   }
-  return false;
-}
 
   findNewPathForUnit(unit, hex) {
     if (this.paths.size < 3) {
@@ -78,32 +78,32 @@ class Player {
     return false;
   }
 
-    moveUnitAlongPath(unit, hex, path) {
-      let nextHex = path[1];
-      if (this.moveUnit(hex, nextHex)) {
-        this.decisionReasoning += `(${hex.q}, ${hex.r}) ➡️ (${nextHex.q}, ${nextHex.r}) 🚶 ${this.actionPoints - 1}\n`;
-    
-        if (nextHex.hasEnemyUnits(this.id)) {
-          this.startBattle(nextHex);
-          this.paths.delete(unit);
-          return true;
-        }
-    
-        path = path.slice(1);
-        if (path.length === 1) {
-          this.paths.delete(unit);
-        } else {
-          this.paths.set(unit, path);
-        }
-        this.actionPoints--;
+  moveUnitAlongPath(unit, hex, path) {
+    let nextHex = path[1];
+    if (this.moveUnit(hex, nextHex)) {
+      this.decisionReasoning += `(${hex.q}, ${hex.r}) ➡️ (${nextHex.q}, ${nextHex.r}) 🚶 ${this.actionPoints - 1}\n`;
+  
+      if (nextHex.hasEnemyUnits(this.id)) {
+        this.startBattle(nextHex);
+        this.paths.delete(unit);
         return true;
       }
-      return false;
+  
+      path = path.slice(1);
+      if (path.length === 1) {
+        this.paths.delete(unit);
+      } else {
+        this.paths.set(unit, path);
+      }
+      this.actionPoints--;
+      return true;
     }
+    return false;
+  }
 
   startBattle(hex) {
-    const playerUnits = new Set(hex.units.filter(unit => unit.id === this.id));
-    const enemyUnits = new Set(hex.units.filter(unit => unit.id !== this.id));
+    const playerUnits = new Set(hex.units.filter(unit => unit.playerID === this.id));
+    const enemyUnits = new Set(hex.units.filter(unit => unit.playerID !== this.id));
 
     const units = [playerUnits, enemyUnits];
     const battle = new Battle(hex, units, { enablePrinting: true });
@@ -138,7 +138,7 @@ function purchaseUnit(q, r, unit) {
     return false;
   }
 
-  let player = players.find(p => p.id === unit.id);
+  let player = players.find(p => p.id === unit.playerID);
   if (player.money < UNIT_COSTS[unit.type]) {
     player.decisionReasoning += `❌💰 ${getUnitEmoji(unit.type)} (${UNIT_COSTS[unit.type]} needed)\n`; // Failure emoji
     return false;
@@ -152,9 +152,9 @@ function purchaseUnit(q, r, unit) {
   }
 
   let neighbours = getHexNeighbours(hex);
-  let isAdjacentToOccupiedHex = neighbours.some(neighbour => neighbour.occupiedBy === unit.id);
+  let isAdjacentToOccupiedHex = neighbours.some(neighbour => neighbour.occupiedBy === unit.playerID);
 
-  if (isAdjacentToOccupiedHex && (!hex.occupiedBy || hex.occupiedBy === unit.id)) {
+  if (isAdjacentToOccupiedHex && (!hex.occupiedBy || hex.occupiedBy === unit.playerID)) {
     if (placeUnitOnHex(hex, unit)) {
       player.money -= UNIT_COSTS[unit.type]; // Deduct the cost from the player's money
       return true;
@@ -168,14 +168,14 @@ function placeUnitOnHex(hex, unit) {
   if (!hex.addUnit(unit)) {
     return false;
   }
-  hex.occupiedBy = unit.id;
+  hex.occupiedBy = unit.playerID;
   unit.q = hex.q; // Set unit's q coordinate
   unit.r = hex.r; // Set unit's r coordinate
-  let player = players.find(p => p.id === unit.id);
+  let player = players.find(p => p.id === unit.playerID);
   if (player) {
     player.occupiedHexes.add(hex);
     if (unit.type === 'settler') {
-      hex.claimedBy = unit.id; // Only claim hex if the unit is a settler
+      hex.claimedBy = unit.playerID; // Only claim hex if the unit is a settler
       hex.claimedColour = color(player.colour[0], player.colour[1], player.colour[2]); // Set the claimedColour
       player.claimedHexes.add(hex);
       let neighbours = getHexNeighbours(hex);
@@ -215,7 +215,6 @@ function moveUnitToHex(unit, fromHex, toHex) {
 
   // toHex.units.push(unit);
   // fromHex.units.splice(fromHex.units.indexOf(unit), 1);
-
 
   return true;
 }

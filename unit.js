@@ -1,6 +1,6 @@
 class Unit {
-  constructor(id, type, health, attack, defence, playerColour, movement, canBuild = null) {
-    this.id = id;
+  constructor(playerID, type, health, attack, defence, playerColour, movement, canBuild = null) {
+    this.playerID = playerID;
     this.type = type;
     this.health = health;
     this.attack = attack;
@@ -20,7 +20,7 @@ class Unit {
 
   build(hex) {
     if (this.canBuild && hex.building === null) {
-      let building = new this.canBuild(this.id, hex.q, hex.r);
+      let building = new this.canBuild(this.playerID, hex.q, hex.r);
       hex.building = building;
       if (this.type === 'farmer') {
         this.movement = 0; // Set movement to 0 after building a farm
@@ -51,7 +51,7 @@ function moveUnitToHex(unit, fromHex, toHex) {
     return false;
   }
 
-  console.log(`Moving unit ${unit.id} from (${fromHex.q}, ${fromHex.r}) to (${toHex.q}, ${toHex.r})`);
+  console.log(`Moving unit ${unit.playerID} from (${fromHex.q}, ${fromHex.r}) to (${toHex.q}, ${toHex.r})`);
 
   // toHex.units.push(unit);
   // fromHex.units.splice(fromHex.units.indexOf(unit), 1);
