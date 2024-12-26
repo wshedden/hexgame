@@ -6,6 +6,7 @@ let claimableTiles = new Set();
 let offsetX = 0;
 let offsetY = 0;
 let scaleFactor = 0.5;
+let delayMultiplier = 0.05;
 
 function initialiseGrid(radius) {
   for (let q = -radius; q <= radius; q++) {

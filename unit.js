@@ -62,7 +62,7 @@ function moveUnit(player, fromHex, toHex, options = {}) {
     return false;
   }
 
-  let duration = 1000; // Per unit of movement
+  let duration = 1000 * delayMultiplier; // Per unit of movement
   // Create the animation
   let animation = new Animation('unitMovement', unitToMove, fromHex, toHex, duration, () => {
     // Callback to trigger the next animation in the queue

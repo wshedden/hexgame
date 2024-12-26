@@ -19,7 +19,7 @@ let decisionsMadeTime; // Time when decisions were made
 let animationStartTime; // Time when animation started
 
 // New variables for adjustable delays
-let decisionDelay = 1000; // 1 second delay for decisions made
+let decisionDelay = 1000 * delayMultiplier; // 1 second delay for decisions made
 
 const players = [
   new Player(1, [139, 0, 0]), // Dark red for player 1
