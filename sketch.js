@@ -56,37 +56,6 @@ function setup() {
   progressBar = new ProgressBarAnimation(0, 200, 10000); // 200 pixels width, 10 seconds duration
 }
 
-function draw() {
-  background(20); // Set the background to a dark color
-  
-  drawGameState();
-  // Draw panels
-  panelManager.updatePanels();
-  toggleFailedOutputButton.style('background-color', showFailedOutput ? buttonColor1 : buttonColor2);
-
-  if (currentState === GameState.PAUSED) {
-    drawPausedState();
-  }
-
-  drawPath(); // Draw the path if in pathfinding mode
-  // Draw AI paths
-  drawAIPaths();
-
-  // Update progress bar based on the current state duration
-  if (currentState === GameState.DECISIONS_MADE) {
-    let progress = (millis() - decisionsMadeTime) / decisionDelay;
-    progressBar.setProgress(progress);
-  } else if (currentState === GameState.ANIMATING) {
-    let progress = (millis() - animationStartTime) / totalAnimationDuration;
-    progressBar.setProgress(progress);
-  }
-
-  // Draw the progress bar
-  progressBar.draw(progressBar.progress);
-
-  // Draw units on top of everything else
-  drawUnits();
-}
 
 function initialiseTerrainColours() {
   registerTerrainType('grass', color(100, 200, 100));

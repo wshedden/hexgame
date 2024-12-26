@@ -37,10 +37,6 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour, battle, buildin
   pop();
 }
 
-function getOutlineColour() {
-  return color(128, 0, 128); // Nice purple colour
-}
-
 function getTerrainColour(type) {
   switch (type) {
     case 'grass': return color(100, 200, 100);
