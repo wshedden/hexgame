@@ -89,7 +89,6 @@ class AnimationManager {
 
   addAnimation(unit, animation) {
     unit.animationsLeft += 1; // Increment animationsLeft
-    animation.isAnimating = true;
     this.animations.push(animation);
     this.totalAnimationDuration += animation.duration;
   }
@@ -97,6 +96,9 @@ class AnimationManager {
   handleAnimations() {
     if (this.animations.length > 0) {
       let animation = this.animations[0];
+      if(!animation.startTime) {
+        animation.startTime = millis();
+      }
       animation.update();
       if (animation.isComplete()) {
         animation.unit.animationsLeft -= 1; // Decrement animationsLeft
@@ -110,6 +112,7 @@ class AnimationManager {
     if (this.animations.length > 0) {
       let nextAnimation = this.animations[0];
       nextAnimation.startTime = millis();
+      nextAnimation.unit.isAnimating = true;
       nextAnimation.isAnimating = true;
     }
   }
