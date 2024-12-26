@@ -281,6 +281,9 @@ function draw() {
   progressBar.draw(progressBar.progress);
 
   panelManager.updatePanels();
+  delaySlider.update();
+  delaySlider.display();
+  delayMultiplier = delaySlider.value;
 
 }
 

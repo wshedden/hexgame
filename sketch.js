@@ -14,6 +14,7 @@ let progressBar; // Progress bar for animations
 let previousState = null;// Track the previous game state
 let decisionsMadeElapsedTime = 0;
 let animationElapsedTime = 0;
+let delaySlider;
 
 function setup() {
   offsetX = 900;
@@ -24,6 +25,8 @@ function setup() {
   initialiseTerrainColours();
   generateTerrain();
   setState(GameState.INIT);
+
+  delaySlider = new Slider(50, height - 50, 300, 0.01, 5, delayMultiplier);
 
   panelManager = new PanelManager();
   panelManager.registerPanels();
@@ -113,6 +116,7 @@ function keyPressed() {
       path = []; // Clear the path when exiting pathfinding mode
     }
   }
+  delaySlider.keyPressed();
 }
 
 function mousePressed() {
@@ -153,6 +157,7 @@ function mousePressed() {
       }
     }
   }
+  delaySlider.mousePressed();
 }
 
 function mouseDragged() {
@@ -161,6 +166,7 @@ function mouseDragged() {
 
 function mouseReleased() {
   panelManager.panels.forEach(panel => panel.mouseReleased());
+  delaySlider.mouseReleased();
 }
 
 function drawSelectedUnitTypePanel() {

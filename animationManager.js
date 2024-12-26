@@ -14,8 +14,8 @@ class Animation {
   }
 
   update() {
-    if(this.type === 'unitMovement') 
-      print(this.unit.posBeforeAnimations);
+    // if(this.type === 'unitMovement') 
+    //   print(this.unit.posBeforeAnimations);
     let elapsedTime = millis() - this.startTime;
     this.progress = min(elapsedTime / this.duration, 1);
     this.draw(this.progress);
