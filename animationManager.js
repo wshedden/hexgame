@@ -53,7 +53,7 @@ class Animation {
     strokeWeight(4);
     fill(255, 223, 0, 100); // Semi-transparent gold fill
     ellipse(pos.x, pos.y, size + 10, size + 10); // Golden outline
-    drawUnit(pos.x, pos.y, this.unit, size);
+    drawUnit(pos.x, pos.y, this.unit, this.unit.size);
   }
 
   drawProgressBar(progress) {
