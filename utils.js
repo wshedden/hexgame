@@ -103,3 +103,7 @@ function getTerrainColor(type, fertility, noiseValue) {
       return color(200); // Default color
   }
 }
+
+function generateUniqueID() {
+    return Math.random().toString(16).substr(2, 8);
+}

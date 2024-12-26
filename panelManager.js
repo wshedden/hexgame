@@ -125,8 +125,9 @@ class PanelManager {
                     let unitEmoji = getUnitEmoji(unit.type);
                     let unitTypeCapitalized = unit.type.charAt(0).toUpperCase() + unit.type.slice(1);
                     let playerSymbol = unit.playerID === 1 ? '🔴' : '🔵'; // Red circle for Player 1, Blue circle for Player 2
+                    let idEmoji = '🆔'; // ID emoji
                     content.push(
-                        `${playerSymbol} ${unitEmoji} ${unitTypeCapitalized} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement}`
+                        `${playerSymbol} ${unitEmoji} ${unitTypeCapitalized} ${idEmoji} ${unit.id} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement}`
                     );
                 });
             }

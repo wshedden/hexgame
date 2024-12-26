@@ -27,7 +27,7 @@ class Animation {
         this.onComplete();
       }
       if (this.type === 'unitMovement' || this.type === 'unitPlacement') {
-        console.log(`Completed animation for unit ${this.unit.playerID} at (${this.hex.q}, ${this.hex.r})`);
+        // console.log(`Completed animation for unit ${this.unit.playerID} at (${this.hex.q}, ${this.hex.r})`);
         this.unit.isAnimating = false;
       }
     }
@@ -103,7 +103,7 @@ class Animation {
   initialise() {
     this.startTime = millis();
     if (this.type === "unitMovement") {
-      console.log(`Starting movement animation for unit ${this.unit.playerID} from (${this.unit.q}, ${this.unit.r}) to (${this.hex.q}, ${this.hex.r})`);
+      // console.log(`Starting movement animation for unit ${this.unit.playerID} from (${this.unit.q}, ${this.unit.r}) to (${this.hex.q}, ${this.hex.r})`);
       // this.unit.hex.removeUnit(this.unit);    
     } else if (this.type === "unitPlacement") {
       this.unit.hex = this.hex;

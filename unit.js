@@ -1,5 +1,6 @@
 class Unit {
   constructor(playerID, type, health, attack, defence, playerColour, movement, canBuild = null) {
+    this.id = generateUniqueID(); // Generate a unique ID for the unit
     this.playerID = playerID;
     this.type = type;
     this.health = health;
@@ -46,18 +47,6 @@ function getUnitEmoji(unitType) {
   }
 }
 
-function moveUnitToHex(unit, fromHex, toHex) {
-  if (unit.movement <= 0) {
-    return false;
-  }
-
-  console.log(`Moving unit ${unit.playerID} from (${fromHex.q}, ${fromHex.r}) to (${toHex.q}, ${toHex.r})`);
-
-  // toHex.units.push(unit);
-  // fromHex.units.splice(fromHex.units.indexOf(unit), 1);
-
-  return true;
-}
 
 function moveRandomUnit(player, fromHex, toHex, options = {}) {
   if (!canMoveUnit(fromHex, toHex)) {
@@ -66,7 +55,7 @@ function moveRandomUnit(player, fromHex, toHex, options = {}) {
 
   let unitToMove = random(fromHex.units);
 
-  if (!moveUnitToHex(unitToMove, fromHex, toHex)) {
+  if (unitToMove.movement === 0) {
     return false;
   }
 

@@ -218,7 +218,7 @@ function drawAnimatingState() {
   animationManager.handleAnimations();
 
   if (animationManager.animationsComplete() && millis() - animationStartTime > animationManager.totalAnimationDuration) {
-    console.log(`All animations complete for player ${players[currentPlayerIndex].id}`);
+    // console.log(`All animations complete for player ${players[currentPlayerIndex].id}`);
     // Reset animationsLeft for all units
     players.forEach(player => {
       player.occupiedHexes.forEach(hex => {

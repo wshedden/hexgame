@@ -208,16 +208,6 @@ function canMoveUnit(fromHex, toHex) {
   return true;
 }
 
-function moveUnitToHex(unit, fromHex, toHex) {
-  if (unit.movement <= 0) {
-    return false;
-  }
-
-  // toHex.units.push(unit);
-  // fromHex.units.splice(fromHex.units.indexOf(unit), 1);
-
-  return true;
-}
 
 function updatePlayerOccupiedHexes(player, fromHex, toHex) {
   if (fromHex.units.length === 0) {
