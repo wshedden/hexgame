@@ -149,7 +149,7 @@ function drawUnit(x, y, unit, size) {
   strokeWeight(2);
 
   // Draw the correct shape for the unit type
-  drawUnitShape(unit.type, unit.isAnimating ? 18 : size); // Set size to 18 if the unit is animating
+  drawUnitShape(unit.type, size); // Set size to 18 if the unit is animating
 
   pop();
 }
