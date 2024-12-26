@@ -88,7 +88,6 @@ class AnimationManager {
   }
 
   addAnimation(unit, animation) {
-    unit.isAnimating = true;
     unit.animationsLeft += 1; // Increment animationsLeft
     animation.isAnimating = true;
     this.animations.push(animation);
