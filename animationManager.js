@@ -82,6 +82,13 @@ class Animation {
   isComplete() {
     return this.complete;
   }
+
+  initialise() {
+    this.startTime = millis();
+    if (this.type === "unitMovement") {
+      this.start.removeUnit(this.unit);
+    }
+  }
 }
 
 class AnimationManager {
@@ -92,33 +99,30 @@ class AnimationManager {
     
   addAnimation(unit, animation) {
     unit.animationsLeft += 1; // Increment animationsLeft
-    if(animation.type === 'unitMovement') {      
-    }
     this.animations.push(animation);
     this.totalAnimationDuration += animation.duration;
+    if (this.animations.length === 1) {
+      this.startAnimation(animation);
+    }
+  }
+
+  startAnimation(animation) {
+    animation.unit.isAnimating = true;
+    animation.isAnimating = true;
+    animation.initialise();
   }
 
   handleAnimations() {
     if (this.animations.length > 0) {
       let animation = this.animations[0];
-      if(!animation.startTime) {
-        animation.startTime = millis();
-      }
       animation.update();
       if (animation.isComplete()) {
         animation.unit.animationsLeft -= 1; // Decrement animationsLeft
         this.animations.shift();
-        this.handleNextAnimation();
+        if (this.animations.length > 0) {
+          this.startAnimation(this.animations[0]);
+        }
       }
-    }
-  }
-
-  handleNextAnimation() {
-    if (this.animations.length > 0) {
-      let nextAnimation = this.animations[0];
-      nextAnimation.startTime = millis();
-      nextAnimation.unit.isAnimating = true;
-      nextAnimation.isAnimating = true;
     }
   }
 
