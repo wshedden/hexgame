@@ -110,10 +110,10 @@ function getAttackableTiles(hex) {
 function drawUnits() {
   push();
   hexGrid.forEach((hex) => {
-    if (hex.units.length > 0) {
-      let { x, y } = hexToPixel(hex);
-      drawHexUnits(x, y, hex.units.filter(unit => unit.animationsLeft === 0)); // Only draw units that are not animating and have no animations left
-    }
+    hex.units.forEach(unit => {
+      let { x, y } = unit.animationsLeft > 0 ? hexToPixel(unit.posBeforeAnimations) : hexToPixel(hex);
+      drawUnit(x, y, unit, unit.size);
+    });
   });
   pop();
 }

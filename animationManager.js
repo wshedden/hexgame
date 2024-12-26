@@ -14,6 +14,8 @@ class Animation {
   }
 
   update() {
+    if(this.type === 'unitMovement') 
+      print(this.unit.posBeforeAnimations);
     let elapsedTime = millis() - this.startTime;
     this.progress = min(elapsedTime / this.duration, 1);
     this.draw(this.progress);
@@ -86,9 +88,12 @@ class AnimationManager {
     this.animations = [];
     this.totalAnimationDuration = 0;
   }
-
+    
   addAnimation(unit, animation) {
     unit.animationsLeft += 1; // Increment animationsLeft
+    if(animation.type === 'unitMovement') {
+      unit.posBeforeAnimations = { q: unit.q, r: unit.r }; // Set posBeforeAnimations
+    }
     this.animations.push(animation);
     this.totalAnimationDuration += animation.duration;
   }

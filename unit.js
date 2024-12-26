@@ -13,6 +13,8 @@ class Unit {
     this.isAnimating = false; // Add isAnimating attribute
     this.animationsLeft = 0; // New attribute
     this.allAnimationComplete = true;
+    this.posBeforeAnimations = {q: -1, r: -1}; // New attribute
+
     if (type === 'settler') {
       this.colour = lerpColor(color(0, 255, 0), color(playerColour[0], playerColour[1], playerColour[2]), 0.5); // Interpolated colour for settlers
     } else if (type === 'farmer') {
