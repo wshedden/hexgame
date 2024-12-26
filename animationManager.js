@@ -12,7 +12,7 @@ class Animation {
       this.unit.hex = this.hex;
       this.hex.addUnit(this.unit);
     } : null;
-
+    this.started = false;
     this.complete = false;
     this.isAnimating = false;
   }
@@ -30,6 +30,10 @@ class Animation {
         console.log(`Completed animation for unit ${this.unit.id} at (${this.hex.q}, ${this.hex.r})`);
         this.unit.isAnimating = false;
       }
+    }
+    if (!this.started && this.type === 'unitMovement') {
+      this.unit.hex.removeUnit(this.unit);
+      this.started = true;
     }
   }
 
@@ -91,7 +95,7 @@ class Animation {
     this.startTime = millis();
     if (this.type === "unitMovement") {
       console.log(`Starting movement animation for unit ${this.unit.id} from (${this.unit.q}, ${this.unit.r}) to (${this.hex.q}, ${this.hex.r})`);
-      this.unit.hex.removeUnit(this.unit);    
+      // this.unit.hex.removeUnit(this.unit);    
     } else if (this.type === "unitPlacement") {
       this.unit.hex = this.hex;
     }
