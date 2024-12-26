@@ -27,6 +27,7 @@ const players = [
 ];
 
 function setState(newState) {
+  console.log(`Transitioning from ${currentState} to ${newState}`);
   currentState = newState;
   if (newState === GameState.PLAYING) {
     setState(GameState.THINKING);
@@ -35,11 +36,21 @@ function setState(newState) {
     handleAIDecision(currentPlayerIndex);
     setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
   } else if (newState === GameState.DECISIONS_MADE) {
-    decisionsMadeTime = millis();
+    if (previousState === GameState.PAUSED) {
+      decisionsMadeTime = millis() - decisionsMadeElapsedTime;
+      console.log(`Resuming DECISIONS_MADE. Adjusted decisionsMadeTime: ${decisionsMadeTime}`);
+    } else {
+      decisionsMadeTime = millis();
+    }
     progressBar.setDuration(1000); // Set progress bar duration for decisions made
     progressBar.setText(`Player ${players[currentPlayerIndex].id} done thinking`);
   } else if (newState === GameState.ANIMATING) {
-    animationStartTime = millis(); // Set the start time for the ANIMATING state
+    if (previousState === GameState.PAUSED) {
+      animationStartTime = millis() - animationElapsedTime;
+      console.log(`Resuming ANIMATING. Adjusted animationStartTime: ${animationStartTime}`);
+    } else {
+      animationStartTime = millis();
+    }
     progressBar.setDuration(animationManager.totalAnimationDuration); // Set progress bar duration for animation
     progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
   }

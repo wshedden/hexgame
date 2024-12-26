@@ -1,3 +1,4 @@
+const animationManager = new AnimationManager();
 let selectedHex = null;
 let selectedUnitType = 'settler'; // Default to 'settler'
 let panelManager;
@@ -10,11 +11,14 @@ let buttonColor2 = '#dc3545'; // Red color
 let pathfindingMode = true;
 let path = []; // Store the path found by A* algorithm
 let progressBar; // Progress bar for animations
-const animationManager = new AnimationManager();
-e1
+let previousState = null;// Track the previous game state
+let decisionsMadeElapsedTime = 0;
+let animationElapsedTime = 0;
+
 function setup() {
   offsetX = 900;
   offsetY = 450;
+  previousState = GameState.INIT;
   createCanvas(1800, 900);
   initialiseGrid(10);
   initialiseTerrainColours();
@@ -77,11 +81,19 @@ function keyPressed() {
       setState(GameState.PLAYING);
     }
   } else if (key === 'p' || key === 'P') { // Pause the game with 'p'
-    if (currentState != GameState.PAUSED) {
+    if (currentState !== GameState.PAUSED) {
+      previousState = currentState;
+      if (currentState === GameState.DECISIONS_MADE) {
+        decisionsMadeElapsedTime = millis() - decisionsMadeTime;
+      } else if (currentState === GameState.ANIMATING) {
+        animationElapsedTime = millis() - animationStartTime;
+      }
       setState(GameState.PAUSED);
     } else if (currentState === GameState.PAUSED) {
-      setState(GameState.PLAYING);
+      setState(previousState);
+      previousState = null;
     }
+    
   } else if (key === "'") { // Switch player with '
     switchPlayer();
   } else if (keyCode === LEFT_ARROW) {
@@ -102,6 +114,7 @@ function keyPressed() {
     }
   }
 }
+
 function mousePressed() {
   let wasPanelClicked = false;
   panelManager.panels.forEach(panel => {
