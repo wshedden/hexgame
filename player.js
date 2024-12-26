@@ -31,7 +31,7 @@ class Player {
   }
 
   makeDecision() {
-    makeDecision(this);
+    makeDecision(this, turnNumber);
   }
 
   initiateBattle() {

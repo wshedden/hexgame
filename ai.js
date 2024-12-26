@@ -1,7 +1,17 @@
 class AIPlayer {
-  constructor(player) {
+  constructor(player, turnNumber) {
     this.player = player;
+    this.turnNumber = turnNumber;
     this.attemptedActions = new Set(); // Track attempted actions
+    this.calculateMovementLikelihood(); // Set the initial movement likelihood
+  }
+
+  calculateMovementLikelihood() {
+    if (this.turnNumber <= 3) {
+      this.movementLikelihood = 0.6;
+    } else {
+      this.movementLikelihood = min(0.95, 0.6 + (this.turnNumber - 3) * (0.95 - 0.6) / (30 - 3));
+    }
   }
 
   makeDecision() {
@@ -18,10 +28,10 @@ class AIPlayer {
       }
     }
 
-    let isFirstTurn = (turnNumber === 1);
+    let isFirstTurn = (this.turnNumber === 1);
     if (isFirstTurn) {
       this.handleFirstTurnUnitPlacement();
-    } else if (this.player.canAffordCheapestUnit() && random(1) < 0.5) {
+    } else if (this.player.canAffordCheapestUnit() && random(1) > this.movementLikelihood) {
       this.handleUnitPlacement();
     } else if (this.player.hasMovableUnits()) {
       this.handleUnitMovement();
@@ -124,7 +134,7 @@ class AIPlayer {
 
   decideUnitType() {
     let unitType = 'farmer';
-    if (turnNumber === 1) {
+    if (this.turnNumber === 1) {
       unitType = 'settler';
     } else {
       let rand = random(1);
@@ -170,6 +180,6 @@ class AIPlayer {
 }
 
 function makeDecision(player) {
-  const aiPlayer = new AIPlayer(player);
+  const aiPlayer = new AIPlayer(player, turnNumber);
   return aiPlayer.makeDecision();
 }
