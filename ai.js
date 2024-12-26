@@ -34,7 +34,7 @@ class AIPlayer {
   }
 
   passTurn() {
-    this.player.decisionReasoning += '🚫 No valid moves or placements available, passing turn\n';
+    this.player.decisionReasoning += '🚫 Passing 🚫';
   }
 
   finaliseDecisionReasoning() {

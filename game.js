@@ -184,7 +184,6 @@ function handleAIDecision(playerIndex) {
 function startNewTurn() {
   this.totalAnimationDuration = BASE_ANIMATION_DURATION; // Reset total animation duration
   players[currentPlayerIndex].resetMoves();
-  players[currentPlayerIndex].resetBattles();
 
   // Increment the turn number if we're on player 1
   if (currentPlayerIndex === 1) {

@@ -15,12 +15,11 @@ class Player {
     this.occupiedHexes = new Set();
     this.claimedHexes = new Set();
     this.claimedAdjacentHexes = new Set();
-    this.battlesLeft = 3; // Example: Allow 3 battles per turn
     this.humanControlled = false;
     this.decisionReasoning = ''; // Store reasoning behind decisions
     this.actionPoints = MAX_ACTIONS_PER_TURN; // New attribute: action points
     this.maxReasoningLength = 1000; // Maximum length for decisionReasoning
-    this.money = 5000; // New attribute: money
+    this.money = 10000; // New attribute: money
     this.unitLimit = 10; // New attribute: unit limit
     this.battleHexes = new Set(); // New attribute: hexes where battles are occurring
     this.paths = new Map(); // New attribute: paths for units
@@ -35,17 +34,8 @@ class Player {
     makeDecision(this);
   }
 
-  resetBattles() {
-    this.battlesLeft = 3; // Reset the battle counter at the start of each turn
-  }
-
-  initiateBattle(attackerHex, defenderHex) {
-    if (this.battlesLeft > 0) {
-      let battle = new Battle(attackerHex, defenderHex);
-      battle.start();
-      this.battlesLeft--;
-      this.battleHexes.add(defenderHex.getKey()); // Add the hex to the battle hexes set
-    }
+  initiateBattle() {
+    
   }
 
   moveUnit(fromHex, toHex) {
