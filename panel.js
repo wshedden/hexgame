@@ -141,14 +141,19 @@ function generatePlayerPanelContent(player) {
 
     for (let i = 0; i < claimedHexesArray.length; i++) {
         let hex = claimedHexesArray[i];
-        lines.push(`📍 ${hex.q}, ${hex.r}`);
         hex.units.forEach((unit, i) => {
             let unitEmoji = getUnitEmoji(unit.type);
-            let unitTypeCapitalized = unit.type.charAt(0).toUpperCase() + unit.type.slice(1);
             let playerSymbol = unit.playerId === 1 ? '🔴' : '🔵'; // Red circle for Player 1, Blue circle for Player 2
-            lines.push(
-                `${playerSymbol} ${unitEmoji} ${unitTypeCapitalized} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement} 🆔 ${unit.id}`
-            );
+            if (unitInfoExpanded) {
+                let unitTypeCapitalized = unit.type.charAt(0).toUpperCase() + unit.type.slice(1);
+                lines.push(
+                    `${playerSymbol} ${unitEmoji} ${unitTypeCapitalized} ❤️${unit.health} ⚔️${unit.attack} 🛡️${unit.defence} 🚶${unit.movement} 🆔 ${unit.id} 📍 ${hex.q},${hex.r}`
+                );
+            } else {
+                lines.push(
+                    `${playerSymbol} ${unitEmoji} 📍 ${hex.q},${hex.r}`
+                );
+            }
         });
     }
 

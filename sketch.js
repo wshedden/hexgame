@@ -15,6 +15,7 @@ let previousState = null;// Track the previous game state
 let decisionsMadeElapsedTime = 0;
 let animationElapsedTime = 0;
 let delaySlider;
+let unitInfoExpanded = false; // Add this line at the top of the file
 
 function setup() {
   offsetX = 900;
@@ -60,6 +61,14 @@ function setup() {
   resetButton.position(width - 150, 130); // Position below the progress button
   resetButton.style('background-color', '#6c757d');
   resetButton.mousePressed(() => panelManager.resetPanelPositions());
+
+  // Add the new button
+  const toggleUnitInfoButton = createButton('Expand unit info');
+  toggleUnitInfoButton.id('toggleUnitInfoButton');
+  toggleUnitInfoButton.class('toggle-button');
+  toggleUnitInfoButton.position(width - 150, 170); // Position below the reset button
+  toggleUnitInfoButton.style('background-color', '#6c757d');
+  toggleUnitInfoButton.mousePressed(toggleUnitInfo);
 
   // Initialise progress bar separately
   progressBar = new ProgressBarAnimation(0, 200, 10000); // 200 pixels width, 10 seconds duration
@@ -217,6 +226,13 @@ function drawAIPaths() {
       drawUnitPath(path, player.colour);
     });
   });
+}
+
+function toggleUnitInfo() {
+  unitInfoExpanded = !unitInfoExpanded;
+  const button = document.getElementById('toggleUnitInfoButton');
+  button.innerText = unitInfoExpanded ? 'Collapse unit info' : 'Expand unit info';
+  panelManager.updatePanels(); // Update the panels to reflect the change
 }
 
 
