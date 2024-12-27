@@ -27,6 +27,10 @@ class Hex {
     }
   }
 
+  doesPlayerHaveUnits(player) {
+    return this.units.some(unit => unit.playerID === player.id);
+  }
+
   getBuilding() {
     return this.building;
   }

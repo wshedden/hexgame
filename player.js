@@ -40,28 +40,7 @@ class Player {
   }
     
   moveUnit(unit, fromHex, toHex) {
-    if (!canMoveUnit(fromHex, toHex)) {
-      return false;
-    }
-  
-    if (unit.movement === 0) {
-      return false;
-    }
-  
-    let duration = 1000 * delayMultiplier; // Per unit of movement
-    // Create the animation
-
-    // let path = this.paths.get(unit); // Get the path for the unit
-    // let animation = new Animation('unitMovement', unit, toHex, duration, path);
-  
-    let animation = new Animation('unitMovement', unit, toHex, duration);
-  
-    // Add the animation to the unit's queue
-    animationManager.addAnimation(unit, animation);
-  
-    updatePlayerOccupiedHexes(this, fromHex, toHex);
-  
-    return true;
+    return moveUnit(this, unit, fromHex, toHex);
   }
 
   canAffordCheapestUnit() {
@@ -208,7 +187,7 @@ function placeUnitOnHex(hex, unit) {
   unit.r = hex.r; // Set unit's r coordinate
   let player = players.find(p => p.id === unit.playerID);
   if (player) {
-    player.occupiedHexes.add(hex);
+    player.occupiedHexes.add(hex); // TODO: occupiedHexes added to here BROKEN
     if (unit.type === 'settler') {
       hex.claimedBy = unit.playerID; // Only claim hex if the unit is a settler
       hex.claimedColour = color(player.colour[0], player.colour[1], player.colour[2]); // Set the claimedColour
@@ -243,13 +222,53 @@ function canMoveUnit(fromHex, toHex) {
   return true;
 }
 
-
 function updatePlayerOccupiedHexes(player, fromHex, toHex) {
-  if (fromHex.units.length < 2) {
+  // Remove fromHex if it has no units left or no units belonging to the player
+  if (fromHex.units.length === 0 || !fromHex.doesPlayerHaveUnits(player)) {
     player.occupiedHexes.delete(fromHex);
   }
+
+  // Add toHex to the player's occupied hexes
   player.occupiedHexes.add(toHex);
 }
+
+function moveUnit(player, unit, fromHex, toHex) {
+  if (!canMoveUnit(fromHex, toHex)) {
+    return false;
+  }
+
+  if (unit.movement === 0) {
+    return false;
+  }
+
+  if (!isAdjacent(fromHex, toHex)) {
+    console.log(`Cannot move unit: Hexes (${fromHex.q}, ${fromHex.r}) and (${toHex.q}, ${toHex.r}) are not adjacent.`);
+    return false;
+  }
+
+  let duration = 1000 * delayMultiplier; // Per unit of movement
+  let animation = new Animation('unitMovement', unit, toHex, duration);
+
+  // Add the animation to the unit's queue
+  animationManager.addAnimation(unit, animation);
+
+  console.log(`MOVE: ${unit.id} from (${fromHex.q}, ${fromHex.r}) to (${toHex.q}, ${toHex.r})`);
+  console.log("Occupied hexes before:");
+  for (let hex of player.occupiedHexes) {
+    console.log(`(${hex.q}, ${hex.r})`);
+  }
+
+  // Update player's occupied hexes
+  updatePlayerOccupiedHexes(player, fromHex, toHex);
+
+  console.log("Occupied hexes after:");
+  for (let hex of player.occupiedHexes) {
+    console.log(`(${hex.q}, ${hex.r})`);
+  }
+
+  return true;
+}
+
 
 function createUnit(player, unitType) {
   switch (unitType) {
