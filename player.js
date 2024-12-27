@@ -49,9 +49,12 @@ class Player {
     }
   
     let duration = 1000 * delayMultiplier; // Per unit of movement
-    let path = this.paths.get(unit); // Get the path for the unit
     // Create the animation
-    let animation = new Animation('unitMovement', unit, toHex, duration, path);
+
+    // let path = this.paths.get(unit); // Get the path for the unit
+    // let animation = new Animation('unitMovement', unit, toHex, duration, path);
+  
+    let animation = new Animation('unitMovement', unit, toHex, duration);
   
     // Add the animation to the unit's queue
     animationManager.addAnimation(unit, animation);
@@ -90,7 +93,8 @@ class Player {
     if (this.paths.size < 3) {
       let randomHex = random(Array.from(claimableTiles).map(key => hexGrid.get(key)).filter(hex => !hex.unit));
       let newPath = aStar(hex, randomHex, hexGrid);
-
+      print("New path:");
+      print(newPath);
       if (newPath.length > 0) {
         this.paths.set(unit, newPath);
         return true;
@@ -102,7 +106,7 @@ class Player {
   moveUnitAlongPath(unit, hex, path) {
     // TODO: should return false if the path is less than the minimum length
     let nextHex = path[1];
-    print(`Moving unit ${unit.id} from (${hex.q}, ${hex.r}) to (${nextHex.q}, ${nextHex.r})`);
+    print(`Moving unit ${unit.id} from (${hex.q}, ${hex.r}) to (${nextHex.q}, ${nextHex.r})\n\n`);
     if (this.moveUnit(unit, hex, nextHex)) {
       this.decisionReasoning += `(${hex.q}, ${hex.r}) ➡️ (${nextHex.q}, ${nextHex.r}) 🚶 ${this.actionPoints - 1}\n`;
   
@@ -111,8 +115,11 @@ class Player {
         this.paths.delete(unit);
         return true;
       }
-  
+      print("Path before shift:");
+      print(path);
       path = path.slice(1);
+      print("Path after shift:");
+      print(path);
       if (path.length === 1) {
         this.paths.delete(unit);
       } else {

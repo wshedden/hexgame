@@ -53,34 +53,47 @@ class AIPlayer {
     }
   }
 
-  handleUnitMovement() {
-    // TODO: BROKEN
-    let unitHexes = Array.from(this.player.occupiedHexes).filter(hex => !hex.isInBattle());
+    handleUnitMovement() {
     let moved = false;
-
-    for (let hex of unitHexes) {
-      let movableUnits = hex.getMovableUnits().filter(unit => unit.movement > 0);
-      if (movableUnits.length > 0) {
-        let unitToMove = random(movableUnits);
+    let hex = this.getRandomMovableHex();
+  
+    if (hex) {
+      let unitToMove = this.getRandomMovableUnit(hex);
+  
+      if (unitToMove) {
         let path = this.player.paths.get(unitToMove);
-
+  
         if (path && path.length > 1) {
-          print(path);
           moved = this.player.moveUnitAlongPath(unitToMove, hex, path);
         } else {
           moved = this.player.findNewPathForUnit(unitToMove, hex);
         }
-
+  
         if (moved) {
           this.attemptedActions.add(`move:${unitToMove.playerId}:${hex.q},${hex.r}`);
-          break;
         }
       }
     }
-
+  
     if (!moved) {
       this.player.decisionReasoning += '❌ No moves\n';
     }
+  }
+
+  getRandomMovableHex() {
+    let unitHexes = Array.from(this.player.occupiedHexes).filter(hex => !hex.isInBattle() && hex.getMovableUnits().length > 0);
+    if (unitHexes.length === 0) {
+      return null;
+    }
+    return random(unitHexes);
+  }
+  
+  getRandomMovableUnit(hex) {
+    let movableUnits = hex.getMovableUnits().filter(unit => unit.movement > 0);
+    if (movableUnits.length === 0) {
+      return null;
+    }
+    return random(movableUnits);
   }
     
   handleUnitPlacement() {
