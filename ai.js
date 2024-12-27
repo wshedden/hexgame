@@ -31,11 +31,19 @@ class AIPlayer {
     let isFirstTurn = (this.turnNumber === 1);
     if (isFirstTurn) {
       this.handleFirstTurnUnitPlacement();
-    } else if (this.player.canAffordCheapestUnit() && random(1) > this.movementLikelihood) {
+      return true;
+    }
+    let rand = random(1); 
+    let chooseMove = rand < this.movementLikelihood;
+    if (!chooseMove && this.player.canAffordCheapestUnit()) {
       this.handleUnitPlacement();
-    } else if (this.player.hasMovableUnits()) {
+      return true;
+    } 
+    if (this.player.hasMovableUnits()) {
       this.handleUnitMovement();
     } else {
+      // let passReason = `Points: ${this.player.actionPoints}, choose move: ${chooseMove}, broke: ${!this.player.canAffordCheapestUnit()}, has move: ${this.player.hasMovableUnits()}`;
+      // this.player.decisionReasoning += `❌ ${passReason}\n`;
       this.passTurn();
     }
 
@@ -54,6 +62,7 @@ class AIPlayer {
   }
 
     handleUnitMovement() {
+      print("Handling unit movement");
     let moved = false;
     let hex = this.getRandomMovableHex();
   
@@ -134,7 +143,7 @@ class AIPlayer {
       let emoji = getUnitEmoji(unitType);
       if (this.player.placeNewUnit(randomHex, unitType)) {
         this.player.actionPoints--;
-        this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r}) ${emoji} ${this.player.actionPoints}\n`;
+        this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r}) ${emoji}; AP=${this.player.actionPoints}\n`;
         this.attemptedActions.add(`place:${unitType}:${randomHex.q},${randomHex.r}`);
       } else {
         this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;

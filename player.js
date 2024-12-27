@@ -78,7 +78,6 @@ class Player {
     if (purchaseUnit(hex.q, hex.r, newUnit)) {
       this.numOfUnits++;
       this.money -= UNIT_COSTS[unitType];
-      this.decisionReasoning += `✅ ${getUnitEmoji(unitType)} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;
       if (unitType === 'farmer') {
         this.farmers.add(newUnit); // Add farmer to the set
         // print(`Farmer added at (${hex.q}, ${hex.r}). Total farmers: ${this.farmers.size}`);
