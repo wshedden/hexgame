@@ -7,11 +7,7 @@ class Animation {
     this.hex = hex;
     this.duration = duration;
     this.progress = 0;
-    this.path = path; // Store the path
-    this.onComplete = type === 'unitMovement' ? () => {
-      this.unit.hex = this.hex;
-      this.hex.addUnit(this.unit);
-    } : null;
+    this.path = path;
     this.started = false;
     this.complete = false;
     this.isAnimating = false;
@@ -23,9 +19,6 @@ class Animation {
     this.draw(this.progress);
     if (this.progress === 1) {
       this.complete = true;
-      if (this.onComplete) {
-        this.onComplete();
-      }
       if (this.type === 'unitMovement' || this.type === 'unitPlacement') {
         this.unit.isAnimating = false;
       }
@@ -51,47 +44,16 @@ class Animation {
     let endPos = hexToPixel(this.hex);
     let currentX = lerp(startPos.x, endPos.x, progress);
     let currentY = lerp(startPos.y, endPos.y, progress);
-
-    // Draw the path
-    if (this.path.length > 1) {
-      let movesToShow = this.unit.animationsLeft;
-      let pathToShow = this.path.slice(0, movesToShow + 1); // Slice the path based on animationsLeft
-
-      push();
-      stroke(this.unit.colour);
-      strokeWeight(2);
-      noFill();
-      beginShape();
-      // Start the path from the current position of the unit
-      vertex(currentX, currentY);
-      pathToShow.forEach((hex, index) => {
-        if (index > 0) { // Skip the first hex as we already added the current position
-          let { x, y } = hexToPixel(hex);
-          vertex(x, y);
-        }
-      });
-      endShape();
-      // Draw the arrowhead at the final line segment
-      if (pathToShow.length > 1) {
-        let lastHex = pathToShow[pathToShow.length - 1];
-        let secondLastHex = pathToShow[pathToShow.length - 2];
-        let { x: x1, y: y1 } = hexToPixel(secondLastHex);
-        let { x: x2, y: y2 } = hexToPixel(lastHex);
-        drawArrowhead(x1, y1, x2, y2, this.unit.colour);
-      }
-      pop();
-    }
-
     drawUnit(currentX, currentY, this.unit, 18);
   }
 
   drawUnitPlacement(progress) {
     let pos = hexToPixel(this.hex);
-    let size = lerp(1, 35, progress); // Increase size from 30 to 40
-    stroke(255, 215, 0); // Gold color for highlighting
+    let size = lerp(1, 35, progress);
+    stroke(255, 215, 0);
     strokeWeight(4);
-    fill(255, 223, 0, 100); // Semi-transparent gold fill
-    ellipse(pos.x, pos.y, size + 10, size + 10); // Golden outline
+    fill(255, 223, 0, 100);
+    ellipse(pos.x, pos.y, size + 10, size + 10);
     drawUnit(pos.x, pos.y, this.unit, this.unit.size);
   }
 

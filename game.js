@@ -6,6 +6,7 @@ const GameState = {
   GAME_OVER: 'game_over',
   THINKING: 'thinking', // New state for AI thinking
   DECISIONS_MADE: 'decisions_made', // New state for decisions made
+  APPLYING_MOVES: 'applying_moves', // New state for applying moves
   ANIMATING: 'animating',
   ANIMATION_COMPLETE: 'animation_complete'
 };
@@ -17,6 +18,7 @@ let turnNumber = 1; // Initialise turn number
 let speedMultiplier = 1.0;
 let decisionsMadeTime; // Time when decisions were made
 let animationStartTime; // Time when animation started
+let moveQueue = []; // Queue for moves to be applied
 
 // New variables for adjustable delays
 let decisionDelay = 1000 * delayMultiplier; // 1 second delay for decisions made
@@ -27,32 +29,33 @@ const players = [
 ];
 
 function setState(newState) {
-  // console.log(`Transitioning from ${currentState} to ${newState}`);
   currentState = newState;
   if (newState === GameState.PLAYING) {
     setState(GameState.THINKING);
     startNewTurn();
   } else if (newState === GameState.THINKING) {
     handleAIDecision(currentPlayerIndex);
-    setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
+    setState(GameState.DECISIONS_MADE);
   } else if (newState === GameState.DECISIONS_MADE) {
     if (previousState === GameState.PAUSED) {
       decisionsMadeTime = millis() - decisionsMadeElapsedTime;
-      // console.log(`Resuming DECISIONS_MADE. Adjusted decisionsMadeTime: ${decisionsMadeTime}`);
     } else {
       decisionsMadeTime = millis();
     }
-    progressBar.setDuration(1000); // Set progress bar duration for decisions made
+    progressBar.setDuration(1000);
     progressBar.setText(`Player ${players[currentPlayerIndex].id} done thinking`);
   } else if (newState === GameState.ANIMATING) {
     if (previousState === GameState.PAUSED) {
       animationStartTime = millis() - animationElapsedTime;
-      // console.log(`Resuming ANIMATING. Adjusted animationStartTime: ${animationStartTime}`);
     } else {
       animationStartTime = millis();
     }
-    progressBar.setDuration(animationManager.totalAnimationDuration); // Set progress bar duration for animation
+    progressBar.setDuration(animationManager.totalAnimationDuration);
     progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
+  } else if (newState === GameState.ANIMATION_COMPLETE) {
+    setState(GameState.APPLYING_MOVES);
+  } else if (newState === GameState.APPLYING_MOVES) {
+    applyMoves();
   }
 }
 
@@ -244,6 +247,17 @@ function progressGameState() {
     switchPlayer();
     setState(GameState.PLAYING);
   }
+}
+
+function applyMoves() {
+  moveQueue.forEach(move => {
+    move.unit.hex = move.hex;
+    move.hex.addUnit(move.unit);
+  });
+  moveQueue = [];
+  setTimeout(() => {
+    setState(GameState.ANIMATNG);
+  }, 1000);
 }
 
 function progressAllBattles() {

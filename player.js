@@ -266,25 +266,14 @@ function moveUnit(player, unit, fromHex, toHex) {
     return false;
   }
 
-  let duration = 1000 * delayMultiplier; // Per unit of movement
+  let duration = 1000 * delayMultiplier;
   let animation = new Animation('unitMovement', unit, toHex, duration);
 
-  // Add the animation to the unit's queue
   animationManager.addAnimation(unit, animation);
+  moveQueue.push({ unit, hex: toHex });
 
   console.log(`MOVE: ${unit.id} from (${fromHex.q}, ${fromHex.r}) to (${toHex.q}, ${toHex.r})`);
-  console.log("Occupied hexes before:");
-  for (let hex of player.occupiedHexes) {
-    console.log(`(${hex.q}, ${hex.r})`);
-  }
-
-  // Update player's occupied hexes
   updatePlayerOccupiedHexes(player, fromHex, toHex);
-
-  console.log("Occupied hexes after:");
-  for (let hex of player.occupiedHexes) {
-    console.log(`(${hex.q}, ${hex.r})`);
-  }
 
   return true;
 }
