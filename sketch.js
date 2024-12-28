@@ -96,10 +96,6 @@ function keyPressed() {
     }
   } else if (key === "'") { // Switch player with '
     switchPlayer();
-  } else if (keyCode === LEFT_ARROW) {
-    speedMultiplier = max(0.1, speedMultiplier / 1.1); // Decrease speed, minimum 0.1x
-  } else if (keyCode === RIGHT_ARROW) {
-    speedMultiplier = min(1000, speedMultiplier * 1.1); // Increase speed, maximum 1000x
   } else if (key === '1') {
     selectedUnitType = 'settler';
   } else if (key === '2') {

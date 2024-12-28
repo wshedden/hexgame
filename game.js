@@ -2,9 +2,6 @@ const MAX_AI_DECISION_ATTEMPTS = 10;
 let currentPlayerIndex = 0;
 let turnStartTime;
 let turnNumber = 1; // Initialise turn number
-let speedMultiplier = 1.0;
-let decisionsMadeTime; // Time when decisions were made
-let animationStartTime; // Time when animation started
 
 // New variables for adjustable delays
 let decisionDelay = 1000 * delayMultiplier; // 1 second delay for decisions made
@@ -41,7 +38,7 @@ function queueAIDecisionAttempts(playerIndex) {
 }
 
 function startNewTurn() {
-  this.totalAnimationDuration = BASE_ANIMATION_DURATION; // Reset total animation duration
+  this.totalAnimationDuration = stateManager.currentState.minimumDuration; // Reset total animation duration
   players[currentPlayerIndex].resetMoves();
 
   // Increment the turn number if we're on player 1
@@ -67,9 +64,6 @@ function executeDecisions() {
     });
     player.decisionQueue = [];
   });
-  setTimeout(() => {
-    setState(GameState.ANIMATING);
-  }, 1000);
 }
 
 function progressAllBattles() {

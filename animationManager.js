@@ -1,5 +1,3 @@
-BASE_ANIMATION_DURATION = 20;
-
 class Animation {
   constructor(type, unit, hex, duration, path = []) {
     this.type = type;

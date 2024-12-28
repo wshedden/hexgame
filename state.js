@@ -1,8 +1,13 @@
 class State {
+  constructor() {
+    this.minimumDuration = 500; // Default minimum duration in milliseconds
+  }
+
   enter() {}
   update() {}
   draw() {}
   exit() {}
+  getName = () => this.constructor.name;
 }
 
 class InitState extends State {
@@ -58,26 +63,25 @@ class PlayingHumanState extends State {
 
 class ThinkingState extends State {
   enter() {
-    handleAIDecision(currentPlayerIndex);
+    queueAIDecisionAttempts(currentPlayerIndex);
     stateManager.changeState(new DecisionsMadeState());
   }
 
   draw() {
-    // Add drawing logic if needed
+    drawGrid();
+    drawUnits();
   }
 }
 
 class DecisionsMadeState extends State {
   enter() {
-    decisionsMadeTime = millis();
-    progressBar.setDuration(1000);
+    stateManager.setStartTime(millis());
+    progressBar.setDuration(this.minimumDuration);
     progressBar.setText(`Player ${players[currentPlayerIndex].id} done thinking`);
   }
 
   update() {
-    if (millis() - decisionsMadeTime > decisionDelay) {
-      stateManager.changeState(new AnimatingState());
-    }
+    stateManager.checkAndTransition(new DecisionExecutionState());
   }
 
   draw() {
@@ -85,32 +89,39 @@ class DecisionsMadeState extends State {
   }
 }
 
+class DecisionExecutionState extends State {
+  enter() {
+    executeDecisions();
+    stateManager.setStartTime(millis()); // Set start time for the next delay
+  }
+
+  update() {
+    stateManager.checkAndTransition(new AnimatingState());
+  }
+
+  draw() {
+    drawGrid();
+    drawUnits();
+  }
+}
+
 class AnimatingState extends State {
   enter() {
-    animationStartTime = millis();
+    stateManager.setStartTime(millis());
     progressBar.setDuration(animationManager.totalAnimationDuration);
     progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
   }
 
   update() {
     animationManager.handleAnimations();
-    if (animationManager.animationsComplete() && millis() - animationStartTime > animationManager.totalAnimationDuration) {
-      stateManager.changeState(new DecisionExecutionState());
+    if (animationManager.animationsComplete()) {
+      stateManager.checkAndTransition(new PlayingState());
     }
   }
 
   draw() {
-    // Add drawing logic if needed
-  }
-}
-
-class DecisionExecutionState extends State {
-  enter() {
-    executeDecisions();
-  }
-
-  draw() {
-    // Add drawing logic if needed
+    drawGrid();
+    drawUnits();
   }
 }
 
@@ -132,17 +143,17 @@ class StateManager {
   constructor() {
     this.currentState = null;
     this.previousState = null;
+    this.startTime = 0;
   }
 
   changeState(newState) {
     if (this.currentState) {
       this.currentState.exit();
     }
-    print("Changing state to " + newState);
+    print("Changing state to " + newState.getName());
     this.previousState = this.currentState;
     this.currentState = newState;
     this.currentState.enter();
-    print("Finished changing state");
   }
 
   update() {
@@ -171,6 +182,20 @@ class StateManager {
       this.currentState = this.previousState;
       this.previousState = null;
       this.currentState.enter();
+    }
+  }
+
+  setStartTime(time) {
+    this.startTime = time;
+  }
+
+  getStartTime() {
+    return this.startTime;
+  }
+
+  checkAndTransition(nextState) {
+    if (millis() - this.getStartTime() > this.currentState.minimumDuration) {
+      this.changeState(nextState);
     }
   }
 }
