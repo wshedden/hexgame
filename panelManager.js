@@ -138,7 +138,8 @@ class PanelManager {
         this.createPanel('Player 1 Hexes', () => generatePlayerPanelContent(players[0]));
         this.createPanel('Player 2 Hexes', () => generatePlayerPanelContent(players[1]));
         this.createPanel('AI Decision Reasoning', () => {
-            const lines = players[currentPlayerIndex].decisionReasoning.split('\n');
+            let lines = players[currentPlayerIndex].decisionReasoning.split('\n');
+            lines.unshift(`Player ${currentPlayerIndex + 1} decisions:`);
             return lines;
         });
         this.createPanel('Animation Queue', () => this.generateAnimationQueueContent());

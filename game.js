@@ -181,13 +181,13 @@ function handleAIDecision(playerIndex) {
   }
 
   // Update the AI Decision Reasoning panel
-  const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
-  if (aiPanel) {
-    aiPanel.contentFunction = () => {
-      const lines = players[playerIndex].decisionReasoning.split('\n');
-      return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
-    };
-  }
+  // const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
+  // if (aiPanel) {
+  //   aiPanel.contentFunction = () => {
+  //     const lines = players[playerIndex].decisionReasoning.split('\n');
+  //     return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
+  //   };
+  // }
 
   setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
 }
