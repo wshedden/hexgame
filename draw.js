@@ -245,6 +245,68 @@ function drawFarmTexture(x, y, size, crops) {
   pop();
 }
 
+function drawInitState() {
+  // Draw initialization screen
+  fill(255);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  text('Press any key to start', 0, 0);
+}
+
+function drawPlayingState() {
+  // Draw the playing state
+  drawGrid();
+  drawUnits();
+
+  // print("Playing state");
+}
+
+function drawPlayingState_human() {
+  // Draw the playing state with human input
+  drawGrid();
+  drawUnits();
+
+  // Handle human input
+  handleHumanInput();
+}
+
+function drawPausedState() {
+  // Draw the playing state behind the pause overlay
+  drawGrid();
+  drawUnits();
+}
+
+function drawGameOverState() {
+  // Draw the game over state
+  fill(255);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  text('Game Over', width / 2, height / 2);
+}
+
+function drawDecisionsMadeState() {
+  // Draw the state after decisions are made
+  drawGrid();
+  drawUnits();
+
+  // Check if 2 seconds have passed since decisions were made, then animate
+  if (millis() - decisionsMadeTime > decisionDelay) {
+    setState(GameState.ANIMATING);
+  }
+}
+
+function drawGameStatePopup() {
+  rectMode(CORNER); // Ensure rectMode is set to CORNER
+  fill(0, 0, 0, 150); // Semi-transparent black background
+  rect(10, 10, 190, 120, 10); // Adjusted height to accommodate the speed multiplier
+  fill(255);
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  text(`State: ${currentState}`, 20, 30);
+  text(`Player: ${players[currentPlayerIndex].id}`, 20, 50);
+  text(`Turn: ${turnNumber}`, 20, 70); // Display the current turn number
+}
+
 function draw() {
   background(20);
   push();

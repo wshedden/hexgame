@@ -60,78 +60,11 @@ function drawGameState() {
   }
 }
 
-function drawInitState() {
-  // Draw initialization screen
-  fill(255);
-  textSize(32);
-  textAlign(CENTER, CENTER);
-  text('Press any key to start', 0, 0);
-}
-
-function drawPlayingState() {
-  // Draw the playing state
-  drawGrid();
-  drawUnits();
-
-  // print("Playing state");
-}
-
-function drawPlayingState_human() {
-  // Draw the playing state with human input
-  drawGrid();
-  drawUnits();
-
-  // Handle human input
-  handleHumanInput();
-}
-
-function drawPausedState() {
-  // Draw the playing state behind the pause overlay
-  drawGrid();
-  drawUnits();
-}
-
-function drawGameOverState() {
-  // Draw the game over state
-  fill(255);
-  textSize(32);
-  textAlign(CENTER, CENTER);
-  text('Game Over', width / 2, height / 2);
-}
-
-function drawDecisionsMadeState() {
-  // Draw the state after decisions are made
-  drawGrid();
-  drawUnits();
-
-  // Check if 2 seconds have passed since decisions were made, then animate
-  if (millis() - decisionsMadeTime > decisionDelay) {
-    setState(GameState.ANIMATING);
-  }
-}
-
-function drawGameStatePopup() {
-  rectMode(CORNER); // Ensure rectMode is set to CORNER
-  fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(10, 10, 190, 120, 10); // Adjusted height to accommodate the speed multiplier
-  fill(255);
-  textSize(16);
-  textAlign(LEFT, CENTER);
-  text(`State: ${currentState}`, 20, 30);
-  text(`Player: ${players[currentPlayerIndex].id}`, 20, 50);
-  text(`Turn: ${turnNumber}`, 20, 70); // Display the current turn number
-
-  // Calculate the remaining time for the current turn
-  // let remainingTime = Math.max(0, adjustedTurnDuration - (millis() - turnStartTime));
-  // text(`Time Left: ${(remainingTime / 1000).toFixed(1)}s`, 20, 90);
-
-  // Display the speed multiplier
-  // text(`Speed: ${speedMultiplier.toFixed(3)}x`, 20, 110);
-}
 
 function switchPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 }
+
 
 function handleAIDecision(playerIndex) {
   players[playerIndex].decisionReasoning = ''; // Clear previous reasoning
@@ -150,15 +83,6 @@ function handleAIDecision(playerIndex) {
     // Add to ai panel
     players[playerIndex].decisionReasoning += '❌ Max attempts reached\n';
   }
-
-  // Update the AI Decision Reasoning panel
-  // const aiPanel = panelManager.getPanelByHeader('AI Decision Reasoning');
-  // if (aiPanel) {
-  //   aiPanel.contentFunction = () => {
-  //     const lines = players[playerIndex].decisionReasoning.split('\n');
-  //     return showFailedOutput ? lines : lines.filter(line => !line.includes('❌'));
-  //   };
-  // }
 
   setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
 }
@@ -206,17 +130,6 @@ function drawAnimatingState() {
   }
 }
 
-function progressGameState() {
-  if (currentState === GameState.ANIMATING) {
-    // Do nothing special in the ANIMATING state
-  } else if (currentState === GameState.ANIMATION_COMPLETE) {
-    // Transition to the next state after ANIMATION_COMPLETE
-    startNewTurn();
-    switchPlayer();
-    setState(GameState.PLAYING);
-  }
-}
-
 function applyMoves() {
   moveQueue.forEach(move => {
     move.unit.hex = move.hex;
@@ -229,9 +142,6 @@ function applyMoves() {
 }
 
 function progressAllBattles() {
-  // Go through all battle hexes and progress the battles
-  // Make sure to not double count hexes, as all players involved
-  // have the hex in their battleHexes set. so combine the sets
   let allBattleHexes = new Set();
 
   players.forEach(player => {
