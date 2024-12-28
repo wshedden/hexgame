@@ -16,15 +16,16 @@ class Player {
     this.claimedHexes = new Set();
     this.claimedAdjacentHexes = new Set();
     this.humanControlled = false;
-    this.decisionReasoning = ''; // Store reasoning behind decisions
-    this.actionPoints = MAX_ACTIONS_PER_TURN; // New attribute: action points
-    this.maxReasoningLength = 1000; // Maximum length for decisionReasoning
-    this.money = 10000; // New attribute: money
-    this.unitLimit = 10; // New attribute: unit limit
-    this.battleHexes = new Set(); // New attribute: hexes where battles are occurring
-    this.paths = new Map(); // New attribute: paths for units
-    this.farmers = new Set(); // New attribute: set of farmers
-    this.numOfUnits = 0; // New attribute: number of units
+    this.decisionReasoning = '';
+    this.actionPoints = MAX_ACTIONS_PER_TURN;
+    this.maxReasoningLength = 1000;
+    this.money = 10000;
+    this.unitLimit = 10;
+    this.battleHexes = new Set();
+    this.paths = new Map();
+    this.farmers = new Set();
+    this.numOfUnits = 0;
+    this.decisionQueue = [];
   }
 
   resetMoves() {
@@ -270,7 +271,7 @@ function moveUnit(player, unit, fromHex, toHex) {
   let animation = new Animation('unitMovement', unit, toHex, duration);
 
   animationManager.addAnimation(unit, animation);
-  moveQueue.push({ unit, hex: toHex });
+  decisionQueue.push({ type: "move", unit: unit, hex: toHex });
 
   console.log(`MOVE: ${unit.id} from (${fromHex.q}, ${fromHex.r}) to (${toHex.q}, ${toHex.r})`);
   updatePlayerOccupiedHexes(player, fromHex, toHex);

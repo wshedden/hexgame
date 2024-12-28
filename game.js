@@ -1,23 +1,10 @@
-const GameState = {
-  INIT: 'init',
-  PLAYING: 'playing',
-  PLAYING_HUMAN: 'playing_human',
-  PAUSED: 'paused',
-  GAME_OVER: 'game_over',
-  THINKING: 'thinking', // New state for AI thinking
-  DECISIONS_MADE: 'decisions_made', // New state for decisions made
-  APPLYING_MOVES: 'applying_moves', // New state for applying moves
-  ANIMATING: 'animating',
-  ANIMATION_COMPLETE: 'animation_complete'
-};
-
+const MAX_AI_DECISION_ATTEMPTS = 10;
 let currentPlayerIndex = 0;
 let turnStartTime;
 let turnNumber = 1; // Initialise turn number
 let speedMultiplier = 1.0;
 let decisionsMadeTime; // Time when decisions were made
 let animationStartTime; // Time when animation started
-let moveQueue = []; // Queue for moves to be applied
 
 // New variables for adjustable delays
 let decisionDelay = 1000 * delayMultiplier; // 1 second delay for decisions made
@@ -31,60 +18,26 @@ function setState(newState) {
   stateManager.changeState(newState);
 }
 
-function drawGameState() {
-  switch (stateManager.currentState) {
-    case GameState.INIT:
-      drawInitState();
-      break;
-    case GameState.PLAYING:
-      drawPlayingState();
-      break;
-    case GameState.PLAYING_HUMAN:
-      drawPlayingState_human();
-      break;
-    case GameState.PAUSED:
-      drawPausedState();
-      break;
-    case GameState.GAME_OVER:
-      drawGameOverState();
-      break;
-    case GameState.THINKING:
-      // For now, do nothing special in the THINKING state
-      break;
-    case GameState.DECISIONS_MADE:
-      drawDecisionsMadeState();
-      break;
-    case GameState.ANIMATING:
-      drawAnimatingState();
-      break;
-  }
-}
-
-
 function switchPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 }
 
-
-function handleAIDecision(playerIndex) {
+function queueAIDecisionAttempts(playerIndex) {
   players[playerIndex].decisionReasoning = ''; // Clear previous reasoning
 
-  let maxAttempts = 10; // Maximum number of attempts to make decisions
   let attempts = 0;
 
-  while (players[playerIndex].actionPoints > 0 && attempts < maxAttempts) {
+  while (players[playerIndex].actionPoints > 0 && attempts < MAX_AI_DECISION_ATTEMPTS) {
     if (players[playerIndex].makeDecision()) {
-      
+      // Decision made successfully
     }
     attempts++;
   }
 
-  if (attempts >= maxAttempts) {
-    // Add to ai panel
+  if (attempts >= MAX_AI_DECISION_ATTEMPTS) {
+    // Add to AI panel
     players[playerIndex].decisionReasoning += '❌ Max attempts reached\n';
   }
-
-  setState(GameState.DECISIONS_MADE); // Transition to DECISIONS_MADE state after AI decisions
 }
 
 function startNewTurn() {
@@ -106,38 +59,16 @@ function handleHumanInput() {
   }
 }
 
-function drawAnimatingState() {
-  drawGrid();
-  drawUnits();
-
-  animationManager.handleAnimations();
-
-  if (animationManager.animationsComplete() && millis() - animationStartTime > animationManager.totalAnimationDuration) {
-    // console.log(`All animations complete for player ${players[currentPlayerIndex].id}`);
-    // Reset animationsLeft for all units
-    players.forEach(player => {
-      player.occupiedHexes.forEach(hex => {
-        hex.units.forEach(unit => {
-          unit.animationsLeft = 0;
-        });
-      });
+function executeDecisions() {
+  players.forEach(player => {
+    player.decisionQueue.forEach(move => {
+      move.unit.hex = move.hex;
+      move.hex.addUnit(move.unit);
     });
-
-    setState(GameState.ANIMATION_COMPLETE);
-    animationManager.totalAnimationDuration = BASE_ANIMATION_DURATION;
-    progressGameState();
-    return;
-  }
-}
-
-function applyMoves() {
-  moveQueue.forEach(move => {
-    move.unit.hex = move.hex;
-    move.hex.addUnit(move.unit);
+    player.decisionQueue = [];
   });
-  moveQueue = [];
   setTimeout(() => {
-    setState(GameState.ANIMATNG);
+    setState(GameState.ANIMATING);
   }, 1000);
 }
 

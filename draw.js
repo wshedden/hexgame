@@ -288,10 +288,24 @@ function drawDecisionsMadeState() {
   // Draw the state after decisions are made
   drawGrid();
   drawUnits();
+}
 
-  // Check if 2 seconds have passed since decisions were made, then animate
-  if (millis() - decisionsMadeTime > decisionDelay) {
-    setState(GameState.ANIMATING);
+
+function drawAnimatingState() {
+  drawGrid();
+  drawUnits();
+
+  animationManager.handleAnimations();
+
+  if (animationManager.animationsComplete() && millis() - animationStartTime > animationManager.totalAnimationDuration) {
+    // Reset animationsLeft for all units
+    players.forEach(player => {
+      player.occupiedHexes.forEach(hex => {
+        hex.units.forEach(unit => {
+          unit.animationsLeft = 0;
+        });
+      });
+    });
   }
 }
 
@@ -302,7 +316,7 @@ function drawGameStatePopup() {
   fill(255);
   textSize(16);
   textAlign(LEFT, CENTER);
-  text(`State: ${currentState}`, 20, 30);
+  text(`State: ${stateManager.currentState}`, 20, 30);
   text(`Player: ${players[currentPlayerIndex].id}`, 20, 50);
   text(`Turn: ${turnNumber}`, 20, 70); // Display the current turn number
 }
@@ -314,6 +328,7 @@ function draw() {
   scale(scaleFactor);
 
   stateManager.update();
+  stateManager.draw();
 
   drawGameStatePopup();
   panelManager.updatePanels();

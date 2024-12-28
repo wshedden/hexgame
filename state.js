@@ -1,13 +1,13 @@
 class State {
   enter() {}
-  exit() {}
   update() {}
+  draw() {}
+  exit() {}
 }
 
 class InitState extends State {
   enter() {
-    // Initialization logic here
-    console.log("Game initialized. Press any key to start.");
+    console.log("Game initialised. Press any key to start.");
   }
 
   update() {
@@ -21,6 +21,10 @@ class InitState extends State {
       }
     }
   }
+
+  draw() {
+    drawInitState();
+  }
 }
 
 class PlayingState extends State {
@@ -29,6 +33,10 @@ class PlayingState extends State {
     startNewTurn();
     print("New turn started");
     stateManager.changeState(new ThinkingState());
+  }
+
+  draw() {
+    drawPlayingState();
   }
 }
 
@@ -42,12 +50,20 @@ class PlayingHumanState extends State {
     // Handle human player input
     handleHumanInput();
   }
+
+  draw() {
+    drawPlayingState_human();
+  }
 }
 
 class ThinkingState extends State {
   enter() {
     handleAIDecision(currentPlayerIndex);
     stateManager.changeState(new DecisionsMadeState());
+  }
+
+  draw() {
+    // Add drawing logic if needed
   }
 }
 
@@ -63,6 +79,10 @@ class DecisionsMadeState extends State {
       stateManager.changeState(new AnimatingState());
     }
   }
+
+  draw() {
+    drawDecisionsMadeState();
+  }
 }
 
 class AnimatingState extends State {
@@ -75,14 +95,22 @@ class AnimatingState extends State {
   update() {
     animationManager.handleAnimations();
     if (animationManager.animationsComplete() && millis() - animationStartTime > animationManager.totalAnimationDuration) {
-      stateManager.changeState(new ApplyingMovesState());
+      stateManager.changeState(new DecisionExecutionState());
     }
+  }
+
+  draw() {
+    // Add drawing logic if needed
   }
 }
 
-class ApplyingMovesState extends State {
+class DecisionExecutionState extends State {
   enter() {
-    applyMoves();
+    executeDecisions();
+  }
+
+  draw() {
+    // Add drawing logic if needed
   }
 }
 
@@ -93,6 +121,10 @@ class PausedState extends State {
 
   exit() {
     // Handle resuming logic here
+  }
+
+  draw() {
+    drawPausedState();
   }
 }
 
@@ -106,6 +138,7 @@ class StateManager {
     if (this.currentState) {
       this.currentState.exit();
     }
+    print("Changing state to " + newState);
     this.previousState = this.currentState;
     this.currentState = newState;
     this.currentState.enter();
@@ -115,6 +148,12 @@ class StateManager {
   update() {
     if (this.currentState) {
       this.currentState.update();
+    }
+  }
+
+  draw() {
+    if (this.currentState) {
+      this.currentState.draw();
     }
   }
 

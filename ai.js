@@ -42,8 +42,6 @@ class AIPlayer {
     if (this.player.hasMovableUnits()) {
       this.handleUnitMovement();
     } else {
-      // let passReason = `Points: ${this.player.actionPoints}, choose move: ${chooseMove}, broke: ${!this.player.canAffordCheapestUnit()}, has move: ${this.player.hasMovableUnits()}`;
-      // this.player.decisionReasoning += `❌ ${passReason}\n`;
       this.passTurn();
     }
 
