@@ -11,7 +11,6 @@ const GameState = {
   ANIMATION_COMPLETE: 'animation_complete'
 };
 
-let currentState = GameState.INIT;
 let currentPlayerIndex = 0;
 let turnStartTime;
 let turnNumber = 1; // Initialise turn number
@@ -32,12 +31,8 @@ function setState(newState) {
   stateManager.changeState(newState);
 }
 
-function getState() {
-  return currentState;
-}
-
 function drawGameState() {
-  switch (currentState) {
+  switch (stateManager.currentState) {
     case GameState.INIT:
       drawInitState();
       break;

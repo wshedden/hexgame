@@ -5,28 +5,42 @@ class State {
 }
 
 class InitState extends State {
-    enter() {
-      // Initialization logic here
-      console.log("Game initialized. Press any key to start.");
-    }
-  
-    update() {
-      // Wait for user input to start the game
-      if (keyIsPressed) {
-        if (key === 't' || key === 'T') {
-          players[0].isHuman = true;
-          stateManager.changeState(new PlayingHumanState());
-        } else {
-          stateManager.changeState(new PlayingState());
-        }
+  enter() {
+    // Initialization logic here
+    console.log("Game initialized. Press any key to start.");
+  }
+
+  update() {
+    // Wait for user input to start the game
+    if (keyIsPressed) {
+      if (key === 't' || key === 'T') {
+        players[0].isHuman = true;
+        stateManager.changeState(new PlayingHumanState());
+      } else {
+        stateManager.changeState(new PlayingState());
       }
     }
   }
+}
 
 class PlayingState extends State {
   enter() {
+    print("Entered playing state");
     startNewTurn();
+    print("New turn started");
     stateManager.changeState(new ThinkingState());
+  }
+}
+
+class PlayingHumanState extends State {
+  enter() {
+    startNewTurn();
+    // Additional logic for human player
+  }
+
+  update() {
+    // Handle human player input
+    handleHumanInput();
   }
 }
 
@@ -94,8 +108,8 @@ class StateManager {
     }
     this.previousState = this.currentState;
     this.currentState = newState;
-    print(newState);
     this.currentState.enter();
+    print("Finished changing state");
   }
 
   update() {

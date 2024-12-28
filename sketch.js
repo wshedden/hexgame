@@ -18,16 +18,14 @@ let delaySlider;
 let unitInfoExpanded = false; // Add this line at the top of the file
 const stateManager = new StateManager();
 
-
 function setup() {
   offsetX = 900;
   offsetY = 450;
-  previousState = GameState.INIT;
   createCanvas(1800, 900);
   initialiseGrid(10);
   initialiseTerrainColours();
   generateTerrain();
-  setState(GameState.INIT);
+  setState(new InitState());
 
   delaySlider = new Slider(50, height - 50, 300, 0.01, 5, delayMultiplier);
 
@@ -56,26 +54,22 @@ function setup() {
   progressButton.style('background-color', '#6c757d');
   progressButton.mousePressed(progressGameState);
 
-  // New button to reset panel positions
   const resetButton = createButton('Reset Panel Positions');
   resetButton.id('resetButton');
   resetButton.class('toggle-button');
-  resetButton.position(width - 150, 130); // Position below the progress button
+  resetButton.position(width - 150, 130);
   resetButton.style('background-color', '#6c757d');
   resetButton.mousePressed(() => panelManager.resetPanelPositions());
 
-  // Add the new button
   const toggleUnitInfoButton = createButton('Expand unit info');
   toggleUnitInfoButton.id('toggleUnitInfoButton');
   toggleUnitInfoButton.class('toggle-button');
-  toggleUnitInfoButton.position(width - 150, 170); // Position below the reset button
+  toggleUnitInfoButton.position(width - 150, 170);
   toggleUnitInfoButton.style('background-color', '#6c757d');
   toggleUnitInfoButton.mousePressed(toggleUnitInfo);
 
-  // Initialise progress bar separately
-  progressBar = new ProgressBarAnimation(0, 200, 10000); // 200 pixels width, 10 seconds duration
+  progressBar = new ProgressBarAnimation(0, 200, 10000);
 }
-
 
 function initialiseTerrainColours() {
   registerTerrainType('grass', color(100, 200, 100));
@@ -87,27 +81,19 @@ function initialiseTerrainColours() {
 }
 
 function keyPressed() {
-  if (currentState === GameState.INIT) {
+  if (stateManager.currentState instanceof InitState) {
     if (key === 't' || key === 'T') {
       players[0].isHuman = true;
-      setState(GameState.PLAYING_HUMAN);
+      setState(new PlayingHumanState());
     } else {
-      setState(GameState.PLAYING);
+      setState(new PlayingState());
     }
   } else if (key === 'p' || key === 'P') { // Pause the game with 'p'
-    if (currentState !== GameState.PAUSED) {
-      previousState = currentState;
-      if (currentState === GameState.DECISIONS_MADE) {
-        decisionsMadeElapsedTime = millis() - decisionsMadeTime;
-      } else if (currentState === GameState.ANIMATING) {
-        animationElapsedTime = millis() - animationStartTime;
-      }
-      setState(GameState.PAUSED);
-    } else if (currentState === GameState.PAUSED) {
-      setState(previousState);
-      previousState = null;
+    if (!(stateManager.currentState instanceof PausedState)) {
+      stateManager.pause();
+    } else {
+      stateManager.resume();
     }
-    
   } else if (key === "'") { // Switch player with '
     switchPlayer();
   } else if (keyCode === LEFT_ARROW) {
@@ -153,7 +139,7 @@ function mousePressed() {
         } else {
           path = [clickedHex];
         }
-      } else if (currentPlayerIndex === 0 && currentState === GameState.PLAYING_HUMAN) {
+      } else if (currentPlayerIndex === 0 && stateManager.currentState instanceof PlayingHumanState) {
         let player = players[currentPlayerIndex];
         let unitType = selectedUnitType;
         let newUnit = new Unit(player.id, unitType, unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, player.color);
@@ -186,10 +172,9 @@ function drawSelectedUnitTypePanel() {
   rect(10, height - 60, 190, 50, 10); // Position the panel at the bottom left
   fill(255);
   textSize(16);
-  textAlign(LEFT, CENTER);s
+  textAlign(LEFT, CENTER);
   text(`Selected Unit: ${selectedUnitType}`, 20, height - 35);
 }
-
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
