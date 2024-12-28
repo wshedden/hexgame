@@ -57,7 +57,7 @@ class Hex {
   }
 
   removeUnit(unit) {
-    let index = this.units.indexOf(unit);
+    let index = this.units.indexOf(unit);drawHex
     if (index !== -1) {
       this.units.splice(index, 1);
     }
@@ -66,6 +66,18 @@ class Hex {
   claim(player) {
     this.claimedBy = player.playerId;
     this.claimedColour = color(player.colour[0], player.colour[1], player.colour[2]); // Set the claimedColour
+  }
+
+  getDrawColour() {
+    // If occupied by a player, draw the claimed colour with transparency
+      // claimedBy ? lerpColor(colour, color(players[claimedBy - 1].colour), 0.6) : colour
+    if (this.claimedBy !== null) {
+      return lerpColor(this.colour, this.claimedColour, 0.6);
+    }
+    if(this.occupiedBy) {
+      return lerpColor(this.colour, color(players[this.occupiedBy-1].colour), 1);
+    }
+    return this.colour;
   }
 
   unclaim() {

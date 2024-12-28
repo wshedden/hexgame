@@ -3,7 +3,8 @@ function drawHex(x, y, size, type, textValue, claimedBy, colour, battle, buildin
   translate(x, y);
   stroke(getOutlineColour()); // Use the purple outline colour
   strokeWeight(battle ? 6 : 1); // Thicken the stroke weight if there's a battle
-  fill(claimedBy ? lerpColor(colour, color(players[claimedBy - 1].colour), 0.6) : colour);
+  // fill(claimedBy ? lerpColor(colour, color(players[claimedBy - 1].colour), 0.6) : colour);
+  fill(colour);
 
   beginShape();
   for (let i = 0; i < 6; i++) {
@@ -53,7 +54,7 @@ function drawGrid() {
   push();
   hexGrid.forEach((hex) => {
     let { x, y } = hexToPixel(hex);
-    drawHex(x, y, 30, hex.type, hex.text, hex.claimedBy, hex.colour, hex.battle, hex.building); // Pass the building attribute
+    drawHex(x, y, 30, hex.type, hex.text, hex.claimedBy, hex.getDrawColour(), hex.battle, hex.building); // Pass the building attribute
   });
 
   // Highlight the selected hex and its neighbours

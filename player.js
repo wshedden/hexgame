@@ -138,6 +138,26 @@ class Player {
     }
     return false;
   }
+
+  getMovableUnits() {
+    let movableUnits = [];
+    this.occupiedHexes.forEach(hex => {
+      if (!hex.isInBattle()) {
+        hex.units.forEach(unit => {
+            if(unit.type === 'farmer' && unit.hex.building !== "Farm") {
+              movableUnits.push(unit);
+            }
+            else if(unit.type !== 'settler') {
+              movableUnits.push(unit);
+          }
+          else if(!unit.isInBattle()) {
+            movableUnits.push(unit);
+          }
+        });
+      }
+    });
+    return movableUnits;
+  }
 }
 
 function purchaseUnit(q, r, unit) {
@@ -290,7 +310,7 @@ function moveRandomUnit(player, fromHex, toHex, options = {}) {
     return false;
   }
 
-  let unitToMove = random(fromHex.units);
+  let unitToMove = random(player.getMovableUnits());
 
   if (unitToMove.movement === 0) {
     return false;
