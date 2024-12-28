@@ -29,34 +29,7 @@ const players = [
 ];
 
 function setState(newState) {
-  currentState = newState;
-  if (newState === GameState.PLAYING) {
-    setState(GameState.THINKING);
-    startNewTurn();
-  } else if (newState === GameState.THINKING) {
-    handleAIDecision(currentPlayerIndex);
-    setState(GameState.DECISIONS_MADE);
-  } else if (newState === GameState.DECISIONS_MADE) {
-    if (previousState === GameState.PAUSED) {
-      decisionsMadeTime = millis() - decisionsMadeElapsedTime;
-    } else {
-      decisionsMadeTime = millis();
-    }
-    progressBar.setDuration(1000);
-    progressBar.setText(`Player ${players[currentPlayerIndex].id} done thinking`);
-  } else if (newState === GameState.ANIMATING) {
-    if (previousState === GameState.PAUSED) {
-      animationStartTime = millis() - animationElapsedTime;
-    } else {
-      animationStartTime = millis();
-    }
-    progressBar.setDuration(animationManager.totalAnimationDuration);
-    progressBar.setText(`Player ${players[currentPlayerIndex].id} animating...`);
-  } else if (newState === GameState.ANIMATION_COMPLETE) {
-    setState(GameState.APPLYING_MOVES);
-  } else if (newState === GameState.APPLYING_MOVES) {
-    applyMoves();
-  }
+  stateManager.changeState(newState);
 }
 
 function getState() {

@@ -16,6 +16,8 @@ let decisionsMadeElapsedTime = 0;
 let animationElapsedTime = 0;
 let delaySlider;
 let unitInfoExpanded = false; // Add this line at the top of the file
+const stateManager = new StateManager();
+
 
 function setup() {
   offsetX = 900;
