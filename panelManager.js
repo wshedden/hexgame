@@ -1,10 +1,11 @@
 class PanelManager {
-    constructor() {
+    constructor(canvasWidth = 1800, canvasHeight = 900, hexGridStartX = 300, hexGridEndX = 1500) {
         this.panels = [];
-        this.canvasWidth = 1800; // Default canvas width
-        this.canvasHeight = 900; // Default canvas height
-        this.hexGridStartX = 300; // Example value, adjust based on actual hex grid start
-        this.hexGridEndX = 1500; // Example value, adjust based on actual hex grid end
+        this.canvasWidth = canvasWidth; // Default canvas width
+        this.canvasHeight = canvasHeight; // Default canvas height
+        this.hexGridStartX = hexGridStartX; // Example value, adjust based on actual hex grid start
+        this.hexGridEndX = hexGridEndX; // Example value, adjust based on actual hex grid end
+        this.grid = []; // To store grid cells
     }
 
     registerPanel(panel) {
@@ -13,59 +14,77 @@ class PanelManager {
     }
 
     updateAndDrawPanels() {
+        restrictPanelPositions();
+
         this.panels.forEach(panel => panel.draw());
+        restrictPanelPositions();
     }
 
     createPanel(header, contentFunction, options = {}) {
-        const x = options.x || 0;
-        const y = options.y || 0;
-        const width = options.width || 200; // Default width if not provided
-        const panel = new Panel(x, y, width, header, contentFunction, options);
+        const panel = new Panel(0, 0, 0, header, contentFunction, options);
         this.registerPanel(panel);
         return panel;
     }
 
     organisePanels() {
-        const leftPanels = this.getPanelsBySide('left');
-        const rightPanels = this.getPanelsBySide('right');
+        // Reset and rebuild the grid
+        this.buildGrid();
 
-        this.positionPanels(leftPanels, 'left');
-        this.positionPanels(rightPanels, 'right');
-
-        this.positionSpecialPanels();
-    }
-
-    getPanelsBySide(side) {
-        return this.panels.filter(panel => panel.options.side === side);
-    }
-
-    positionPanels(panels, side) {
-        const width = side === 'left' ? this.hexGridStartX : this.canvasWidth - this.hexGridEndX;
-        const maxPanelHeight = this.canvasHeight / panels.length;
-
-        panels.forEach((panel, index) => {
-            panel.x = side === 'left' ? 0 : this.hexGridEndX;
-            panel.y = index * maxPanelHeight;
-            panel.width = width;
-            panel.height = maxPanelHeight;
+        this.panels.forEach(panel => {
+            const position = this.findNextGridCell(panel.options.size || { width: 1, height: 1 });
+            if (position) {
+                this.placePanel(panel, position);
+            }
         });
     }
 
-    positionSpecialPanels() {
-        const aiPanel = this.getPanelByHeader('AI Decision Reasoning');
-        if (aiPanel) {
-            this.positionAIPanel(aiPanel);
+    buildGrid() {
+        const gridColumns = Math.floor(this.canvasWidth / 200); // Example: 200px cell width
+        const gridRows = Math.floor(this.canvasHeight / 100); // Example: 100px cell height
+
+        this.grid = Array.from({ length: gridRows }, () => Array(gridColumns).fill(null));
+    }
+
+    findNextGridCell(size) {
+        const rows = this.grid.length;
+        const cols = this.grid[0].length;
+
+        for (let row = 0; row < rows - size.height + 1; row++) {
+            for (let col = 0; col < cols - size.width + 1; col++) {
+                if (this.canPlaceAt(row, col, size)) {
+                    return { row, col };
+                }
+            }
         }
+        return null; // No space found
     }
 
-    getPanelByHeader(header) {
-        return this.panels.find(panel => panel.header === header);
+    canPlaceAt(startRow, startCol, size) {
+        for (let row = 0; row < size.height; row++) {
+            for (let col = 0; col < size.width; col++) {
+                if (this.grid[startRow + row][startCol + col] !== null) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
-    positionAIPanel(panel) {
-        panel.width = this.hexGridStartX;
-        panel.x = 0;
-        panel.y = this.canvasHeight - panel.contentHeight - 360; // Position it at the bottom left with some margin
+    placePanel(panel, position) {
+        const cellWidth = this.canvasWidth / this.grid[0].length;
+        const cellHeight = this.canvasHeight / this.grid.length;
+
+        panel.x = position.col * cellWidth;
+        panel.y = position.row * cellHeight;
+        panel.width = cellWidth * panel.options.size.width - 10; // Subtract margin
+        panel.height = cellHeight * panel.options.size.height - 10; // Subtract margin
+
+        // Mark the grid cells as occupied
+        for (let row = 0; row < panel.options.size.height; row++) {
+            for (let col = 0; col < panel.options.size.width; col++) {
+                this.grid[position.row + row][position.col + col] = panel;
+            }
+        }
     }
 
     resizeCanvas(width, height) {
@@ -74,13 +93,15 @@ class PanelManager {
         this.organisePanels(); // Reorganise panels based on the new dimensions
     }
 
+    
+
     registerPanels() {
         this.createPanel('Game State', () => [
             `State: ${panelManager.currentState}`,
             `Player: ${players[currentPlayerIndex].id}`,
             `Turn: ${turnNumber}`,
             `Pathfinding: ${pathfindingMode ? '✅' : '❌'}`
-        ], { side: 'left' });
+        ], { side: 'left', size: { width: 1, height: 1 } });
 
         this.createPanel('Hex Info', () => {
             if (!selectedHex) return ['No hex selected'];
@@ -114,16 +135,16 @@ class PanelManager {
             }
 
             return content;
-        }, { side: 'left' });
+        }, { side: 'left', size: { width: 1, height: 2 } });
 
-        this.createPanel('Player 1 Hexes', () => generatePlayerPanelContent(players[0]), { side: 'left' });
-        this.createPanel('Player 2 Hexes', () => generatePlayerPanelContent(players[1]), { side: 'right' });
+        this.createPanel('Player 1 Hexes', () => generatePlayerPanelContent(players[0]), { side: 'left', size: { width: 1, height: 1 } });
+        this.createPanel('Player 2 Hexes', () => generatePlayerPanelContent(players[1]), { side: 'right', size: { width: 1, height: 1 } });
         this.createPanel('AI Decision Reasoning', () => {
             let lines = players[currentPlayerIndex].decisionReasoning.split('\n');
             lines.unshift(`Player ${currentPlayerIndex + 1} decisions:`);
             return lines;
-        }, { side: 'right' });
-        this.createPanel('Animation Queue', () => this.generateAnimationQueueContent(), { side: 'right' });
+        }, { side: 'right', size: { width: 1, height: 2 } });
+        this.createPanel('Animation Queue', () => this.generateAnimationQueueContent(), { side: 'right', size: { width: 1, height: 1 } });
 
         this.organisePanels(); // Organise panels after registering them
     }
@@ -147,6 +168,10 @@ class PanelManager {
             });
         }
         return content;
+    }
+
+    getPanelByHeader(header) {
+        return this.panels.find(panel => panel.header === header);
     }
 
     savePanelPositions() {
@@ -173,6 +198,32 @@ class PanelManager {
             panel.y = 0;
         });
         this.organisePanels(); // Reorganise panels after resetting positions
+        restrictPanelPositions();
         this.savePanelPositions(); // Save the reset positions
     }
+}
+
+function restrictPanelPositions() {
+  const padding = 10; // Optional padding to keep panels slightly away from the edges
+  const minX = padding;
+  const minY = padding;
+  const maxX = panelManager.canvasWidth - padding;
+  const maxY = panelManager.canvasHeight - padding;
+
+  panelManager.panels.forEach(panel => {
+
+    if (panel.x < minX) {
+      panel.x = minX;
+    }
+    if (panel.x + panel.width > maxX) {
+      panel.x = maxX - panel.width;
+    }
+    if (panel.y < minY) {
+      panel.y = minY;
+    }
+    if (panel.y + panel.height > maxY) {
+      panel.y = maxY - panel.height;
+    }
+
+  });
 }

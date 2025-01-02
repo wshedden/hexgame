@@ -73,6 +73,26 @@ function initialiseTerrainColours() {
   registerTerrainType('snow', color(255, 250, 250));
 }
 
+function getHexGridBoundingBox() {
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+  hexGrid.forEach(hex => {
+    let { x, y } = hexToPixel(hex);
+    minX = min(minX, x);
+    minY = min(minY, y);
+    maxX = max(maxX, x);
+    maxY = max(maxY, y);
+  });
+
+  // Apply translation and scaling
+  minX = minX * scaleFactor + offsetX;
+  minY = minY * scaleFactor + offsetY;
+  maxX = maxX * scaleFactor + offsetX;
+  maxY = maxY * scaleFactor + offsetY;
+
+  return { minX, minY, maxX, maxY };
+}
+
 function keyPressed() {
   if (stateManager.currentState instanceof InitState) {
     if (key === 't' || key === 'T') {

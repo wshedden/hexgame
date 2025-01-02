@@ -310,6 +310,21 @@ function drawAnimatingState() {
 }
 
 
+
+function drawHexGridOutline() {
+  let { minX, minY, maxX, maxY } = getHexGridBoundingBox();
+  push();
+  strokeWeight(2);
+  noFill();
+
+  // Use a single nice color for the outline
+  stroke(0, 150, 255); // Nice blue color
+  rect(minX - 10, minY - 10, maxX - minX + 20, maxY - minY + 20); // Add some padding
+
+  pop();
+}
+
+
 function draw() {
   background(20);
   push();
@@ -324,5 +339,7 @@ function draw() {
   panelManager.updateAndDrawPanels();
   delaySlider.update();
   delaySlider.display();
+
+  drawHexGridOutline();
   delayMultiplier = delaySlider.value;
 }
