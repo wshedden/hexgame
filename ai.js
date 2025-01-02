@@ -51,6 +51,7 @@ class AIPlayer {
 
   passTurn() {
     this.player.decisionReasoning += '🚫 Passing 🚫\n';
+    this.player.strategicDecisions += '🚫 Passing 🚫\n'; // Add to strategic decisions
   }
 
   finaliseDecisionReasoning() {
@@ -59,8 +60,8 @@ class AIPlayer {
     }
   }
 
-    handleUnitMovement() {
-      print("Handling unit movement");
+  handleUnitMovement() {
+    print("Handling unit movement");
     let moved = false;
     let hex = this.getRandomMovableHex();
   
@@ -78,12 +79,14 @@ class AIPlayer {
   
         if (moved) {
           this.attemptedActions.add(`move:${unitToMove.playerId}:${hex.q},${hex.r}`);
+          this.player.strategicDecisions += `Moved unit ${unitToMove.id} from (${hex.q}, ${hex.r})\n`; // Add to strategic decisions
         }
       }
     }
   
     if (!moved) {
       this.player.decisionReasoning += '❌ No moves\n';
+      this.player.strategicDecisions += '❌ No moves\n'; // Add to strategic decisions
     }
   }
 
@@ -106,11 +109,13 @@ class AIPlayer {
   handleUnitPlacement() {
     if (!this.player.canAffordCheapestUnit()) {
       this.player.decisionReasoning += '❌ Not enough money to place any unit\n';
+      this.player.strategicDecisions += '❌ Not enough money to place any unit\n'; // Add to strategic decisions
       return;
     }
   
     if (this.player.occupiedHexes.size >= this.player.unitLimit || this.player.numOfUnits >= this.player.unitLimit) {
       this.player.decisionReasoning += `❌ Unit limit of ${this.player.unitLimit} reached. Cannot place more units\n`;
+      this.player.strategicDecisions += `❌ Unit limit of ${this.player.unitLimit} reached. Cannot place more units\n`; // Add to strategic decisions
       return;
     }
   
@@ -123,12 +128,15 @@ class AIPlayer {
       if (this.player.placeNewUnit(randomHex, unitType)) {
         this.player.actionPoints--;
         this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r}) ${emoji} ${this.player.actionPoints}\n`;
+        this.player.strategicDecisions += `Placed ${unitType} at (${randomHex.q}, ${randomHex.r})\n`; // Add to strategic decisions
         this.attemptedActions.add(`place:${unitType}:${randomHex.q},${randomHex.r}`);
       } else {
         this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
+        this.player.strategicDecisions += `❌ Failed to place ${unitType} at (${randomHex.q}, ${randomHex.r})\n`; // Add to strategic decisions
       }
     } else {
       this.player.decisionReasoning += '❌ No hexes available for unit placement\n';
+      this.player.strategicDecisions += '❌ No hexes available for unit placement\n'; // Add to strategic decisions
     }
   }
 
@@ -142,12 +150,15 @@ class AIPlayer {
       if (this.player.placeNewUnit(randomHex, unitType)) {
         this.player.actionPoints--;
         this.player.decisionReasoning += `✅ ${emoji} at (${randomHex.q}, ${randomHex.r}) ${emoji}; AP=${this.player.actionPoints}\n`;
+        this.player.strategicDecisions += `Placed settler at (${randomHex.q}, ${randomHex.r})\n`; // Add to strategic decisions
         this.attemptedActions.add(`place:${unitType}:${randomHex.q},${randomHex.r}`);
       } else {
         this.player.decisionReasoning += `❌ ${emoji} at (${randomHex.q}, ${randomHex.r})\n`;
+        this.player.strategicDecisions += `❌ Failed to place settler at (${randomHex.q}, ${randomHex.r})\n`; // Add to strategic decisions
       }
     } else {
       this.player.decisionReasoning += '❌ No hexes available for settler placement\n';
+      this.player.strategicDecisions += '❌ No hexes available for settler placement\n'; // Add to strategic decisions
     }
   }
 
@@ -179,28 +190,24 @@ class AIPlayer {
   }
 
   createRandomFarm() {
-    // print(`Number of farmers available: ${this.player.farmers.size}`);
     if (this.player.farmers.size === 0) {
       this.player.decisionReasoning += '❌ No farmers available to build a farm\n';
-      // print('No farmers available to build a farm');
+      this.player.strategicDecisions += '❌ No farmers available to build a farm\n'; // Add to strategic decisions
       return false;
     }
 
     let farmersArray = Array.from(this.player.farmers);
-    // print(`Farmers array: ${farmersArray.map(farmer => `(${farmer.q}, ${farmer.r})`).join(', ')}`);
     let randomFarmer = random(farmersArray);
     let farmerHex = hexGrid.get(`${randomFarmer.q},${randomFarmer.r}`);
 
-    // print(`Attempting to build a farm with farmer at (${randomFarmer.q}, ${randomFarmer.r})`);
 
     if (this.player.buildBuilding(randomFarmer, farmerHex)) {
       this.player.farmers.delete(randomFarmer); // Remove the farmer from the set
-      this.player.decisionReasoning += `✅ 🌾 Farmer built a farm at (${farmerHex.q}, ${farmerHex.r}) 🚶 ${this.player.actionPoints}\n`;
-      // print(`Farm successfully built at (${farmerHex.q}, ${farmerHex.r})`);
+      this.player.strategicDecisions += `Built farm at (${farmerHex.q}, ${farmerHex.r})\n`; // Add to strategic decisions
       return true;
     } else {
       this.player.decisionReasoning += `❌ Failed to build a farm at (${farmerHex.q}, ${farmerHex.r})\n`;
-      // print(`Failed to build a farm at (${farmerHex.q}, ${farmerHex.r})`);
+      this.player.strategicDecisions += `❌ Failed to build a farm at (${farmerHex.q}, ${farmerHex.r})\n`; // Add to strategic decisions
       return false;
     }
   }

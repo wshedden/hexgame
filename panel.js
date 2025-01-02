@@ -16,6 +16,7 @@ class Panel {
         this.offsetX = 0;
         this.offsetY = 0;
         this.wasDragged = false;
+        this.options = options;
     }
 
     calculateDimensions() {

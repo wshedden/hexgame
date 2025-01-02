@@ -1,4 +1,6 @@
 const animationManager = new AnimationManager();
+const stateManager = new StateManager();
+let clickedPath = [];
 let selectedHex = null;
 let selectedUnitType = 'settler'; // Default to 'settler'
 let panelManager;
@@ -9,14 +11,12 @@ let showFailedOutput = true; // Track the visibility of failed AI decision outpu
 let buttonColor1 = '#28a745'; // Green color
 let buttonColor2 = '#dc3545'; // Red color
 let pathfindingMode = true;
-let path = []; // Store the path found by A* algorithm
 let progressBar; // Progress bar for animations
 let previousState = null;// Track the previous game state
 let decisionsMadeElapsedTime = 0;
 let animationElapsedTime = 0;
 let delaySlider;
 let unitInfoExpanded = false; // Add this line at the top of the file
-const stateManager = new StateManager();
 
 function setup() {
   offsetX = 900;
@@ -46,13 +46,6 @@ function setup() {
   toggleFailedOutputButton.position(width - 150, 50);
   toggleFailedOutputButton.mousePressed(toggleFailedOutput);
   toggleFailedOutputButton.style('background-color', buttonColor1);
-
-  // const progressButton = createButton('Progress Game State');
-  // progressButton.id('progressButton');
-  // progressButton.class('toggle-button');
-  // progressButton.position(width - 150, 90);
-  // progressButton.style('background-color', '#6c757d');
-  // progressButton.mousePressed(progressGameState);
 
   const resetButton = createButton('Reset Panel Positions');
   resetButton.id('resetButton');
@@ -94,8 +87,6 @@ function keyPressed() {
     } else {
       stateManager.resume();
     }
-  } else if (key === "'") { // Switch player with '
-    switchPlayer();
   } else if (key === '1') {
     selectedUnitType = 'settler';
   } else if (key === '2') {
@@ -127,25 +118,13 @@ function mousePressed() {
       selectedHex = clickedHex;
 
       if (pathfindingMode) {
-        if (path.length === 0) {
-          path.push(clickedHex);
-        } else if (path.length === 1) {
-          path.push(clickedHex);
-          path = aStar(path[0], path[1], hexGrid);
+        if (clickedPath.length === 0) {
+          clickedPath.push(clickedHex);
+        } else if (clickedPath.length === 1) {
+          clickedPath.push(clickedHex);
+          clickedPath = aStar(clickedPath[0], clickedPath[1], hexGrid);
         } else {
-          path = [clickedHex];
-        }
-      } else if (currentPlayerIndex === 0 && stateManager.currentState instanceof PlayingHumanState) {
-        let player = players[currentPlayerIndex];
-        let unitType = selectedUnitType;
-        let newUnit = new Unit(player.id, unitType, unitType === 'soldier' ? 100 : 50, unitType === 'soldier' ? 20 : 5, unitType === 'soldier' ? 10 : 5, player.color);
-
-        if (placeNewUnit(clickedHex.q, clickedHex.r, newUnit)) {
-          switchPlayer();
-          turnStartTime = millis();
-          turnNumber++;
-        } else {
-          print(`Cannot place unit at (${clickedHex.q}, ${clickedHex.r}).`);
+          clickedPath = [clickedHex];
         }
       }
     }

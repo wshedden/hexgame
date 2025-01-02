@@ -1,4 +1,4 @@
-const MAX_AI_DECISION_ATTEMPTS = 10;
+const MAX_AI_DECISION_ATTEMPTS = 5;
 let currentPlayerIndex = 0;
 let turnStartTime;
 let turnNumber = 1; // Initialise turn number
@@ -10,6 +10,21 @@ const players = [
   new Player(1, [139, 0, 0]), // Dark red for player 1
   new Player(2, [0, 0, 139])  // Dark blue for player 2
 ];
+
+function startNewTurn() {
+  this.totalAnimationDuration = stateManager.currentState.minimumDuration; // Reset total animation duration
+  players[currentPlayerIndex].resetMoves();
+  players[currentPlayerIndex].decisionQueue = [];
+
+  turnStartTime = millis();
+}
+
+function endHalfTurn() {
+  switchPlayer();
+  if (currentPlayerIndex === 0) {
+    turnNumber++;
+  }
+}
 
 function setState(newState) {
   stateManager.changeState(newState);
@@ -37,16 +52,7 @@ function queueAIDecisionAttempts(playerIndex) {
   }
 }
 
-function startNewTurn() {
-  this.totalAnimationDuration = stateManager.currentState.minimumDuration; // Reset total animation duration
-  players[currentPlayerIndex].resetMoves();
 
-  // Increment the turn number if we're on player 1
-  if (currentPlayerIndex === 1) {
-    turnNumber++;
-  }
-  turnStartTime = millis();
-}
 
 function handleHumanInput() {
   // Handle human input logic here

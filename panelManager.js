@@ -12,12 +12,15 @@ class PanelManager {
         this.organisePanels(); // Reorganise whenever a panel is added
     }
 
-    updatePanels() {
+    updateAndDrawPanels() {
         this.panels.forEach(panel => panel.draw());
     }
 
     createPanel(header, contentFunction, options = {}) {
-        const panel = new Panel(0, 0, 0, header, contentFunction, options);
+        const x = options.x || 0;
+        const y = options.y || 0;
+        const width = options.width || 200; // Default width if not provided
+        const panel = new Panel(x, y, width, header, contentFunction, options);
         this.registerPanel(panel);
         return panel;
     }
@@ -33,9 +36,7 @@ class PanelManager {
     }
 
     getPanelsBySide(side) {
-        return this.panels.filter((panel, index) => {
-            return side === 'left' ? index % 2 === 0 : index % 2 !== 0;
-        });
+        return this.panels.filter(panel => panel.options.side === side);
     }
 
     positionPanels(panels, side) {
@@ -43,35 +44,15 @@ class PanelManager {
         const maxPanelHeight = this.canvasHeight / panels.length;
 
         panels.forEach((panel, index) => {
-            if (panel.header === 'Player 1 Hexes' || panel.header === 'Player 2 Hexes') {
-                panel.calculateDimensions();
-                panel.x = side === 'left' ? 0 : this.hexGridEndX;
-                panel.y = index * maxPanelHeight;
-                panel.width = panel.contentWidth; // Set the width based on the content width
-                panel.height = maxPanelHeight;
-            } else if (panel.header === 'Hex Info') {
-                panel.x = side === 'left' ? 0 : this.hexGridEndX;
-                panel.y = index * maxPanelHeight + 200; // Move down by 200 pixels
-                panel.width = width;
-                panel.height = maxPanelHeight;
-            } else if (panel.header === 'Animation Queue') {
-                panel.x = this.canvasWidth - width; // Position to the right
-                panel.y = index * maxPanelHeight;
-                panel.width = width;
-                panel.height = maxPanelHeight;
-            } else {
-                panel.x = side === 'left' ? 0 : this.hexGridEndX;
-                panel.y = index * maxPanelHeight;
-                panel.width = width;
-                panel.height = maxPanelHeight;
-            }
+            panel.x = side === 'left' ? 0 : this.hexGridEndX;
+            panel.y = index * maxPanelHeight;
+            panel.width = width;
+            panel.height = maxPanelHeight;
         });
     }
 
     positionSpecialPanels() {
         const aiPanel = this.getPanelByHeader('AI Decision Reasoning');
-        const player2Panel = this.getPanelByHeader('Player 2 Hexes');
-
         if (aiPanel) {
             this.positionAIPanel(aiPanel);
         }
@@ -99,7 +80,7 @@ class PanelManager {
             `Player: ${players[currentPlayerIndex].id}`,
             `Turn: ${turnNumber}`,
             `Pathfinding: ${pathfindingMode ? '✅' : '❌'}`
-        ]);
+        ], { side: 'left' });
 
         this.createPanel('Hex Info', () => {
             if (!selectedHex) return ['No hex selected'];
@@ -133,16 +114,16 @@ class PanelManager {
             }
 
             return content;
-        });
+        }, { side: 'left' });
 
-        this.createPanel('Player 1 Hexes', () => generatePlayerPanelContent(players[0]));
-        this.createPanel('Player 2 Hexes', () => generatePlayerPanelContent(players[1]));
+        this.createPanel('Player 1 Hexes', () => generatePlayerPanelContent(players[0]), { side: 'left' });
+        this.createPanel('Player 2 Hexes', () => generatePlayerPanelContent(players[1]), { side: 'right' });
         this.createPanel('AI Decision Reasoning', () => {
             let lines = players[currentPlayerIndex].decisionReasoning.split('\n');
             lines.unshift(`Player ${currentPlayerIndex + 1} decisions:`);
             return lines;
-        });
-        this.createPanel('Animation Queue', () => this.generateAnimationQueueContent());
+        }, { side: 'right' });
+        this.createPanel('Animation Queue', () => this.generateAnimationQueueContent(), { side: 'right' });
 
         this.organisePanels(); // Organise panels after registering them
     }

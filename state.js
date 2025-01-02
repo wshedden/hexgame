@@ -63,13 +63,53 @@ class PlayingHumanState extends State {
 
 class ThinkingState extends State {
   enter() {
-    queueAIDecisionAttempts(currentPlayerIndex);
-    stateManager.changeState(new DecisionsMadeState());
+    this.decisionIndex = 0;
+    this.decisionDelay = 1000; // 1 second delay for each decision attempt
+    this.startTime = millis();
+    this.decisionAttempts = [];
+    this.collectDecisionAttempts();
+    stateManager.setStartTime(millis());
+    this.minimumDuration = this.decisionDelay;
+  }
+
+  collectDecisionAttempts() {
+    // Collect all decision attempts for the current player
+    let player = players[currentPlayerIndex];
+    let attempts = 0;
+    while (player.actionPoints > 0 && attempts < MAX_AI_DECISION_ATTEMPTS) {
+      if (player.makeDecision()) {
+        this.decisionAttempts.push(player.decisionReasoning);
+      }
+      attempts++;
+    }
+  }
+
+  update() {
+    if (millis() - this.startTime > this.decisionDelay) {
+      if (this.decisionIndex < this.decisionAttempts.length) {
+        // Show the current decision attempt
+        console.log(this.decisionAttempts[this.decisionIndex]);
+        this.decisionIndex++;
+        this.startTime = millis(); // Reset the start time for the next decision attempt
+        stateManager.setStartTime(millis());
+      } else {
+        // Set the minimum duration for the next state transition
+        this.minimumDuration = 0; // No delay for transitioning to the next state
+        stateManager.checkAndTransition(new DecisionsMadeState());
+      }
+    }
   }
 
   draw() {
     drawGrid();
     drawUnits();
+    // Optionally, you can draw the decision process on the screen
+    if (this.decisionIndex < this.decisionAttempts.length) {
+      fill(255);
+      textSize(16);
+      textAlign(CENTER, CENTER);
+      text(this.decisionAttempts[this.decisionIndex], width / 2, height / 2);
+    }
   }
 }
 
@@ -122,6 +162,10 @@ class AnimatingState extends State {
   draw() {
     drawGrid();
     drawUnits();
+  }
+
+  exit() {
+    endHalfTurn();
   }
 }
 
@@ -194,6 +238,7 @@ class StateManager {
   }
 
   checkAndTransition(nextState) {
+    // Use this for state delay logic, do not call changeState directly
     if (millis() - this.getStartTime() > this.currentState.minimumDuration) {
       this.changeState(nextState);
     }

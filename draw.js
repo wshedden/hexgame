@@ -309,17 +309,6 @@ function drawAnimatingState() {
   }
 }
 
-function drawGameStatePopup() {
-  rectMode(CORNER); // Ensure rectMode is set to CORNER
-  fill(0, 0, 0, 150); // Semi-transparent black background
-  rect(10, 10, 190, 120, 10); // Adjusted height to accommodate the speed multiplier
-  fill(255);
-  textSize(16);
-  textAlign(LEFT, CENTER);
-  text(`State: ${stateManager.currentState}`, 20, 30);
-  text(`Player: ${players[currentPlayerIndex].id}`, 20, 50);
-  text(`Turn: ${turnNumber}`, 20, 70); // Display the current turn number
-}
 
 function draw() {
   background(20);
@@ -330,8 +319,9 @@ function draw() {
   stateManager.update();
   stateManager.draw();
 
-  drawGameStatePopup();
-  panelManager.updatePanels();
+  pop();
+
+  panelManager.updateAndDrawPanels();
   delaySlider.update();
   delaySlider.display();
   delayMultiplier = delaySlider.value;

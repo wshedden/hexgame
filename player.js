@@ -17,6 +17,7 @@ class Player {
     this.claimedAdjacentHexes = new Set();
     this.humanControlled = false;
     this.decisionReasoning = '';
+    this.strategicDecisions = ''; // Initialize strategic decisions string
     this.actionPoints = MAX_ACTIONS_PER_TURN;
     this.maxReasoningLength = 1000;
     this.money = 10000;
@@ -271,7 +272,7 @@ function moveUnit(player, unit, fromHex, toHex) {
   let animation = new Animation('unitMovement', unit, toHex, duration);
 
   animationManager.addAnimation(unit, animation);
-  decisionQueue.push({ type: "move", unit: unit, hex: toHex });
+  player.decisionQueue.push({ type: "move", unit: unit, hex: toHex });
 
   console.log(`MOVE: ${unit.id} from (${fromHex.q}, ${fromHex.r}) to (${toHex.q}, ${toHex.r})`);
   updatePlayerOccupiedHexes(player, fromHex, toHex);
