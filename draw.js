@@ -340,6 +340,6 @@ function draw() {
   delaySlider.update();
   delaySlider.display();
 
-  drawHexGridOutline();
+  // drawHexGridOutline();
   delayMultiplier = delaySlider.value;
 }

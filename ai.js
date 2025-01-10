@@ -20,11 +20,12 @@ class AIPlayer {
       return false;
     }
 
-    if(this.player.farmers.size > 0 && this.player.actionPoints > 0) {
-      if(random(1) < 0.5) {
-        this.createRandomFarm();
-        this.finaliseDecisionReasoning();
-        return true;
+    if (this.player.idleFarmers.size > 0 && this.player.actionPoints > 0) {
+      if (random(1) < 0.5) {
+        if (this.createRandomFarm()) {
+          this.finaliseDecisionReasoning();
+          return true;
+        }
       }
     }
 
@@ -50,8 +51,8 @@ class AIPlayer {
   }
 
   passTurn() {
-    this.player.decisionReasoning += '🚫 Passing 🚫\n';
-    this.player.strategicDecisions += '🚫 Passing 🚫\n'; // Add to strategic decisions
+    // this.player.decisionReasoning += '🚫 Passing 🚫\n';
+    // this.player.strategicDecisions += '🚫 Passing 🚫\n'; // Add to strategic decisions
   }
 
   finaliseDecisionReasoning() {
@@ -190,19 +191,16 @@ class AIPlayer {
   }
 
   createRandomFarm() {
-    if (this.player.farmers.size === 0) {
-      this.player.decisionReasoning += '❌ No farmers available to build a farm\n';
-      this.player.strategicDecisions += '❌ No farmers available to build a farm\n'; // Add to strategic decisions
+    if (this.player.idleFarmers.size === 0) {
+      this.player.decisionReasoning += '❌ No idle farmers available to build a farm\n';
+      this.player.strategicDecisions += '❌ No idle farmers available to build a farm\n'; // Add to strategic decisions
       return false;
     }
 
-    let farmersArray = Array.from(this.player.farmers);
-    let randomFarmer = random(farmersArray);
+    let randomFarmer = random(Array.from(this.player.idleFarmers));
     let farmerHex = hexGrid.get(`${randomFarmer.q},${randomFarmer.r}`);
 
-
     if (this.player.buildBuilding(randomFarmer, farmerHex)) {
-      this.player.farmers.delete(randomFarmer); // Remove the farmer from the set
       this.player.strategicDecisions += `Built farm at (${farmerHex.q}, ${farmerHex.r})\n`; // Add to strategic decisions
       return true;
     } else {

@@ -57,7 +57,7 @@ class Hex {
   }
 
   removeUnit(unit) {
-    let index = this.units.indexOf(unit);drawHex
+    let index = this.units.indexOf(unit);
     if (index !== -1) {
       this.units.splice(index, 1);
     }

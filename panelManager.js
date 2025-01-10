@@ -97,7 +97,7 @@ class PanelManager {
 
     registerPanels() {
         this.createPanel('Game State', () => [
-            `State: ${panelManager.currentState}`,
+            `State: ${stateManager.currentState.constructor.name}`,
             `Player: ${players[currentPlayerIndex].id}`,
             `Turn: ${turnNumber}`,
             `Pathfinding: ${pathfindingMode ? '✅' : '❌'}`

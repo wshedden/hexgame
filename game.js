@@ -66,6 +66,7 @@ function executeDecisions() {
   players.forEach(player => {
     player.decisionQueue.forEach(move => {
       move.unit.hex = move.hex;
+      print("Executing move: " + move.unit.type + " to " + move.hex.getKey());
       move.hex.addUnit(move.unit);
     });
     player.decisionQueue = [];

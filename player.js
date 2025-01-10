@@ -27,6 +27,7 @@ class Player {
     this.farmers = new Set();
     this.numOfUnits = 0;
     this.decisionQueue = [];
+    this.idleFarmers = new Set(); // Add this line
   }
 
   resetMoves() {
@@ -61,7 +62,7 @@ class Player {
       this.money -= UNIT_COSTS[unitType];
       if (unitType === 'farmer') {
         this.farmers.add(newUnit); // Add farmer to the set
-        // print(`Farmer added at (${hex.q}, ${hex.r}). Total farmers: ${this.farmers.size}`);
+        this.idleFarmers.add(newUnit); // Add farmer to idleFarmers set
       }
       return true;
     }
@@ -136,6 +137,7 @@ class Player {
     if (unit.build(hex)) {
       this.actionPoints--;
       this.decisionReasoning += `🏗️ ${getUnitEmoji(unit.type)} built ${hex.building.type} at (${hex.q}, ${hex.r}) 🚶 ${this.actionPoints}\n`;
+      this.idleFarmers.delete(unit); // Remove the farmer from idleFarmers set
       return true;
     }
     return false;
